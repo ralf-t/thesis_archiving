@@ -1,0 +1,104 @@
+{% extends "main/base.html" %}
+
+{% block css %}
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='plugins/bootstrap-tokenfield/bootstrap-tokenfield.min.css') }}"> 
+{% endblock %}
+
+{% block content %}
+		<div class="p-3 border rounded bg-white p-5 shadow-sm">
+			<h2 class="d-flex justify-content-center"><strong>Advanced Search</strong></h2>
+			<form method="POST" action="" autocomplete="off" class="px-0 px-md-5"> 
+			{{ form.hidden_tag() }}
+				<div class="form-group">
+					{{ form.title.label }}
+					{% if form.title.errors %}
+						{{ form.title(class='form-control is-invalid') }}
+							<div class="invalid-feedback order-last">
+								{% for error in form.title.errors %}
+									{{ error }}
+								{% endfor %}
+							</div>
+					{% else %}
+						{{ form.title(class='form-control') }}
+					{% endif %}
+				</div>
+
+				<div class="form-group">
+					{{ form.area.label }}
+					{% if form.area.errors %}
+						{{ form.area(class='form-control is-invalid') }}
+							<div class="invalid-feedback order-last">
+								{% for error in form.area.errors %}
+									{{ error }}
+								{% endfor %}
+							</div>
+					{% else %}
+						{{ form.area(class='form-control') }}
+					{% endif %}
+					<div class="row" id="areatags">
+			  							
+					</div>
+				</div>
+				<div class="form-group">
+					{{ form.keywords.label }}
+					{% if form.keywords.errors %}
+						{{ form.keywords(class='form-control is-invalid') }}
+							<div class="invalid-feedback order-last">
+								{% for error in form.keywords.errors %}
+									{{ error }}
+								{% endfor %}
+							</div>
+					{% else %}
+						{{ form.keywords(class='form-control') }}
+					{% endif %}
+
+					<div class="row" id="keywordstags">
+			  							
+					</div>
+				</div>
+				<div class="form-row">
+
+					<div class="form-group col-lg-6">
+						{{ form.program.label }}
+						{% if form.program.errors %}
+							{{ form.program(class='custom-select is-invalid') }}
+	                	<div class="invalid-feedback order-last">
+			                {% for error in form.program.errors %}
+		                  		{{ error }}
+			                {% endfor %}
+	              		</div>
+						{% else %}
+							{{ form.program(class='custom-select') }}
+						{% endif %}
+					</div>
+
+
+					<div class="form-group col-lg-6">
+						{{ form.semester.label }}
+						{% if form.semester.errors %}
+							{{ form.semester(class='custom-select is-invalid') }}
+	                	<div class="invalid-feedback order-last">
+			                {% for error in form.semester.errors %}
+		                  		{{ error }}
+			                {% endfor %}
+	              		</div>
+						{% else %}
+							{{ form.semester(class='custom-select') }}
+						{% endif %}
+					</div>
+				</div>
+				<div class="row">
+					<div class="col d-flex flex-row-reverse">
+						{{ form.search(class="btn btn-dark btn-block mx-auto") }}
+					</div>
+				</div>
+			</form>
+		</div>
+
+
+{% endblock%}
+
+{% block js %}
+	<script src="{{ url_for('static', filename='user/custom js/advanced_searching.js') }}"></script>
+	<script src="{{ url_for('static', filename='plugins/bootstrap-tokenfield/bootstrap-tokenfield.min.js') }}"></script>
+{% endblock %}

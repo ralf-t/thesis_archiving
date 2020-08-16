@@ -1,0 +1,185 @@
+{% extends "admin/base_admin.html" %}
+
+{% block css %}
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='admin/custom css/register_user.css') }}"> 
+{% endblock %}
+
+{% block content %} 
+<div class="row d-flex justify-content-center">
+	<div class="col-md-6 col-lg-5 my-4 px-3">
+  		<div class="p-3">
+  			
+  			<div class="row d-flex justify-content-center mb-3">
+  				<i class="fas fa-user-circle fa-7x"></i>
+  			</div>
+  			<h4 class="mb-5">USER REGISTRATION</h4>
+
+  		  		<form method="POST" action="">
+  					{{ form.hidden_tag() }}
+
+  					<h6>Permissions</h6>
+  					<div class="form-row">
+		       			<div class="form-group col">
+				            {{ form.acad_role.label }}
+				            <!-- academic role -->
+				            {% if form.acad_role.errors %}
+				              {{ form.acad_role(class='custom-select is-invalid') }}
+			                	<div class="invalid-feedback order-last">
+					                {% for error in form.acad_role.errors %}
+				                  		{{ error }}
+					                {% endfor %}
+			              		</div>
+
+				            {% else %}
+				              {{ form.acad_role(class='custom-select') }}
+
+				            {% endif %}
+				        </div>          
+
+				        {% if current_user in s_user %}
+			  					<div class="form-group col">
+				  					{{ form.admin_role.label }}
+				  					<!-- admin role -->
+				  					{% if form.admin_role.errors %}
+				  						{{ form.admin_role(class='custom-select is-invalid') }}
+				  						<div class="invalid-feedback order-last">
+				    						{% for error in form.admin_role.errors %}
+				    							{{ error }}
+				    						{% endfor %}
+				  						</div>
+
+				  					{% else %}
+				  						{{ form.admin_role(class='custom-select') }}
+
+				  					{% endif %}
+			  					</div>
+
+				        {% endif %}
+
+  					</div>
+  					<!--  -->
+  					<!--  -->
+  					<!--  -->
+  					<h6>Basic Details</h6>
+		  			<div class="form-group">
+		  					<!-- username -->
+							{% if form.username.errors %}
+								{{ form.username(class='form-control is-invalid', placeholder="Username", maxlength="11", readonly='readonly') }}
+								<div class="invalid-feedback order-last">
+									{% for error in form.username.errors %}
+										{{ error }}
+									{% endfor %}
+								</div>
+
+							{% else %}
+								{{ form.username(class='form-control', placeholder="Username", maxlength="11", readonly='readonly') }}
+
+							{% endif %}
+							<small class="form-text text-muted">
+								Usernames for 'Superuser', 'Admin', and 'Adviser' are automatically generated.
+							</small>
+					</div>
+
+					<div class="form-group">
+		  					<!-- email -->
+							{% if form.email.errors %}
+								{{ form.email(class='form-control is-invalid', placeholder="Email", maxlength="120") }}
+								<div class="invalid-feedback order-last">
+									{% for error in form.email.errors %}
+										{{ error }}
+									{% endfor %}
+								</div>
+
+							{% else %}
+								{{ form.email(class='form-control', placeholder="Email", maxlength="120") }}
+
+							{% endif %}
+					</div>
+
+					<div class="form-row">
+						<div class="form-group col-6">
+							<!-- pw -->
+							{% if form.password.errors %}
+								{{ form.password(class='form-control is-invalid', placeholder="Password") }}
+								<div class="invalid-feedback order-last">
+									{% for error in form.password.errors %}
+										{{ error }}
+									{% endfor %}
+								</div>
+							{% else %}
+								{{ form.password(class='form-control', placeholder="Password") }}
+							{% endif %}
+						</div>
+					
+						<div class="form-group col-6">
+						<!-- confirm pw -->
+						{% if form.confirm_password.errors %}
+							{{ form.confirm_password(class='form-control is-invalid', placeholder="Confirm Password") }}
+							<div class="invalid-feedback order-last">
+								{% for error in form.confirm_password.errors %}
+									{{ error }}
+								{% endfor %}
+							</div>
+
+						{% else %}
+							{{ form.confirm_password(class='form-control', placeholder="Confirm Password") }}
+
+						{% endif %}
+						</div>
+					</div>
+
+					<div class="form-row">
+		       			<div class="form-group col">
+				            {{ form.subject.label }}
+				            <!-- academic role -->
+				            {% if form.subject.errors %}
+				              {{ form.subject(class='custom-select is-invalid') }}
+			                	<div class="invalid-feedback order-last">
+					                {% for error in form.subject.errors %}
+				                  		{{ error }}
+					                {% endfor %}
+			              		</div>
+
+				            {% else %}
+				              {{ form.subject(class='custom-select') }}
+
+				            {% endif %}
+				        </div>          
+
+
+	  					<div class="form-group col">
+		  					{{ form.section.label }}
+		  					<!-- admin role -->
+		  					{% if form.section.errors %}
+		  						{{ form.section(class='custom-select is-invalid') }}
+		  						<div class="invalid-feedback order-last">
+		    						{% for error in form.section.errors %}
+		    							{{ error }}
+		    						{% endfor %}
+		  						</div>
+
+		  					{% else %}
+		  						{{ form.section(class='custom-select') }}
+
+		  					{% endif %}
+	  					</div>
+
+
+  					</div>
+	  			
+	  				{{ form.submit(class="btn btn-primary btn-block btn-sm mt-4") }}
+	  				<small class="form-text text-muted">
+						By creating an account, the User agrees to the <a href="#">Terms of Use</a> and <a href="#">Privacy Policy</a> of the system.
+					</small>
+					
+			</form>
+  		</div>
+	</div>
+</div>
+{% endblock %}
+
+{% block js %}
+	<script src="{{ url_for('static', filename='admin/custom js/register_user.js') }}"></script>
+{% endblock %}
+
+

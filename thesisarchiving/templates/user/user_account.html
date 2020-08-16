@@ -1,0 +1,44 @@
+{% extends "user/user_account_update.html" %}
+
+{% block form %}
+<form method="POST" action="" enctype="multipart/form-data">
+		
+	{{ form.hidden_tag() }}
+	<div class="form-group">
+			{{ form.email.label() }}
+				<!-- email -->
+			{% if form.email.errors %}
+				{{ form.email(class='form-control is-invalid', placeholder="Email", maxlength="120") }}
+				<div class="invalid-feedback order-last">
+					{% for error in form.email.errors %}
+						{{ error }}
+					{% endfor %}
+				</div>
+
+			{% else %}
+				{{ form.email(class='form-control', placeholder="Email", maxlength="120") }}
+
+			{% endif %}
+	</div>
+	<div class="custom-file mb-3">
+    	{{ form.image_file(class="custom-file-input") }}
+		{{ form.image_file.label(class="custom-file-label") }}
+		{% if form.image_file.errors %}
+        <div class="invalid-feedback d-block">
+			{% for error in form.image_file.errors %}
+				{{ error }}
+			{% endfor %}
+		</div>
+        {% endif %}
+	</div>
+	
+	
+	{{ form.submit(class="btn btn-primary mt-3") }}
+
+</form>
+			
+{% endblock %}
+
+{% block js %}
+	<script src="{{ url_for('static', filename='user/custom js/user_account.js') }}"></script>
+{% endblock %}

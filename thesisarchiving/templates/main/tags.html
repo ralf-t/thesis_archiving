@@ -1,0 +1,13 @@
+<div class="col">
+	<div class="p-2 bg-white rounded-bottom border">
+	{% if tags %}
+		{% for tag in tags %}
+			<button type="button" class="btn btn-sm btn-light" value="{{tag.name}}"  name="{{name + 'tag'}}">
+			  {{tag.name}} <span class="badge badge-outline-light">{{tag.theses.count()}}</span>
+			</button>
+		{% endfor %}
+	{% else %}
+		<span>No results</span>
+	{% endif %}
+	</div>
+</div>

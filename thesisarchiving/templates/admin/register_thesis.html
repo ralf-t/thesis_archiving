@@ -1,0 +1,236 @@
+{% extends "admin/base_admin.html" %}
+
+{% block css %}
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='admin/custom css/register_thesis.css') }}"> 
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='plugins/bootstrap-datepicker/bootstrap-datepicker3.standalone.min.css') }}"> 
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='plugins/bootstrap-tokenfield/bootstrap-tokenfield.min.css') }}"> 
+{% endblock %}
+
+{% block content %} 
+<div class="row">
+	<div class="col-md-6 col-lg-6 my-4 px-3">
+  			<h4 class="p-3 mb-3 bg-white border rounded">THESIS REGISTRATION</h4>
+  		<div class="p-3 bg-white border rounded">
+  			
+  			
+	  		<form method="POST" action="" autocomplete="off" enctype="multipart/form-data">
+				{{ form.hidden_tag() }}
+				<h6>Basic Details</h6>
+					
+				{% for field in form.title_area_keywords %}
+					{% set title_id = 'title' + loop.index0|string %}
+					{% set area_id = 'area' + loop.index0|string %}
+					{% set area_tags_id = area_id + 'tags' %}
+					{% set keywords_id = 'keywords' + loop.index0|string %}
+					{% set keywords_tags_id = keywords_id + 'tags' %}
+					{% set search_id = 'search-' + loop.index0|string %}
+					{% set accept_id = 'accept-' + loop.index0|string %}
+					<fieldset>
+						<div class="form-row">
+			  				<div class="form-group col-12">
+							<label>Thesis
+						
+							</label>
+			  					{% if field.title.errors %}
+			  						{{ field.title(class='form-control is-invalid', placeholder='Title', maxlength="250", id=title_id) }}
+				                	<div class="invalid-feedback order-last">
+						                {% for error in field.title.errors %}
+					                  		{{ error }}
+						                {% endfor %}
+				              		</div>
+			  					{% else %}
+			  						{{ field.title(class='form-control', placeholder='Title', maxlength="250", id=title_id) }}
+			  					{% endif %}
+			  				</div>
+
+			  				<div class="form-group col-12">
+			  					{% if field.area.errors %}
+			  						{{ field.area(class='form-control is-invalid', placeholder='Area', maxlength="60", id=area_id) }}
+				                	<div class="invalid-feedback order-last">
+						                {% for error in field.area.errors %}
+					                  		{{ error }}
+						                {% endfor %}
+				              		</div>
+			  					{% else %}
+			  						{{ field.area(class='form-control', placeholder='Area', maxlength="60", id=area_id) }}
+			  					{% endif %}
+			  			
+				  					<div class="row" id={{area_tags_id}}>
+				  						
+			  						</div>
+			  				
+			  				</div>
+
+			  				<div class="form-group col-12">
+			  					{% if field.keywords.errors %}
+			  						{{ field.keywords(class='form-control is-invalid', placeholder='Keywords', maxlength="609", id=keywords_id) }}
+				                	<div class="invalid-feedback order-last">
+						                {% for error in field.keywords.errors %}
+					                  		{{ error }}
+						                {% endfor %}
+				              		</div>
+			  					{% else %}
+			  						{{ field.keywords(class='form-control', placeholder='Keywords', maxlength="609", id=keywords_id) }}
+			  					{% endif %}
+			  			
+			  						<div class="row" id={{keywords_tags_id}}>
+			  							
+			  						</div>
+				  				<small class="form-text text-muted">
+										Enter only 3-10 keywords
+								</small>
+			  				</div>
+						</div>
+						<div class="row mb-3">
+							<div class="col d-flex flex-row-reverse">
+								<button type="button" class="btn btn-sm btn-secondary" id={{search_id}} name="search">Search</button>
+								<button type="button" class="btn btn-sm btn-primary mr-2" id={{accept_id}} name="accept">Accept</button>
+								<button type="button" class="btn btn-sm btn-outline-primary mr-2" name="edit">Edit</button>
+							</div>
+						</div>
+					</fieldset>
+				{% endfor %}
+					<fieldset>
+						
+						<div class="form-row">
+
+							<div class="form-group col-lg-4">
+								{{ form.program.label }}
+								{% if form.program.errors %}
+									{{ form.program(class='custom-select is-invalid') }}
+			                	<div class="invalid-feedback order-last">
+					                {% for error in form.program.errors %}
+				                  		{{ error }}
+					                {% endfor %}
+			              		</div>
+								{% else %}
+									{{ form.program(class='custom-select') }}
+								{% endif %}
+							</div>
+
+							<div class="form-group col-lg-4">
+								{{ form.school_year.label }}
+								{% if form.school_year.errors %}
+									{{ form.school_year(class='custom-select is-invalid') }}
+			                	<div class="invalid-feedback order-last">
+					                {% for error in form.school_year.errors %}
+				                  		{{ error }}
+					                {% endfor %}
+			              		</div>
+								{% else %}
+									{{ form.school_year(class='custom-select') }}
+								{% endif %}
+							</div>
+
+							<div class="form-group col-lg-4">
+								{{ form.semester.label }}
+								{% if form.semester.errors %}
+									{{ form.semester(class='custom-select is-invalid') }}
+			                	<div class="invalid-feedback order-last">
+					                {% for error in form.semester.errors %}
+				                  		{{ error }}
+					                {% endfor %}
+			              		</div>
+								{% else %}
+									{{ form.semester(class='custom-select') }}
+								{% endif %}
+							</div>
+
+							
+
+						</div>
+						<div class="custom-file mb-3">
+					    	{{ form.form_file(class="custom-file-input") }}
+							{{ form.form_file.label(class="custom-file-label") }}
+							{% if form.form_file.errors %}
+					        <div class="invalid-feedback d-block">
+								{% for error in form.form_file.errors %}
+									{{ error }}
+								{% endfor %}
+							</div>
+					        {% endif %}
+						</div>
+						<h6>Contributors</h6>
+
+						<div class="form-group">
+							{{ form.adviser.label }}
+							{% if form.adviser.errors %}
+								{{ form.adviser(class='form-control is-invalid') }}
+									<div class="invalid-feedback order-last">
+										{% for error in form.adviser.errors %}
+											{{ error }}
+										{% endfor %}
+									</div>
+							{% else %}
+								{{ form.adviser(class='form-control') }}
+							{% endif %}
+						</div>
+
+						<label>Authors
+						
+						</label>
+						{% for field in form.authors %}
+						<div class="form-row">
+						 	{% set author_id = 'author' + loop.index0|string %}
+							
+			  				<div class="form-group col-12">
+			  					{% if field.username.errors %}
+			  						{{ field.username(class='form-control is-invalid', placeholder='Student Number', maxlength="11", id=author_id) }}
+				                	<div class="invalid-feedback order-last">
+						                {% for error in field.username.errors %}
+					                  		{{ error }}
+						                {% endfor %}
+				              		</div>
+			  					{% else %}
+			  						{{ field.username(class='form-control', placeholder='Student Number', maxlength="11", id=author_id) }}
+			  					{% endif %}
+			  				</div>
+						
+						</div>
+						{% endfor %}
+						
+						<small class="form-text text-muted">
+								Atleast 4 authors are required to register a thesis.
+						</small>
+						<div class="custom-control custom-checkbox mt-2">
+							{% if form.override_authors.errors %}
+								{{ form.override_authors(class='custom-control-input is-invalid') }}
+									<div class="invalid-feedback order-last">
+										{% for error in form.override_authors.errors %}
+											{{ error }}
+										{% endfor %}
+									</div>
+							{% else %}
+								{{ form.override_authors(class='custom-control-input') }}
+							{% endif %}
+							{{ form.override_authors.label(class='custom-control-label small') }}
+						</div>
+
+
+						{{ form.submit(class="btn btn-primary btn-block btn-sm my-4") }}
+					</fieldset>
+			</form>
+  		</div>
+	</div>
+	<div class="col-md-6 col-lg-6 my-4 px-0">
+  		<div class="p-3 bg-white border rounded">
+  			<div class="row" id="query">
+  				<div class="col d-flex justify-content-center p-3">
+  					<span><em>Similar theses will appear here</em></span>
+  				</div>
+  			</div>
+  		</div>
+  	</div>
+</div>
+
+
+
+{% endblock %}
+
+{% block js %}
+<script src="{{ url_for('static', filename='admin/custom js/register_thesis.js') }}"></script>
+<script src="{{ url_for('static', filename='plugins/bootstrap-datepicker/bootstrap-datepicker.min.js') }}"></script>
+<script src="{{ url_for('static', filename='plugins/bootstrap-tokenfield/bootstrap-tokenfield.min.js') }}"></script>
+{% endblock %}
+
+

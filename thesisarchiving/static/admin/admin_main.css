@@ -1,0 +1,51 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@200;300;400;500;600;700;800;900&display=swap');
+
+body {
+	font-family:  'Montserrat', Arial, Helvetica, sans-serif;
+	color: #343a40;
+	background: #f8f9fa;
+	display: flex;
+	flex-direction: column; /* creates rows out of the elements main and footer */
+	height: 100vh; 
+	margin: 0;
+}
+
+nav, .dropdown-menu a{
+	font-weight: 500;
+	font-size: 0.875rem;
+}
+
+footer {
+	background: #83eca1;
+	color: #ffffff;
+	font-weight: 400;
+	text-align: center;
+}
+
+.badge-BSCS{
+	background: #75cff5;
+}
+
+.badge-BSEMC-GD{
+	background: #e887c0;
+}
+
+.badge-BSEMC-DA{
+	background: #e887c0;
+}
+
+.badge-BSIS{
+	background: #ffc170;
+}
+
+.badge-BSIT{
+	background: #ebd784;
+}
+
+.badge-TP{
+	background: #78f79c;
+}
+
+.badge-AP{
+	background: #ff7070;
+}

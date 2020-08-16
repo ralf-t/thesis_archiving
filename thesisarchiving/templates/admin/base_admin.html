@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+	<meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"><!--required meta-->
+
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='bootstrap/bootstrap.min.css') }}"><!--bootstrap css-->
+
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='admin/admin_main.css') }}"> 
+    
+    <!-- fontawesome -->
+   	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='fontawesome/css/all.css') }}">
+   	<script defer src="{{ url_for('static', filename='fontawesome/js/all.js') }}"></script>
+
+   	<link rel="shortcut icon" href="{{ url_for('static', filename='images/app logo/favicon.ico') }}" type="image/x-icon">
+	<link rel="icon" href="{{ url_for('static', filename='images/app logo/favicon.ico') }}" type="image/x-icon">
+   	<!-- custome css -->
+ 	{% block css %}
+ 
+	{% endblock %}
+
+	{% if title %}
+		<title>{{ title }}</title>
+	{% else %}
+		<title>Admin Dashboard</title>
+	{% endif %}
+
+</head>
+
+<body>
+	{% block navbar %} 
+	<!-- navbar -->
+	<nav class="navbar navbar-expand-md navbar-light navbar-dark bg-dark shadow-sm mb-3">
+		<div class="container">
+			
+			<a class="navbar-brand" href="{{ url_for('admin.admin_view') }}">
+			    <img src="{{ url_for('static', filename='images/app logo/logo_v2.png') }}" width="30" height="30" class="d-inline-block align-middle" alt="">
+		  	</a>
+
+		  	<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#adminNav">
+				<span class="navbar-toggler-icon"></span>
+		    </button>
+
+		  	<div class="collapse navbar-collapse" id="adminNav">
+			  	<ul class="navbar-nav ml-auto">
+			      
+			      <li class="nav-item dropdown" id="regDrop">
+			        <a class="nav-link dropdown-toggle" data-toggle="dropdown">Modify Data</a>
+			        <div class="dropdown-menu mr-auto">
+				        <a class="dropdown-item" href="#">Subject</a>
+				        <a class="dropdown-item" href="#">Section</a>
+			        </div>
+			      </li>
+
+			      <li class="nav-item dropdown" id="regDrop">
+			        <a class="nav-link dropdown-toggle" data-toggle="dropdown">Register</a>
+			        <div class="dropdown-menu mr-auto">
+				        <a class="dropdown-item" href="{{ url_for('admin.register_user') }}">User</a>
+				        <a class="dropdown-item" href="{{ url_for('admin.register_thesis') }}">Thesis</a>
+			        </div>
+			      </li>
+			      
+			      <li class="nav-item">
+			        <a class="nav-link" href="#">Data Report</a>
+			      </li>
+			      
+			      <li class="nav-item">
+			        <a class="nav-link" href="{{ url_for('admin.admin_view') }}">Home</a>
+			      </li>
+			      
+			      <li class="nav-item dropdown" id="accountDrop">
+			        <a class="nav-link dropdown-toggle" data-toggle="dropdown"></a>
+			        <div class="dropdown-menu">
+			        	<h5 class="dropdown-header">{{ current_user.username }}</h5>		        
+				        <a class="dropdown-item" href="{{ url_for('user.user_profile', username=current_user.username) }}">Account Settings</a>
+				        <div class="dropdown-divider"></div>
+				        <a class="dropdown-item" href="{{ url_for('main.logout') }}">Logout</a>
+			        </div>
+			      </li>
+
+			    </ul>
+			</div>
+
+	 	</div>
+	</nav>
+	{% endblock %}
+
+	<main role="main" class="container">
+		<div class="row">
+			<div class="col">
+				{% with messages = get_flashed_messages(with_categories=true) %}
+					{% if messages %}
+						{% for category, message in messages %}
+							<div class="alert alert-{{ category }}">
+								{{ message }}
+							</div>
+						{% endfor %}
+					{% endif %}
+				{% endwith %}
+			</div>
+		</div>
+
+		{% block content %} 
+
+		{% endblock %}
+
+	</main>
+
+
+	
+	<!--jquery-->
+	<script src="{{ url_for('static', filename='bootstrap/jquery-3.4.1.min.js') }}"></script>
+	<!--popper-->
+	<script src="{{ url_for('static', filename='bootstrap/popper.min.js') }}"></script> 
+	<!--bootstrap js-->
+	<script src="{{ url_for('static', filename='bootstrap/bootstrap.min.js') }}"></script>
+	
+	<!-- custom js -->
+	{% block js %}
+
+	{% endblock %}
+
+</body>
+
+</html>

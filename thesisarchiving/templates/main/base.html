@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+	<meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"><!--required meta-->
+
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='bootstrap/bootstrap.min.css') }}"><!--bootstrap css-->
+
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='user/main.css') }}"> 
+    
+    <!-- fontawesome -->
+   	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='fontawesome/css/all.css') }}">
+   	<script defer src="{{ url_for('static', filename='fontawesome/js/all.js') }}"></script>
+
+   	<link rel="shortcut icon" href="{{ url_for('static', filename='images/app logo/favicon.ico') }}" type="image/x-icon">
+	<link rel="icon" href="{{ url_for('static', filename='images/app logo/favicon.ico') }}" type="image/x-icon">
+
+   	<!-- custome css -->
+ 	{% block css %}
+ 
+	{% endblock %}
+
+	{% if title %}
+		<title>{{ title }}</title>
+	{% else %}
+		<title>Thesis Archiving</title>
+	{% endif %}
+
+</head>
+
+<body>
+	{% block navbar %} 
+	<!-- navbar -->
+	<nav class="navbar navbar-expand-md navbar-light navbar-white bg-white mb-3 shadow-sm">
+		<div class="container">
+			
+			<a class="navbar-brand" href="{{ url_for('main.home') }}">
+			    <img src="{{ url_for('static', filename='images/app logo/logo_v2.png') }}" width="30" height="30" class="d-inline-block align-middle" alt="">
+		  	</a>
+
+		  	<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#userNav">
+				<span class="navbar-toggler-icon"></span>
+		    </button>
+
+		  	<div class="collapse navbar-collapse" id="userNav">
+			  	{% if basic_search %}
+			  		<form method="POST" action="" autocomplete="off">
+						{{ basic_search.hidden_tag() }}
+						<div class="form-inline">
+							<div class="input-group my-3 my-md-0">
+								{{ basic_search.title(class='form-control form-control-sm', placeholder='Enter a title', maxlength="250") }}
+								
+								<div class="input-group-append">
+								{{ basic_search.search(class="btn btn-dark btn-sm my-0") }}
+								</div>
+							</div>
+							<a href="{{ url_for('main.advanced_searching') }}" class="text-muted align-self-center mx-auto ml-sm-2 custom-link">
+						      Advanced Search
+						    </a>
+						</div>
+					</form>
+			  	{% endif %}
+
+			  	<ul class="navbar-nav ml-auto">
+			      
+			      <li class="nav-item">
+			        <a class="nav-link" href="{{ url_for('user.user_profile', username=current_user.username) }}">Profile</a>
+			      </li>
+
+			      <li class="nav-item">
+			        <a class="nav-link" href="{{ url_for('main.home') }}">Home</a>
+			      </li>
+			      
+			      <li class="nav-item">
+			        <a class="nav-link" href="{{ url_for('main.logout') }}">Logout</a>
+			      </li>
+
+			    </ul>
+
+			</div>
+
+	 	</div>
+	</nav>
+	{% endblock %}
+
+	<main role="main" class="container">
+		<div class="row">
+			<div class="col">
+				{% with messages = get_flashed_messages(with_categories=true) %}
+					{% if messages %}
+						{% for category, message in messages %}
+							<div class="alert alert-{{ category }}">
+								{{ message }}
+							</div>
+						{% endfor %}
+					{% endif %}
+				{% endwith %}
+			</div>
+		</div>
+
+		<div class="row">
+			<div class="col-lg-8 pr-md-0 order-last order-lg-first">
+				{% block content %} 
+
+				{% endblock %}
+			</div>
+			<div class="col-lg-4 mb-3">
+				<div class="p-3 border rounded-top bg-white shadow-sm">
+					<div class="row d-flex justify-content-center mb-3">
+		  				<!-- <i class="fas fa-user-circle fa-8x"></i> -->
+		  				<img src="{{ url_for('static', filename='images/profile pictures/' + current_user.image_file) }}" width="120" height="120" class="rounded-circle border d-inline-block align-middle" alt="">
+		  			</div>
+		  			
+		  			<div class="d-flex flex-column">
+						<p class="mb-0 align-self-center">{{current_user.username}}</p>
+							<h6 class="align-self-center">
+					  			{% for r in current_user.roles %}
+									<span class="badge badge-light">{{r.name}}</span>
+								{% endfor %}
+							</h6>
+  					</div>
+				</div>
+				<div class="p-3 border border-top-0 rounded-bottom bg-white shadow-sm">
+					
+					<div class="row">
+						<div class="col d-flex justify-content-center">
+							<a href="{{ url_for('user.user_profile', username=current_user.username) }}" class="custom-nav-link">Profile</a>
+						</div>
+						<div class="col d-flex justify-content-center">
+							<a href="{{ url_for('user.user_account') }}" class="custom-nav-link">Settings</a>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</main>
+
+	<!--jquery-->
+	<script src="{{ url_for('static', filename='bootstrap/jquery-3.4.1.min.js') }}"></script>
+	<!--popper-->
+	<script src="{{ url_for('static', filename='bootstrap/popper.min.js') }}"></script> 
+	<!--bootstrap js-->
+	<script src="{{ url_for('static', filename='bootstrap/bootstrap.min.js') }}"></script>
+	
+	<!-- custom js -->
+	{% block js %}
+
+	{% endblock %}
+
+</body>
+
+</html>

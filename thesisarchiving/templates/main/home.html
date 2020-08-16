@@ -1,0 +1,57 @@
+{% extends "main/base.html" %}
+
+{% block content %}
+	<div class="row">
+		<div class="col mb-3">
+			<div class="px-3 py-1 shadow-sm rounded bg-white d-flex justify-content-around">
+					<a href="{{ url_for('main.home', college_name='All') + '?' + query_str }}" class="custom-nav-link">All</a>
+				{% for p in programs %}
+					<a href="{{ url_for('main.home', college_name=p.college) + '?' + query_str }}" class="custom-nav-link">{{p.college}}</a>
+				{% endfor %}
+			</div>
+		</div>
+	</div>
+
+	{% if query['query'] %}
+
+		<h6>Showing {{query['count']}} result(s)</h6>
+		{% for q in query['query'] %}
+			<div class="row">
+				<div class="col mb-3">
+					<div class="p-3 border rounded bg-white shadow-sm">
+						<span class="{{'badge badge-'+q.program.college}}">{{q.program.college}}</span>
+						<span class="{{'badge badge-'+q.category.code}}">{{q.category.name}}</span>
+						<small class="text-muted">{{q.school_year.lower}}-{{q.school_year.upper}}</small>
+						<br>
+						<a class="thesis-title mt-2" href="{{ url_for('main.thesis_profile', thesis_id=q.id)}}">{{q.title}}</a>
+						<br>
+						<span class="badge badge-pill badge-dark">{{q.area.name}}</span>
+						<br>
+
+						{% for k in q.research_keywords %}
+							<span class="badge badge-pill badge-light">{{k.name}}</span>
+						{% endfor %}
+						<br>
+					</div>
+				</div>
+			</div>
+		{% endfor %}
+
+	{% else %}
+		<div class="row">
+			<div class="col d-flex flex-column">
+				<h5 class="align-self-center">No thesis found</h5>
+				<small class="align-self-center">Refine results by using <a href="{{ url_for('main.advanced_searching')}}">advanced search</a>.</small>
+			</div>
+		</div>
+	{% endif %}
+<!-- 	<nav>
+		<ul class="pagination d-flex justify-content-center">
+			<li class="page-item"><a class="page-link" href="#"><i class="fas fa-chevron-left"></i></a></li>
+			<li class="page-item"><a class="page-link" href="#">1</a></li>
+			<li class="page-item"><a class="page-link" href="#">2</a></li>
+			<li class="page-item"><a class="page-link" href="#">3</a></li>
+			<li class="page-item"><a class="page-link" href="#"><i class="fas fa-chevron-right"></i></a></li>
+		</ul>
+	</nav> -->
+{% endblock %}

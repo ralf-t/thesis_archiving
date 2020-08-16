@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+	<meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"><!--required meta-->
+
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='bootstrap/bootstrap.min.css') }}"><!--bootstrap css-->
+
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='user/custom css/login.css') }}"> 
+    
+    <!-- fontawesome -->
+   	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='fontawesome/css/all.css') }}">
+   	<script defer src="{{ url_for('static', filename='fontawesome/js/all.js') }}"></script>
+
+	{% if title %}
+		<title>{{ title }}</title>
+	{% else %}
+		<title>Login</title>
+	{% endif %}
+
+</head>
+
+<body>
+	<div class="container">
+		<div class="row d-flex justify-content-center">
+			<div class="col-12 col-md-8 rounded shadow" id="main">
+				<div class="row">
+					<div class="col-6" id="poster">
+						<div class="row">
+							<div class="col">
+								<h1>Welcome, Warrior!<h1>
+								<h4>Need an Account?</h4>
+								<p>Find us at the CCSS R&D Office or message us through <a href="https://www.facebook.com/CCSSRnD/">Facebook</a>.</p>
+							</div>
+						</div>
+					</div>
+					<div class="col-6 border-left" id="login">
+						<div class="row">
+							<div class="col d-flex flex-column justify-content-center" id="login-header">
+								<img src="{{ url_for('static', filename='images/app logo/logo_v2.png') }}" width="130" height="130" class="align-self-center">
+								<h1>Login</h1>
+								<p>CCSS Thesis Archiving</p>
+							</div>
+						</div>
+						<form method="POST" action="">
+  			
+  							{{ form.hidden_tag() }}
+  							<div class="form-inline mb-3">
+								<i class="fas fa-user"></i>
+					  			{% if form.username.errors %}
+									{{ form.username(class="form-control is-invalid", placeholder="Username", autocomplete="off") }}
+									<div class="invalid-feedback order-last">
+										{% for error in form.username.errors %}
+											{{ error }}
+										{% endfor %}
+									</div>
+
+					  			{% else %}
+					  				{{ form.username(class="form-control", placeholder="Username", autocomplete="off") }}
+					  			{% endif %}
+				  			</div>
+				  			<div class="form-inline mb-3">
+			  					<i class="fas fa-unlock-alt"></i>
+					  			{% if form.password.errors %}
+									{{ form.password(class="form-control is-invalid", placeholder="Password", autocomplete="off") }}
+									<div class="invalid-feedback order-last">
+										{% for error in form.password.errors %}
+											{{ error }}
+										{% endfor %}
+									</div>
+
+					  			{% else %}
+					  				{{ form.password(class="form-control", placeholder="Password", autocomplete="off") }}
+					  			{% endif %}
+				  			</div>
+
+				  			<div class='form-group'>
+				  				<div class='d-flex justify-content-center'>
+				  					{{form.recaptcha}}
+				  				</div>
+				  				<div class='d-flex justify-content-center'>
+								{% for error in form.recaptcha.errors %}
+									<p class="text-danger small">{{error}}</p>
+								{% endfor %}
+								</div>
+				  			</div>
+							
+  							{{ form.submit(class="btn btn-block")}}	
+
+  						</form>
+						<div class="row">
+							<div class="col" id="forgot">
+								<a href="{{url_for('main.request_reset')}}">Forgot Password?</a>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	
+	<!--jquery-->
+	<script src="{{ url_for('static', filename='bootstrap/jquery-3.4.1.min.js') }}"></script>
+	<!--popper-->
+	<script src="{{ url_for('static', filename='bootstrap/popper.min.js') }}"></script> 
+	<!--bootstrap js-->
+	<script src="{{ url_for('static', filename='bootstrap/bootstrap.min.js') }}"></script>
+
+</body>
+
+</html>

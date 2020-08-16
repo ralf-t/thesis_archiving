@@ -1,0 +1,34 @@
+<div class="col">
+	{% if query['query'] %}
+
+		<h5>Showing {{query['count']}} result(s)</h5>
+		{% for q in query['query'] %}
+			<div class="row">
+				<div class="col mb-3">
+					<div class="p-3 border rounded bg-white">
+
+
+						<span class="{{'badge badge-'+q.program.college}}">{{q.program.college}}</span>
+						<span class="{{'badge badge-'+q.category.code}}">{{q.category.name}}</span>
+						<small class="text-muted">{{q.school_year.lower}}-{{q.school_year.upper}}</small>
+
+						<h5 class="mb-3">{{q.title}}</h5>
+
+						<span class="badge badge-pill badge-secondary">{{q.area.name}}</span>
+						<br>
+
+						{% for k in q.research_keywords %}
+							<span class="badge badge-pill badge-light">{{k.name}}</span>
+						{% endfor %}
+						<br>
+
+						
+					</div>
+				</div>
+			</div>
+		{% endfor %}
+
+	{% else %}
+			<h5>No Results</h5>
+	{% endif %}
+</div>

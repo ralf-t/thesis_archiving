@@ -1,0 +1,40 @@
+body {
+/*	background: white;*/
+}
+
+h4 {
+	font-weight: 700;
+	text-align: center;
+}
+
+h6 {
+	font-weight: bold;
+	margin-top: 2rem;
+	margin-bottom: 1rem;
+	text-align: center;
+}
+
+#query h5 {
+	font-weight: bold;
+	margin-top: 1rem;
+	margin-bottom: 1rem;
+	text-align: left;
+}
+
+
+label {
+	font-weight: 500;
+}
+
+.form-control {
+	font-size: 0.875rem;
+}
+
+#titleSearch {
+	background: white;
+}
+
+#titleSearchBody {
+	height: 200px;
+	overflow-y: auto;
+}

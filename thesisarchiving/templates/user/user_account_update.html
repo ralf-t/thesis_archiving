@@ -1,0 +1,27 @@
+{% extends "main/base.html" %}
+
+{% block content %}
+	<div class="row">
+		<div class="col mb-3">
+			<div class="p-3 border rounded bg-white shadow-sm">
+				<div class="row">
+					<div class="col-3 mb-3 border-right">
+						<ul class="nav flex-column">
+						  <li class="nav-item">
+						    <a class="nav-link custom-nav-link" href="{{ url_for('user.user_account', user_id=current_user.id) }}">Account</a>
+						  </li>
+						  <li class="nav-item">
+						    <a class="nav-link custom-nav-link" href="{{ url_for('user.user_password', user_id=current_user.id) }}">Password</a>
+						  </li>
+						</ul>
+					</div>
+					<div class="col-9 mb-3">
+						{% block form %}
+
+						{% endblock %}
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+{% endblock %}

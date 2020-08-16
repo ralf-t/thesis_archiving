@@ -1,0 +1,88 @@
+{% extends "main/base.html" %}
+
+{% block content %}
+	{% if not contributor %}
+		<div class="alert alert-warning" role="alert">
+			Some details are available only to contributors
+		</div>				
+	{% endif %}
+	<div class="row">
+		<div class="col mb-3">
+			<div class="p-3 border rounded bg-white shadow-sm">
+				<span class="{{'badge badge-'+thesis.program.college}}">{{thesis.program.college}}</span>
+				<span class="{{'badge badge-'+thesis.category.code}}">{{thesis.category.name}}</span>
+				<br>
+				<h3 class="mt-2">{{thesis.title}}</h3>
+				<small class="text-muted"></small>
+				
+				<dl class="row pl-5 pt-3 mt-4 border-top">
+					<dt class="col-4">Area</dt>
+					<dd class="col-8">
+						<span class="badge badge-pill badge-dark">{{thesis.area.name}}</span>
+					</dd>
+
+					<dt class="col-4">Keywords</dt>
+					<dd class="col-8">
+						{% for k in thesis.research_keywords %}
+							<span class="badge badge-pill badge-light">{{k.name}}</span>
+						{% endfor %}
+					</dd>
+					
+					{% if contributor %}
+						<dt class="col-4">Call number</dt>
+						<dd class="col-8">
+							<p>{{thesis.call_number}}</p>
+						</dd>
+						<dt class="col-4">Adviser</dt>
+						<dd class="col-8">
+							{% for c in thesis.contributors %}
+								{% if c in adviser %}
+									<span >{{c.username}}</span>
+								{% endif %}
+							{% endfor %}
+						</dd>
+						
+						<dt class="col-4">Authors</dt>
+						<dd class="col-8">
+							{% for c in thesis.contributors %}
+								{% if c in student %}
+									<p >{{c.username}}</p>
+								{% endif %}
+							{% endfor %}
+						</dd>
+
+
+
+						<dt class="col-4">Date registered</dt>
+						<dd class="col-8">
+							<p>{{thesis.date_register.strftime("%B %d, %Y")}}</p>
+						</dd>
+
+						<dt class="col-4">Date of deployment</dt>
+						<dd class="col-8">
+							<p>{{thesis.date_deploy.strftime("%B %d, %Y") if thesis.date_deploy else 'N/A' }}</p>
+						</dd>
+
+					{% endif %}
+					
+					<dt class="col-4">Year</dt>
+					<dd class="col-8">
+						<p>{{thesis.school_year.lower}}-{{thesis.school_year.upper}}</p>
+					</dd>
+
+					<dt class="col-4">Semester</dt>
+					<dd class="col-8">
+						<p>{{thesis.semester.code}}</p>
+					</dd>
+				</dl>
+<!-- prog cat
+title
+area area
+keywords keywords
+adviser adv
+authors auth
+sy sy sem sem -->
+			</div>
+		</div>
+	</div>
+{% endblock %}
