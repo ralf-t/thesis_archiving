@@ -24,11 +24,13 @@ class UpdateAccountForm(FlaskForm):
 
 	def validate_image_file(self, image_file):
 		image = image_file.data
-		image.seek(0, os.SEEK_END)
-		size = image.tell() / 1024 / 1024 #bytes -> mb
-		
-		if size > 5:
-			raise ValidationError('Image too large (max 5mb)')
+
+		if image:
+			image.seek(0, os.SEEK_END)
+			size = image.tell() / 1024 / 1024 #bytes -> mb
+			
+			if size > 5:
+				raise ValidationError('Image too large (max 5mb)')
 
 	def validate_email(self, email):
 		if email.data != current_user.email:
