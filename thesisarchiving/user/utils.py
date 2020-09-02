@@ -1,4 +1,4 @@
-from flask import current_app
+from flask import current_app, flash
 import random, secrets, os
 from PIL import Image
 
@@ -22,4 +22,8 @@ def save_image(form_picture):
 def del_old_image(imagename):
 	if imagename != 'all.jpg':
 		image_path = os.path.join(current_app.root_path, 'static/images/profile pictures', imagename)
-		os.remove(image_path)
+
+		try:
+			os.remove(image_path)
+		except:
+			flash('Old picture not found, updating to new profile picture', 'success')
