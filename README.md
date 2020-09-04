@@ -1,5 +1,4 @@
-# After cloning/pulling, if `config.py` is not present inside `thesisarchiving/` folder, create one
-# then paste the following code.
+### After cloning/pulling, if `config.py` is not present inside `thesisarchiving/` folder, create one then paste the following code.
 
 
 	class Config:
