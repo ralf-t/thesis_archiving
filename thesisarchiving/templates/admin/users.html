@@ -1,0 +1,37 @@
+{% extends "admin/base_admin.html" %}
+
+{% block css %}
+<!-- css scripts -->
+<!-- store in static/admin/custom css -->
+{% endblock %}
+
+{% block content %} 
+
+	<!-- main stuff here -->
+	{% for user in users.items %}
+		<p>{{user.username}}</p>
+		
+		{% for roles in user.roles %}
+			<a>{{roles}}</a>
+		{% endfor %}
+	<!-- 	
+		user.username
+		user.email
+		user.roles
+		user.section.code
+		user.subject.code
+		user.date_register 
+	-->
+	
+	<p>------------</p>
+	{% endfor %}
+
+
+{% endblock %}
+
+{% block js %}
+<!-- js scripts-->
+<!-- store in static/admin/custom js -->
+{% endblock %}
+
+

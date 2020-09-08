@@ -1,7 +1,7 @@
 from flask import render_template, redirect, url_for, request, Blueprint
 from thesisarchiving import bcrypt
 from thesisarchiving.utils import advanced_search, fuzz_tags
-from thesisarchiving.main.forms import LoginForm, BasicSearchForm, AdvancedSearchForm, RequestResetForm
+from thesisarchiving.main.forms import LoginForm, BasicSearchForm, AdvancedSearchForm, RequestResetForm, ResetPasswordForm
 from thesisarchiving.models import Role, User, Program, Thesis, Semester
 from flask_login import login_user, current_user, logout_user, login_required
 from urllib import parse
@@ -30,7 +30,7 @@ def login():
 
 	return render_template('main/login.html', form=form)
 
-@main.route("/thesis_archiving/reset_password", methods=['GET','POST'])
+@main.route("/thesis_archiving/request_reset", methods=['GET','POST'])
 def request_reset():
 
 	if current_user.is_authenticated:
@@ -39,9 +39,23 @@ def request_reset():
 	form  = RequestResetForm()
 
 	if form.validate_on_submit():
-		print('WWWWWWWWWWWWWw')
+		flash("TEST SUCCESS", "success")
 
 	return render_template('main/request_reset.html', form=form)
+
+@main.route("/thesis_archiving/reset_password", methods=['GET','POST'])
+def reset_password():
+	# KULANG PA NG TOKEN PARAMETER TO!
+
+	if current_user.is_authenticated:
+		return redirect(url_for('main.home'))
+
+	form  = ResetPasswordForm()
+
+	if form.validate_on_submit():
+		flash("TEST SUCCESS", "success")
+
+	return render_template('main/reset_password.html', form=form)
 
 @main.route("/thesis_archiving/logout")
 @login_required

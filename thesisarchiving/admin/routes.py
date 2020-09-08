@@ -213,6 +213,47 @@ def register_thesis():
 
 	return render_template('admin/register_thesis.html', form=form)
 
+@admin.route("/thesis_archiving/admin/theses", methods=['GET','POST'])
+@login_required
+@has_roles('Admin')
+def theses():
+
+	page = request.args.get("page", 1, type=int)
+	theses = Thesis.query.order_by(Thesis.call_number.asc()).paginate(page=page, per_page=10)
+
+	return render_template('admin/theses.html', theses=theses)
+
+@admin.route("/thesis_archiving/admin/users", methods=['GET','POST'])
+@login_required
+@has_roles('Admin')
+def users():
+
+	page = request.args.get("page", 1, type=int)
+	users = User.query.order_by(User.username.asc()).paginate(page=page, per_page=10)
+
+	return render_template('admin/users.html', users=users)
+
+@admin.route("/thesis_archiving/admin/subjects", methods=['GET','POST'])
+@login_required
+@has_roles('Admin')
+def subjects():
+
+	page = request.args.get("page", 1, type=int)
+	subjects = Subject.query.order_by(Subject.name.asc()).paginate(page=page, per_page=10)
+
+	return render_template('admin/subjects.html', subjects=subjects)
+
+@admin.route("/thesis_archiving/admin/sections", methods=['GET','POST'])
+@login_required
+@has_roles('Admin')
+def sections():
+
+	page = request.args.get("page", 1, type=int)
+	sections = Section.query.order_by(Section.code.asc()).paginate(page=page, per_page=10)
+
+	return render_template('admin/sections.html', sections=sections)
+
+########################################## AJAX
 @admin.route('/thesis_archiving/admin/register/user/generated_user', methods=['POST'])
 def generate_username():
 	role = request.form['role']

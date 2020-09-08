@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm, RecaptchaField
 from wtforms import StringField, SelectField, SubmitField, PasswordField
-from wtforms.validators import Optional, Length, DataRequired, ValidationError, Email
+from wtforms.validators import Optional, Length, DataRequired, ValidationError, Email, EqualTo
 from datetime import datetime
 import re, pytz
 from thesisarchiving.models import User
@@ -36,6 +36,21 @@ class RequestResetForm(FlaskForm):
 
 		if not user:
 			raise ValidationError('No user is registered with the e-mail')
+
+class ResetPasswordForm(FlaskForm):
+
+	new_password = PasswordField(
+		'New password', 
+		validators=[DataRequired(), Length(min=6, max=60)]
+		)
+
+	confirm_new_password = PasswordField(
+		'Confirm Password', 
+		validators=[DataRequired(), EqualTo('new_password')]
+		)
+
+	submit = SubmitField('Reset password')
+
 
 class BasicSearchForm(FlaskForm):
 	title = StringField(

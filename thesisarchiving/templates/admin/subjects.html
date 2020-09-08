@@ -1,0 +1,29 @@
+{% extends "admin/base_admin.html" %}
+
+{% block css %}
+<!-- css scripts -->
+<!-- store in static/admin/custom css -->
+{% endblock %}
+
+{% block content %} 
+
+	<!-- main stuff here -->
+	{% for subject in subjects.items %}
+		<p>{{subject.name}}</p>
+	<!-- 
+
+	subject.name
+	subject.code
+
+	-->
+	{% endfor %}
+
+
+{% endblock %}
+
+{% block js %}
+<!-- js scripts-->
+<!-- store in static/admin/custom js -->
+{% endblock %}
+
+

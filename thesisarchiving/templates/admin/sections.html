@@ -1,0 +1,24 @@
+{% extends "admin/base_admin.html" %}
+
+{% block css %}
+<!-- css scripts -->
+<!-- store in static/admin/custom css -->
+{% endblock %}
+
+{% block content %} 
+
+	<!-- main stuff here -->
+	{% for section in sections.items %}
+		<p>{{section.code}}</p>
+	
+	{% endfor %}
+
+
+{% endblock %}
+
+{% block js %}
+<!-- js scripts-->
+<!-- store in static/admin/custom js -->
+{% endblock %}
+
+

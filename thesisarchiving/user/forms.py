@@ -56,7 +56,7 @@ class UpdatePasswordForm(FlaskForm):
 		validators=[DataRequired(), EqualTo('new_password')]
 		)
 
-	submit = SubmitField('Update password')
+	submit = SubmitField('Change password')
 
 	def validate_password(self, password):
 		if not bcrypt.check_password_hash(current_user.password, password.data):
@@ -65,3 +65,5 @@ class UpdatePasswordForm(FlaskForm):
 	def validate_new_password(self, password):
 		if bcrypt.check_password_hash(current_user.password, password.data):
 			raise ValidationError('Please enter a different password')
+
+

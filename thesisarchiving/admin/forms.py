@@ -5,7 +5,7 @@ from wtforms import StringField, SelectField, SubmitField, DateField, FieldList,
 from wtforms.validators import Optional, Length, DataRequired, ValidationError, EqualTo, Email
 from datetime import datetime
 import re, pytz, os
-from thesisarchiving.models import User, Role, Thesis 
+from thesisarchiving.models import User, Role, Thesis, Subject, Section
 
 titleRegex = r"^([A-z0-9,':_%#()@&?. -]{3,250})$"
 studentnumRegex = r'^([0-9]{11})$'
@@ -186,3 +186,77 @@ class RegisterUserForm(FlaskForm):
 	def validate_password(self, password):
 		if not re.fullmatch(pwRegex, password.data):
 			raise ValidationError("Allowed characters: A-z 0-9 . _ $ * ( ) # @ ! % / -")
+
+
+#general add subj sec
+class GeneralCreateForm(FlaskForm):
+
+	select_data = SelectField(
+		'Data', 
+		choices=[('None', 'None')], 
+		validators=[DataRequired()]
+		)
+
+	name = StringField(
+		'Name', 
+		validators=[Optional(), Length(min=3, max=120)]
+		)
+	code = StringField(
+		'Code', 
+		validators=[DataRequired(), Length(min=3, max=10)]
+		)
+
+	submit = SubmitField('Create Data')
+
+	#if select data is subject, require name
+
+	def validate_name(self, name):
+		if Subject.query.filter_by(name=name.data).first():
+			raise ValidationError("Name is already registered")
+
+	def validate_code(self, code):
+		if Subject.query.filter_by(code=code.data).first() or Section.query.filter_by(code=code.data).first():
+			raise ValidationError("Code is already registered")
+
+#edit subj
+class UpdateSubjectForm(FlaskForm):
+
+	name = StringField(
+		'Name', 
+		validators=[Optional(), Length(min=3, max=120)]
+		)
+	code = StringField(
+		'Code', 
+		validators=[DataRequired(), Length(min=3, max=10)]
+		)
+
+	submit = SubmitField('Update subject')
+
+	def __init__(self, subject_obj):
+		self.subject = Subject.query.get(subject_obj)
+
+	def validate_name(self, name):
+		subject = Subject.query.filter_by(name=name.data).first()
+
+		if subject and subject != self.subject: #subject name exists and not itself
+			raise ValidationError("Name is already registered")
+
+class UpdateSectionForm(FlaskForm):
+	code = StringField(
+			'Code', 
+			validators=[DataRequired(), Length(min=3, max=10)]
+			)
+
+	submit = SubmitField('Update subject')
+
+	def __init__(self, section_obj):
+		self.section = Section.query.get(section_obj)
+
+	def validate_code(self, code):
+		section = Section.query.filter_by(code=code.data).first()
+
+		if section and section != self.subject: #section code exists and not itself
+			raise ValidationError("Name is already registered")
+
+# class UpdateThesisForm(FlaskForm):
+# class UpdateUserForm(FlaskForm):
