@@ -16,6 +16,9 @@ def load_user(user_id):
 class User(db.Model, UserMixin):
 	id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4, unique=True, nullable=False)
 	username = db.Column(db.String(11), unique=True, nullable=False) #studnum 11, adviser 3an, admin3an, 
+	last_name = db.Column(db.String(60), nullable=False)
+	first_name = db.Column(db.String(60), nullable=False)
+	middle_initial = db.Column(db.String(5), nullable=True)
 	email = db.Column(db.String(120), unique=True, nullable=False)
 	password = db.Column(db.String(60), nullable=False)
 	roles = db.relationship('Role', secondary='user_role', backref=db.backref('permitted', lazy='dynamic'))
