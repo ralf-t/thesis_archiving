@@ -64,7 +64,7 @@
 		  			<div class="form-group">
 		  					<!-- username -->
 							{% if form.username.errors %}
-								{{ form.username(class='form-control is-invalid', placeholder="Username", maxlength="11", readonly='readonly') }}
+								{{ form.username(class='form-control is-invalid', placeholder="Username", maxlength="11") }}
 								<div class="invalid-feedback order-last">
 									{% for error in form.username.errors %}
 										{{ error }}
@@ -72,12 +72,9 @@
 								</div>
 
 							{% else %}
-								{{ form.username(class='form-control', placeholder="Username", maxlength="11", readonly='readonly') }}
+								{{ form.username(class='form-control', placeholder="Username", maxlength="11") }}
 
 							{% endif %}
-							<small class="form-text text-muted">
-								Usernames for 'Superuser', 'Admin', and 'Adviser' are automatically generated.
-							</small>
 					</div>
 
 					<div class="form-group">
@@ -179,7 +176,7 @@
 {% endblock %}
 
 {% block js %}
-	<script src="{{ url_for('static', filename='admin/custom js/register_user.js') }}"></script>
+
 {% endblock %}
 
 
