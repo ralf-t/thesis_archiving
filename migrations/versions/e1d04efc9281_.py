@@ -21,6 +21,10 @@ def upgrade():
     op.add_column('user', sa.Column('first_name', sa.String(length=60), nullable=True))
     op.add_column('user', sa.Column('last_name', sa.String(length=60), nullable=True))
     op.add_column('user', sa.Column('middle_initial', sa.String(length=5), nullable=True))
+    op.execute("UPDATE public.user SET first_name = 'NONE'")
+    op.alter_column('user', 'first_name', nullable=False)
+    op.execute("UPDATE public.user SET last_name = 'NONE'")
+    op.alter_column('user', 'last_name', nullable=False)
     # ### end Alembic commands ###
 
 
