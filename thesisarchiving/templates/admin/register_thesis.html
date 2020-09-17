@@ -153,18 +153,18 @@
 						<h6>Contributors</h6>
 
 						<div class="form-group">
-							{{ form.adviser.label }}
-							{% if form.adviser.errors %}
-								{{ form.adviser(class='form-control is-invalid') }}
-									<div class="invalid-feedback order-last">
-										{% for error in form.adviser.errors %}
-											{{ error }}
-										{% endfor %}
-									</div>
-							{% else %}
-								{{ form.adviser(class='form-control') }}
-							{% endif %}
-						</div>
+								{{ form.adviser.label }}
+								{% if form.adviser.errors %}
+									{{ form.adviser(class='custom-select is-invalid') }}
+			                	<div class="invalid-feedback order-last">
+					                {% for error in form.adviser.errors %}
+				                  		{{ error }}
+					                {% endfor %}
+			              		</div>
+								{% else %}
+									{{ form.adviser(class='custom-select') }}
+								{% endif %}
+							</div>
 
 						<label>Authors
 						

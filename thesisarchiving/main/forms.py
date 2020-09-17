@@ -6,7 +6,7 @@ import re, pytz
 from thesisarchiving.models import User
 
 pwRegex = r'^([A-z0-9 ._$*()#@!%/-]{,60})$'
-usernameRegex = r'^([A-z0-9]{3})$|^([0-9]{11})$'
+usernameRegex = r'^([A-z0-9]{3,11})$'
 
 class LoginForm(FlaskForm):
 	username = StringField('Username', validators=[DataRequired()])

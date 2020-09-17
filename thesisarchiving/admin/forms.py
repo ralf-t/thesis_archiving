@@ -4,7 +4,7 @@ from flask import flash
 from wtforms import StringField, SelectField, SubmitField, DateField, FieldList, FormField, Form, PasswordField, TextAreaField, BooleanField
 from wtforms.validators import Optional, Length, DataRequired, ValidationError, EqualTo, Email
 from datetime import datetime
-import re, pytz, os
+import re, pytz, os, uuid
 from thesisarchiving.models import User, Role, Thesis, Subject, Section
 
 titleRegex = r"^([A-z0-9,':_%#()@&?. -]{3,250})$"
@@ -92,11 +92,10 @@ class RegisterThesisForm(FlaskForm):
 		validators=[DataRequired(), FileAllowed(['pdf', 'doc','docx'])]
 		)
 
-	adviser = StringField(
+	adviser = SelectField(
 		'Adviser',
-		validators=[DataRequired(), Length(min=3,max=3)]
-		)
-	
+		validators=[DataRequired()]
+		)	
 	authors = FieldList(FormField(AuthorsField), min_entries=5, max_entries=5)
 
 	override_authors = BooleanField('Ignore required number of authors', validators=[Optional()])
@@ -114,7 +113,7 @@ class RegisterThesisForm(FlaskForm):
 			raise ValidationError('File too large (max 15mb)')
 
 	def validate_adviser(self, adviser):
-		adv = User.query.filter_by(username=adviser.data).first()
+		adv = User.query.get(uuid.UUID(adviser.data))
 		if adv not in Role.query.filter_by(name='Adviser').first().permitted:
 			raise ValidationError('Adviser not found')
 
@@ -134,6 +133,21 @@ class RegisterUserForm(FlaskForm):
 	username = StringField(
 		'Username', 
 		validators=[DataRequired(), Length(min=3, max=11)]
+		)
+
+	last_name = StringField(
+		'Last Name', 
+		validators=[DataRequired(), Length(min=1, max=60)]
+		)
+
+	first_name = StringField(
+		'First Name', 
+		validators=[DataRequired(), Length(min=1, max=60)]
+		)
+
+	middle_initial = StringField(
+		'M.I.', 
+		validators=[Optional(), Length(min=1, max=5)]
 		)
 
 	email = StringField(
@@ -169,11 +183,11 @@ class RegisterUserForm(FlaskForm):
 		if self.acad_role.data == 'Student':
 			if not re.fullmatch(studentnumRegex, username.data):
 				raise ValidationError("Please enter a valid UE Student number")
-		elif self.admin_role.data != 'None' or self.acad_role.data == 'Adviser':
-			if not re.fullmatch(adminuserRegex, username.data):
-				raise ValidationError("Please enter 3 alphanumeric characters")
-		else:
-			raise ValidationError("Please select a User Permission")
+		# elif self.admin_role.data != 'None' or self.acad_role.data == 'Adviser':
+		# 	if not re.fullmatch(adminuserRegex, username.data):
+		# 		raise ValidationError("Please enter 3 alphanumeric characters")
+		# else:
+		# 	raise ValidationError("Please select a User Permission")
 		
 		if user:
 			raise ValidationError('Username is taken')

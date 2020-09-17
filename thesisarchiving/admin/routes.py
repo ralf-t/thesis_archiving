@@ -44,6 +44,9 @@ def register_user():
 
 		user = User(
 			username=form.username.data,
+			last_name=form.last_name.data if form.last_name.data.strip() else None,
+			first_name=form.first_name.data if form.first_name.data.strip() else None,
+			middle_initial=form.middle_initial.data if form.middle_initial.data.strip() else None,
 			email=form.email.data,
 			password=hashed_pw,
 			subject_id=uuid.UUID(form.subject.data) if form.subject.data != 'None' else None,
@@ -76,6 +79,8 @@ def register_thesis():
 	form.program.choices = [(str(program.id), program.college) for program in Program.query.all()]
 	
 	form.semester.choices = choices=[(str(sem.id), sem.code) for sem in Semester.query.order_by(Semester.code).all() ]
+
+	form.adviser.choices = choices=[(str(adv.id), f"{adv.last_name}, {adv.first_name}, {adv.middle_initial}") for adv in Role.query.filter_by(name="Adviser").first().permitted ]
 
 	if form.validate_on_submit():
 
@@ -153,7 +158,7 @@ def register_thesis():
 				area = field.area.data.strip()
 				keywords = field.keywords.data.strip().split(',')
 				category = Category.query.filter_by(code='TP').first()
-				adviser = form.adviser.data.strip()
+				adviser = form.adviser.data
 				latest_thesis = Thesis.query.order_by(Thesis.date_register.desc()).first()
 
 				if title and area and keywords:
@@ -189,7 +194,7 @@ def register_thesis():
 						else:
 							thesis.research_keywords.append(Keyword(name=keyword))
 					
-					thesis.contributors.append(User.query.filter_by(username=adviser).first())
+					thesis.contributors.append(User.query.get(uuid.UUID(adviser)))
 					
 					for author_field in form.authors.entries:
 						if author_field.username.data:
