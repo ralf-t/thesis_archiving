@@ -1,7 +1,7 @@
 from flask import render_template, redirect, url_for, flash, jsonify, request, abort, Blueprint
 from thesisarchiving import db, bcrypt
 from thesisarchiving.utils import has_roles, advanced_search
-from thesisarchiving.admin.forms import RegisterUserForm, RegisterThesisForm
+from thesisarchiving.admin.forms import RegisterUserForm, RegisterThesisForm, GeneralCreateForm
 from thesisarchiving.admin.utils import save_file, del_old_file
 from thesisarchiving.models import Role, User, Subject, Section, Area, Keyword, Thesis, Semester, Program, Category #tinggal yung models idk why it worked lol
 from flask_login import login_user, current_user, logout_user, login_required
@@ -217,6 +217,23 @@ def register_thesis():
 			return redirect(url_for('admin.register_thesis'))
 
 	return render_template('admin/register_thesis.html', form=form)
+
+@admin.route("/thesis_archiving/admin/register/general", methods=['GET','POST'])
+@login_required
+@has_roles('Admin')
+def register_general():
+	
+	form = GeneralCreateForm()
+
+	form.select_data.choices.extend([('Subject','Subject'),('Section','Section')])
+
+	if form.validate_on_submit():
+		flash("test good","success")
+
+	# try yung __init__ then set default value lol
+
+	return render_template('admin/register_general.html', form=form)
+
 
 @admin.route("/thesis_archiving/admin/theses", methods=['GET','POST'])
 @login_required

@@ -68,7 +68,7 @@ class RegisterThesisForm(FlaskForm):
 	yr_start = datetime.now(tz=pytz.timezone('Asia/Manila')).year - 1
 	yr_end = datetime.now(tz=pytz.timezone('Asia/Manila')).year + 10
 
-	title_area_keywords = FieldList(FormField(TitleAreaKeywords), min_entries=2, max_entries=2)
+	title_area_keywords = FieldList(FormField(TitleAreaKeywords), min_entries=1, max_entries=1)
 	
 	program = SelectField(
 		'Program',
