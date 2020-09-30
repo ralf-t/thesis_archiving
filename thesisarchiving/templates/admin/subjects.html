@@ -2,15 +2,10 @@
 
 {% block css %}
 <!-- css scripts -->
-	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='admin/custom css/layout.css') }}">
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='admin/custom css/subjects.css') }}">
 <!-- store in static/admin/custom css -->
 {% endblock %}
 	
-	{% if title %}
-  	  <title>{{ title }}</title>
-  	{% else %}
-   	 <title>Admin Dashboard</title>
-  	{% endif %}
 
 {% block content %} 
 	<div class="left bg-white p-3 shadow-sm margin">
