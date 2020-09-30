@@ -246,8 +246,10 @@ class UpdateSubjectForm(FlaskForm):
 
 	submit = SubmitField('Update subject')
 
-	def __init__(self, subject_obj):
-		self.subject = Subject.query.get(subject_obj)
+	def __init__(self, subject_obj, **kwargs):
+		self.subject = Subject.query.get(subject_obj.id) #set instance variable for current subj
+
+		super().__init__(**kwargs) #sends arbitarary arguments to base class
 
 	def validate_name(self, name):
 		subject = Subject.query.filter_by(name=name.data).first()
@@ -263,8 +265,10 @@ class UpdateSectionForm(FlaskForm):
 
 	submit = SubmitField('Update subject')
 
-	def __init__(self, section_obj):
-		self.section = Section.query.get(section_obj)
+	def __init__(self, section_obj, **kwargs):
+		self.section = Section.query.get(section_obj.id) #set instance variable for current subj
+
+		super().__init__(**kwargs) #sends arbitarary arguments to base class
 
 	def validate_code(self, code):
 		section = Section.query.filter_by(code=code.data).first()
