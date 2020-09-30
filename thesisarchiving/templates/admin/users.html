@@ -1,9 +1,95 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+	<meta charset="utf-8">
+  	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"><!--required meta-->
+
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='bootstrap/bootstrap.min.css') }}"><!--bootstrap css-->
+
+  	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='admin/admin_main.css') }}"> 
+    
+  	<!-- fontawesome -->
+  	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='fontawesome/css/all.css') }}">
+  	<script defer src="{{ url_for('static', filename='fontawesome/js/all.js') }}"></script>
+
+  	<link rel="shortcut icon" href="{{ url_for('static', filename='images/app logo/favicon.ico') }}" type="image/x-icon">
+  	<link rel="icon" href="{{ url_for('static', filename='images/app logo/favicon.ico') }}" type="image/x-icon">
+
+  <!-- custom css -->
+
 {% extends "admin/base_admin.html" %}
 
 {% block css %}
 <!-- css scripts -->
+<<<<<<< HEAD
 	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='admin/custom css/layout.css') }}">
 <!-- store in static/admin/custom css -->
+=======
+
+  <style>
+    table {
+      	font-family: arial, sans-serif;
+      	border-collapse: collapse;
+      	width: 100%;
+    }
+
+    td, th {
+      	text-align: left;
+      	padding: 8px;
+      	border-top: 1px solid #dee2e6;
+    }
+
+    tr:nth-child(even) {
+      	background-color: #F0F0F0;
+    }
+
+    button {
+    	color: #000000;
+      	background-color: #808080;
+      	border-color: #808080;
+      	font-weight: bold;
+      	padding: .25rem .7rem;
+      	border-radius: .2em;
+    }
+
+    .background {
+    	background-color: #fff;
+    }
+
+    .shadow-sm {
+    	box-shadow: 0 .125rem .25rem rgba(0,0,0,.075);
+	}
+
+	.p3 {
+		padding: 1px;
+	}
+
+    .right {
+    	float: right;
+    }
+
+    .left {
+    	float: left;
+    }
+
+    .center{
+
+    }
+
+    .h1 {
+    	font-weight: bold;
+    	margin-top: 0;
+    }
+    .margin {
+    	margin-bottom: rem!important;
+    }
+    
+  </style>
+
+	<!-- store in static/admin/custom css -->
+>>>>>>> da0c4b3957837750bb8ed1c2d6cee09b56baf665
 {% endblock %}
 
 	{% if title %}
@@ -12,6 +98,7 @@
     	<title>Admin Dashboard</title>
   	{% endif %}
 
+<<<<<<< HEAD
 {% block content %} 
 	<div class="left bg-white p-3 shadow-sm margin">
 
@@ -44,6 +131,43 @@
 			</tr>
 
 	<!-- main stuff here -->
+=======
+</head>
+
+	<body>
+	{% block content %} 
+		<div class="left bg-white p-3 shadow-sm margin">
+
+			<div class="row">
+	    		<div class="col-10">
+	    			<h1>Users</h1>
+	    		</div>
+
+	   			<div class="col-2">
+	    			<div class="right"> 
+	    				<a href="#"><button> Add </button></a>
+	    			</div>
+  				</div>    
+  			</div>
+
+  		<div class="row">
+		<div class="col-12">
+		<table class="table">
+			<tr>
+				<th scope="col">Username</th>
+				<th scope="col">Surname</th>
+				<th scope="col">First Name</th>
+				<th scope="col">M.I.</th>
+				<th scope="col">Email</th>
+			    <th scope="col">Roles</th>
+			    <th scope="col">Section</th>
+			    <th scope="col">Subject</th>
+			    <th scope="col">Date Register</th>
+			    <th scope="col">Action</th>
+			</tr>
+
+		<!-- main stuff here -->
+>>>>>>> da0c4b3957837750bb8ed1c2d6cee09b56baf665
 		{% for user in users.items %}
 			<tr>
 				<td>{{user.username}}</td>
@@ -66,6 +190,26 @@
 		{% endfor %}
 		</table>
 	</div></div>
+<<<<<<< HEAD
+=======
+
+		<div class="right">
+
+		{% for page_num in users.iter_pages() %}
+			{% if page_num %}
+				{% if users.page == page_num %}
+					<a class="btn btn-info mb-4" href="{{ url_for('admin.users', page=page_num) }}">{{ page_num }}</a>
+				{% else %}
+					<a class="btn btn-outline-info mb-4" href="{{ url_for('admin.users', page=page_num) }}">{{ page_num }}</a>
+				{% endif %}
+		        {% else %}
+		          ...
+				{% endif %}
+			{% endfor %}
+			</div>
+</div>
+
+>>>>>>> da0c4b3957837750bb8ed1c2d6cee09b56baf665
 
 	<div class="right">
 
@@ -89,5 +233,20 @@
 {% block js %}
 <!-- js scripts-->
 
+<<<<<<< HEAD
 <!-- store in static/admin/custom js -->
 {% endblock %}
+=======
+	<!--jquery-->
+  	<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+  	<!--popper-->
+  	<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+  	<!--bootstrap js-->
+  	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+
+<!-- store in static/admin/custom js -->
+{% endblock %}
+
+</body>
+</html>
+>>>>>>> da0c4b3957837750bb8ed1c2d6cee09b56baf665
