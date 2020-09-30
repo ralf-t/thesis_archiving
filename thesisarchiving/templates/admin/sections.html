@@ -2,23 +2,63 @@
 
 {% block css %}
 <!-- css scripts -->
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='admin/custom css/sections.css') }}">
 <!-- store in static/admin/custom css -->
 {% endblock %}
 
-{% block content %} 
 
-	<!-- main stuff here -->
-	{% for section in sections.items %}
-		<p>{{section.code}}</p>
-	
-	{% endfor %}
+{% block content %}
+  <div class="left bg-white p-3 shadow-sm margin">
 
+    <div class="row">
+  	<div class="col-sm-8">
+      <h1>Sections</h1>
+  	</div>
+
+  	<div class="col-sm-4">
+    <div class="right">
+      <a href="#"><button> Add </button></a>
+    </div>
+    </div>    
+    </div>
+
+    <table class="table">
+      <tr>
+  		  <th scope="col">Code</th>
+        <th scope="col">Action</th>
+  		</tr>
+
+  <!-- main stuff here -->
+  	{% for section in sections.items %}
+      <tr>
+  		  <td>{{section.code}}</td>
+        <td><a href="#" class="button"><button>Edit</button></a></td>
+  		</tr>
+  	{% endfor %}
+  	</table>
+
+  	<div class="right">
+
+  	{% for page_num in sections.iter_pages() %}
+  		{% if page_num %}
+  			{% if sections.page == page_num %}
+          <a class="btn btn-info mb-4" href="{{ url_for('admin.sections', page=page_num) }}">{{ page_num }}</a>
+  			{% else %}
+          <a class="btn btn-outline-info mb-4" href="{{ url_for('admin.sections', page=page_num) }}">{{ page_num }}</a>
+  			{% endif %}	
+      {% else %}
+          ...
+  		{% endif %}
+      {% endfor %}
+  	</div>
+  </div>
 
 {% endblock %}
+
+  
 
 {% block js %}
 <!-- js scripts-->
+
 <!-- store in static/admin/custom js -->
 {% endblock %}
-
-
