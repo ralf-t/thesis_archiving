@@ -38,5 +38,6 @@ def del_old_file(filename, file):
 		path = 'static/thesis attachments/thesis file'
 
 	file_path = os.path.join(current_app.root_path, path, filename)
-
+	# may produce future errors on using /../..
+		# possible alternative os.path.join(current_app.root_path, 'path','to','folder', filename) 
 	os.remove(file_path)

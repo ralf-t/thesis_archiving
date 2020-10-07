@@ -21,7 +21,9 @@ def save_image(form_picture):
 
 def del_old_image(imagename):
 	if imagename != 'all.jpg':
-		image_path = os.path.join(current_app.root_path, 'static/images/profile pictures', imagename)
+		image_path = os.path.join(current_app.root_path, 'static/images/profile pictures', imagename) 
+		# may produce future errors on using /../..
+		# possible alternative os.path.join(current_app.root_path, 'static','images','profile pictures', imagename) 
 
 		try:
 			os.remove(image_path)
