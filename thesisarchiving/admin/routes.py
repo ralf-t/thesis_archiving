@@ -1,6 +1,6 @@
 from flask import render_template, redirect, url_for, flash, jsonify, request, abort, Blueprint
 from thesisarchiving import db, bcrypt
-from thesisarchiving.utils import has_roles, advanced_search
+from thesisarchiving.utils import has_roles, advanced_search, send_reset_email
 from thesisarchiving.admin.forms import RegisterUserForm, RegisterThesisForm, GeneralCreateForm, UpdateSubjectForm, UpdateSectionForm
 from thesisarchiving.admin.utils import save_file, del_old_file
 from thesisarchiving.models import Role, User, Subject, Section, Area, Keyword, Thesis, Semester, Program, Category #tinggal yung models idk why it worked lol
@@ -61,8 +61,13 @@ def register_user():
 		try:
 			db.session.add(user)
 			db.session.commit()
-			flash(f'Account created for {form.username.data}', 'success')
-		except:
+
+			user = User.query.filter_by(username=form.username.data).first()
+			send_reset_email(user) #pass in user object
+
+			flash(f'Account emailed to {form.username.data}', 'success')
+		except Exception as e:
+			print(e)
 			flash('An unexpected error has occured', 'danger')
 		return redirect(url_for('admin.register_user'))
 
@@ -78,9 +83,9 @@ def register_thesis():
 
 	form.program.choices = [(str(program.id), program.college) for program in Program.query.all()]
 	
-	form.semester.choices = choices=[(str(sem.id), sem.code) for sem in Semester.query.order_by(Semester.code).all() ]
+	form.semester.choices = [(str(sem.id), sem.code) for sem in Semester.query.order_by(Semester.code).all() ]
 
-	form.adviser.choices = choices=[(str(adv.id), f"{adv.last_name}, {adv.first_name}, {adv.middle_initial}") for adv in Role.query.filter_by(name="Adviser").first().permitted ]
+	form.adviser.choices = [(str(adv.id), f"{adv.last_name}, {adv.first_name}, {adv.middle_initial}") for adv in Role.query.filter_by(name="Adviser").first().permitted ]
 
 	if form.validate_on_submit():
 
