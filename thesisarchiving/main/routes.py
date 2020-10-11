@@ -53,8 +53,8 @@ def home(college_name=None):
 	'''
 	query_str = parse.urlencode(request.args)
 
-	college = Program.query.filter_by(college=college_name).first()
-	prog_id = str(college) if college else None
+	college = Program.query.filter_by(college=college_name).first() #gets from navbar filter
+	prog_id = str(college) if college else None #turns __repr__ to string
 
 	#set only value if argument is present and not str'None'
 	title = request.args.get('title') if request.args.get('title') and request.args.get('title') != 'None' else None
@@ -107,11 +107,11 @@ def advanced_searching():
 
 	return render_template('main/advanced_searching.html', form=form)
 
-@main.route("/thesis_archiving/thesis/<uuid:thesis_id>", methods=['GET','POST'])
+@main.route("/thesis_archiving/thesis/<string:thesis_title>", methods=['GET','POST'])
 @login_required
-def thesis_profile(thesis_id):
+def thesis_profile(thesis_title):
 
-	thesis = Thesis.query.get_or_404(thesis_id)
+	thesis = Thesis.query.filter_by(title=thesis_title).first_or_404()
 	adviser = Role.query.filter_by(name='Adviser').first().permitted
 	student = Role.query.filter_by(name='Student').first().permitted
 

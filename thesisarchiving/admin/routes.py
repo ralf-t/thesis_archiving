@@ -83,9 +83,9 @@ def register_thesis():
 
 	form.program.choices = [(str(program.id), program.college) for program in Program.query.all()]
 	
-	form.semester.choices = choices=[(str(sem.id), sem.code) for sem in Semester.query.order_by(Semester.code).all() ]
+	form.semester.choices = [(str(sem.id), sem.code) for sem in Semester.query.order_by(Semester.code).all() ]
 
-	form.adviser.choices = choices=[(str(adv.id), f"{adv.last_name}, {adv.first_name}, {adv.middle_initial}") for adv in Role.query.filter_by(name="Adviser").first().permitted ]
+	form.adviser.choices = [(str(adv.id), f"{adv.last_name}, {adv.first_name}, {adv.middle_initial}") for adv in Role.query.filter_by(name="Adviser").first().permitted ]
 
 	if form.validate_on_submit():
 
