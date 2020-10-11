@@ -7,54 +7,51 @@
 {% endblock %}
 
 {% block content %} 
-	<div class="left bg-white p-3 shadow-sm margin">
+<div class="width">
+	<div class="bg-white p-3 shadow-sm" id="sections">
 
 		<div class="row">
-	   	<div class="col-sm-8">
+	   	<div class="col-8">
 	   		<h1>Theses</h1>
 	   	</div>
 
-		<div class="col-sm-4">
-		<div class="right">
-			<a href="#"><button> Add </button></a>
+		<div class="col-4">
+		<div class="d-flex justify-content-end">
+			<a href="#" class="btn btn-secondary shadow-sm">Add</a></div>
 		</div>
-		</div>
-		</div>
+	</div>
 
-	    <div class="row">
-	    <div class="col-12">
 	    <table class="table">
 	    	<tr>
-				<th scope="col">Call No.</th>
-				<th scope="col">Title</th>
-				<th scope="col">Program</th>
-	       		<th scope="col">Category</th>
-	        	<th scope="col">Semester</th>
-				<th scope="col">School Year</th>
-			    <th scope="col">Date Deployed</th>
-			    <th scope="col">Date Registered</th>
-			    <th scope="col">Action</th>
+				<th scope="col" class="col-1">Call No.</th>
+				<th scope="col" class="col-2">Title</th>
+				<th scope="col" class="col-1">Program</th>
+	       		<th scope="col" class="col-1">Category</th>
+	        	<th scope="col" class="col-1">Semester</th>
+				<th scope="col" class="col-1">School Year</th>
+			    <th scope="col" class="col-1">Date Deployed</th>
+			    <th scope="col" class="col-1">Date Registered</th>
+			    <th scope="col" class="col-1">Action</th>
 			</tr>
 			
     <!-- main stuff here -->
 		{% for thesis in theses.items %}
 			<tr>
-				<td style="height:100px;width:150px">{{ thesis.call_number }}</td>
-				<td>{{ thesis.title }}</td>
-			    <td>{{ thesis.program.college }}</td>
-		      	<td>{{ thesis.category.name }}</td>
-	        	<td>{{ thesis.semester.code }}</td>
-				<td style="height:100px;width:120px">{{ thesis.school_year }}</td>
-				<td >{{ thesis.date_deploy }}</td>
-				<td>{{ thesis.date_register  }}</td>
-				<td><a href="#" class="button"><button>Edit</button></a></td>
+				<td class="col-1">{{ thesis.call_number }}</td>
+				<td class="col-2">{{ thesis.title }}</td>
+			    <td class="col-1">{{ thesis.program.college }}</td>
+		      	<td class="col-1">{{ thesis.category.name }}</td>
+	        	<td class="col-1">{{ thesis.semester.code }}</td>
+				<td class="col-1">{{ thesis.school_year }}</td>
+				<td class="col-1">{{ thesis.date_deploy }}</td>
+				<td class="col-1">{{ thesis.date_register  }}</td>
+				<td class="col-1"><a href="#" class="btn btn-secondary shadow-sm">Edit</a></td>
 			</tr>
 		{% endfor %}
 		</table>
-	</div></div>
 
-	<div class="right">
 
+	<div class="d-flex justify-content-end">
     {% for page_num in theses.iter_pages() %}
 		{% if page_num %}
 			{% if theses.page == page_num %}
@@ -68,8 +65,9 @@
 		{% endfor %}
 		</div>
     </div>
+</div>
 
-  {% endblock %}
+{% endblock %}
 
 
 {% block js %}
