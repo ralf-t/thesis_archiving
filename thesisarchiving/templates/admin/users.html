@@ -7,23 +7,21 @@
 {% endblock %}
 
 
-{% block content %} 
-	<div class="left bg-white p-3 shadow-sm margin">
+{% block content %}
+<div class="width"> 
+	<div class="bg-white p-3 shadow-sm" id="sections">
 
 		<div class="row">
-	    <div class="col-10">
+	    <div class="col-8">
 	    	<h1>Users</h1>
 	    </div>
 
-	   	<div class="col-2">
-	    <div class="right"> 
-	    	<a href="#"><button> Add </button></a>
-	    </div>
+	   	<div class="col-4">
+		<div class="d-flex justify-content-end">
+	    <a href="#" class="btn btn-secondary shadow-sm">Add</a></div>
   		</div>    
-  		</div>
+  	</div>
 
-  		<div class="row">
-		<div class="col-12">
 		<table class="table">
 			<tr>
 				<th scope="col">Username</th>
@@ -55,15 +53,15 @@
 
 				<td>{{user.section.code}}</td>
 				<td>{{user.subject.code}}</td>
-				<td>{{user.date_register}}<td>
-				<td><a href="#"><button>Edit</button></a></td>
+				<td>{{user.date_register}}</td>
+				<td><a href="#" class="btn btn-secondary shadow-sm">Edit</a></td>
 			</tr>
 		{% endfor %}
+
+
 		</table>
-	</div></div>
 
-	<div class="right">
-
+	<div class="d-flex justify-content-end">
 	{% for page_num in users.iter_pages() %}
 		{% if page_num %}
 			{% if users.page == page_num %}
@@ -77,6 +75,8 @@
 		{% endfor %}
 		</div>
 	</div>
+</div>
+
 
 {% endblock %}
 
