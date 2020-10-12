@@ -1,4 +1,6 @@
 from datetime import datetime
+from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
+from flask import current_app
 import pytz
 from thesisarchiving import db, login_manager
 from flask_login import UserMixin
@@ -27,6 +29,21 @@ class User(db.Model, UserMixin):
 	section_id = db.Column(UUID(as_uuid=True), db.ForeignKey('section.id'), nullable=True)#ondelete='CASCADE'
 	image_file =  db.Column(db.String(20), nullable=False, default='all.jpg') 
 	date_register = db.Column(db.DateTime, nullable=False, default=lambda:datetime.now(tz=pytz.timezone('Asia/Manila')))
+
+	def get_reset_token(self, expires_sec=604800): #1 week expiration
+		s = Serializer(current_app.config['SECRET_KEY'], expires_sec)
+		return s.dumps({'username': self.username}).decode('utf-8')
+
+	@staticmethod
+	def verify_reset_token(token):
+		s = Serializer(current_app.config['SECRET_KEY'])
+		
+		try:
+			user_username = s.loads(token)['username']
+		except:
+			return None
+
+		return User.query.filter_by(username=user_username).first()
 
 	def __repr__(self):
 		return f"{self.username} - {self.roles}"

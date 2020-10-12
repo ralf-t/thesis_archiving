@@ -23,7 +23,7 @@ class LoginForm(FlaskForm):
 		if not re.fullmatch(pwRegex, password.data):
 			raise ValidationError("Password is invalid")
 
-class RequestResetForm(FlaskForm):
+class ResetRequestForm(FlaskForm):
 	email = StringField(
 		'Email', 
 		validators=[DataRequired(), Email(), Length(max=120)]
