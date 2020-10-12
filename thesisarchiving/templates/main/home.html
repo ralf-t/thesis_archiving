@@ -23,7 +23,7 @@
 						<span class="{{'badge badge-'+q.category.code}}">{{q.category.name}}</span>
 						<small class="text-muted">{{q.school_year.lower}}-{{q.school_year.upper}}</small>
 						<br>
-						<a class="thesis-title mt-2" href="{{ url_for('main.thesis_profile', thesis_id=q.id)}}">{{q.title}}</a>
+						<a class="thesis-title mt-2" href="{{ url_for('main.thesis_profile', thesis_title=q.title)}}">{{q.title}}</a>
 						<br>
 						<span class="badge badge-pill badge-dark">{{q.area.name}}</span>
 						<br>

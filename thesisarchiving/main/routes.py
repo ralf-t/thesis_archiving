@@ -1,7 +1,7 @@
-from flask import render_template, redirect, url_for, request, Blueprint
+from flask import render_template, redirect, url_for, request, Blueprint, flash
 from thesisarchiving import bcrypt
 from thesisarchiving.utils import advanced_search, fuzz_tags
-from thesisarchiving.main.forms import LoginForm, BasicSearchForm, AdvancedSearchForm, RequestResetForm, ResetPasswordForm
+from thesisarchiving.main.forms import LoginForm, BasicSearchForm, AdvancedSearchForm, ResetRequestForm, ResetPasswordForm
 from thesisarchiving.models import Role, User, Program, Thesis, Semester
 from flask_login import login_user, current_user, logout_user, login_required
 from urllib import parse
@@ -30,33 +30,6 @@ def login():
 
 	return render_template('main/login.html', form=form)
 
-@main.route("/thesis_archiving/request_reset", methods=['GET','POST'])
-def request_reset():
-
-	if current_user.is_authenticated:
-		return redirect(url_for('main.home'))
-
-	form  = RequestResetForm()
-
-	if form.validate_on_submit():
-		flash("TEST SUCCESS", "success")
-
-	return render_template('main/request_reset.html', form=form)
-
-@main.route("/thesis_archiving/reset_password", methods=['GET','POST'])
-def reset_password():
-	# KULANG PA NG TOKEN PARAMETER TO!
-
-	if current_user.is_authenticated:
-		return redirect(url_for('main.home'))
-
-	form  = ResetPasswordForm()
-
-	if form.validate_on_submit():
-		flash("TEST SUCCESS", "success")
-
-	return render_template('main/reset_password.html', form=form)
-
 @main.route("/thesis_archiving/logout")
 @login_required
 def logout():
@@ -80,8 +53,8 @@ def home(college_name=None):
 	'''
 	query_str = parse.urlencode(request.args)
 
-	college = Program.query.filter_by(college=college_name).first()
-	prog_id = str(college) if college else None
+	college = Program.query.filter_by(college=college_name).first() #gets from navbar filter
+	prog_id = str(college) if college else None #turns __repr__ to string
 
 	#set only value if argument is present and not str'None'
 	title = request.args.get('title') if request.args.get('title') and request.args.get('title') != 'None' else None
@@ -134,11 +107,11 @@ def advanced_searching():
 
 	return render_template('main/advanced_searching.html', form=form)
 
-@main.route("/thesis_archiving/thesis/<uuid:thesis_id>", methods=['GET','POST'])
+@main.route("/thesis_archiving/thesis/<string:thesis_title>", methods=['GET','POST'])
 @login_required
-def thesis_profile(thesis_id):
+def thesis_profile(thesis_title):
 
-	thesis = Thesis.query.get_or_404(thesis_id)
+	thesis = Thesis.query.filter_by(title=thesis_title).first_or_404()
 	adviser = Role.query.filter_by(name='Adviser').first().permitted
 	student = Role.query.filter_by(name='Student').first().permitted
 
@@ -147,6 +120,36 @@ def thesis_profile(thesis_id):
 		# return redirect(url_for('home'))
 
 	return render_template('main/thesis_profile.html', thesis=thesis, adviser=adviser, student=student, contributor=contributor)
+
+@main.route("/thesis_archiving/reset_password/<token>", methods=['GET','POST'])
+def reset_password(token):
+	
+	if current_user.is_authenticated:
+		return redirect(url_for('main.home'))
+	
+	user = User.verify_reset_token(token)
+
+	if user is None:
+		flash('That is an invalid or expired token', 'warning')
+		return redirect(url_for('main.reset_request'))
+		
+	form = ResetPasswordForm()
+	
+	if form.validate_on_submit():
+		pass
+
+	return render_template('main/reset_password.html', title='Reset Password', form=form)
+
+@main.route("/thesis_archiving/reset_request", methods=['GET','POST'])
+def reset_request():
+	
+	if current_user.is_authenticated:
+		return redirect(url_for('main.home'))
+	
+	form = ResetRequestForm()
+	
+	return render_template('main/reset_request.html', title='Reset Request', form=form)
+###################AJAX
 
 @main.route("/thesis_archiving/admin/register/thesis/fuzz_tags", methods=['POST'])
 def tags():
