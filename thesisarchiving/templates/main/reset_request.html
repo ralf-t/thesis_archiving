@@ -1,11 +1,61 @@
-<!-- store css in static/user/custom css -->
-*you can copy everything from login.html except from line 11, 26-102 as a template
+<!DOCTYPE html>
+<html>
 
-*dont forget .hidden_tag()
+<head>
+
+	<meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"><!--required meta-->
+
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='bootstrap/bootstrap.min.css') }}"><!--bootstrap css-->
+
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='admin/custom css/reset_request.css') }}">
+
+    <!-- fontawesome -->
+   	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='fontawesome/css/all.css') }}">
+   	<script defer src="{{ url_for('static', filename='fontawesome/js/all.js') }}"></script>
+
+   	<link rel="shortcut icon" href="{{ url_for('static', filename='images/app logo/favicon.ico') }}" type="image/x-icon">
+	<link rel="icon" href="{{ url_for('static', filename='images/app logo/favicon.ico') }}" type="image/x-icon">
+
+	{% if title %}
+		<title>{{ title }}</title>
+	{% else %}
+		<title>Reset Request</title>
+	{% endif %}
+
+</head>
+
+<body>
+	<div class="width">
+	<div class="bg-white p-3 shadow-sm" id="main">
+
+		<form method="POST" action="">
+			{{ form.hidden_tag() }}
+			<fieldset class="form-group">
+				<legend class="border-bottom mb-4">Reset Request</legend>
+				<div class="form-group">
+					{{ form.email.label(class="form-control-label") }}
+					{{ form.email(class="form-control form-control-lg") }}
+				</div>
+			</fieldset>	
+
+			<div class="d-flex justify-content-end">
+			<div class="form-group">
+				{{ form.submit(class="btn btn-block") }}
+			</div>
+			</div>
+
+		</form>	
+	</div>
+	</div>
 
 
-form fields:
-	form.email
-	form.submit
+	<!--jquery-->
+	<script src="{{ url_for('static', filename='bootstrap/jquery-3.4.1.min.js') }}"></script>
+	<!--popper-->
+	<script src="{{ url_for('static', filename='bootstrap/popper.min.js') }}"></script> 
+	<!--bootstrap js-->
+	<script src="{{ url_for('static', filename='bootstrap/bootstrap.min.js') }}"></script>
 
-<!-- store js in static/user/custom js -->
+</body>
+</html>
