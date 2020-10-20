@@ -1,6 +1,6 @@
 from flask import render_template, redirect, url_for, request, Blueprint, flash
 from thesisarchiving import bcrypt
-from thesisarchiving.utils import advanced_search, fuzz_tags
+from thesisarchiving.utils import advanced_search, fuzz_tags, send_reset_email
 from thesisarchiving.main.forms import LoginForm, BasicSearchForm, AdvancedSearchForm, ResetRequestForm, ResetPasswordForm
 from thesisarchiving.models import Role, User, Program, Thesis, Semester
 from flask_login import login_user, current_user, logout_user, login_required
@@ -136,7 +136,8 @@ def reset_password(token):
 	form = ResetPasswordForm()
 	
 	if form.validate_on_submit():
-		pass
+		flash('Password changed', 'success')
+		return redirect(url_for('main.login'))
 
 	return render_template('main/reset_password.html', title='Reset Password', form=form)
 
@@ -149,7 +150,9 @@ def reset_request():
 	form = ResetRequestForm()
 	
 	if form.validate_on_submit():
-		flash('Email sent. Please check your inbox or spam folder.', 'success')
+		user = User.query.filter_by(email=form.email.data).first()
+		send_reset_email(user)
+		flash('Email sent. Please check your inbox or spam folder.', 'info')
 		return redirect(url_for('main.reset_request'))
 
 	return render_template('main/reset_request.html', title='Reset Request', form=form)
