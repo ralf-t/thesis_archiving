@@ -1,7 +1,7 @@
 from flask import render_template, redirect, url_for, flash, jsonify, request, abort, Blueprint
 from thesisarchiving import db, bcrypt
 from thesisarchiving.utils import has_roles, advanced_search, send_reset_email
-from thesisarchiving.admin.forms import RegisterUserForm, RegisterThesisForm, GeneralCreateForm, UpdateSubjectForm, UpdateSectionForm
+from thesisarchiving.admin.forms import RegisterUserForm, RegisterThesisForm, GeneralCreateForm, UpdateSubjectForm, UpdateSectionForm, UpdateUserForm
 from thesisarchiving.admin.utils import save_file, del_old_file
 from thesisarchiving.models import Role, User, Subject, Section, Area, Keyword, Thesis, Semester, Program, Category #tinggal yung models idk why it worked lol
 from flask_login import login_user, current_user, logout_user, login_required
@@ -277,6 +277,44 @@ def sections():
 	sections = Section.query.order_by(Section.code.asc()).paginate(page=page, per_page=10)
 
 	return render_template('admin/sections.html', sections=sections)
+
+@admin.route("/thesis_archiving/admin/update/user/<string:user_username>", methods=['GET','POST'])
+@login_required
+@has_roles('Admin')
+def update_user(user_username):
+
+	user = User.query.filter_by(username=user_username).first_or_404()
+
+	s_user = Role.query.filter_by(name='Superuser').first().permitted
+
+	form = UpdateUserForm()
+
+	form.subject.choices = [(str(r.id), r.name) for r in Subject.query.all()] if Subject.query.all() else [('None', 'None')]
+	form.subject.choices.insert(0,('None', 'None'))
+	form.section.choices = [(str(r.id), r.code) for r in Section.query.all()] if Section.query.all() else [('None', 'None')]
+	form.section.choices.insert(0,('None', 'None'))
+
+	if form.validate_on_submit():
+		pass
+	elif request.method == 'GET':
+		# form.last_name.data = user.last_name
+		# form.first_name.data = user.first_name
+		# form.middle_initial.data = user.middle_initial
+		# form.email.data = user.email
+		form.subject.default = 'PLZ'
+		# print(form.subject.default,'WWWWWWWWWWw')
+		form.process()
+
+	return render_template('admin/update_user.html', form=form, s_user=s_user)
+
+@admin.route("/thesis_archiving/admin/update/thesis/<string:thesis_title>", methods=['GET','POST'])
+@login_required
+@has_roles('Admin')
+def update_thesis(thesis_title):
+
+	thesis = Thesis.query.filter_by(title=thesis_title).first_or_404()
+
+	return render_template('admin/update_thesis.html')
 
 ########################################## AJAX
 @admin.route('/thesis_archiving/admin/register/user/generated_user', methods=['POST'])

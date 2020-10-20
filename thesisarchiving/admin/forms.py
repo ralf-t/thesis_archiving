@@ -1,6 +1,7 @@
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileField, FileAllowed
 from flask import flash
+from flask_login import current_user
 from wtforms import StringField, SelectField, SubmitField, DateField, FieldList, FormField, Form, PasswordField, TextAreaField, BooleanField
 from wtforms.validators import Optional, Length, DataRequired, ValidationError, EqualTo, Email
 from datetime import datetime
@@ -233,6 +234,56 @@ class GeneralCreateForm(FlaskForm):
 			raise ValidationError("Code is already registered")
 
 #edit subj
+class UpdateUserForm(FlaskForm):
+	admin_role = SelectField(
+		'Administrative', 
+		choices=[('None', 'None'),('Superuser','Superuser'),('Admin','Admin')], 
+		validators=[Optional()]
+		)
+	acad_role = SelectField(
+		'Academic', 
+		choices=[('None', 'None'),('Adviser','Adviser'),('Student','Student')], 
+		validators=[DataRequired()]
+		)
+
+	last_name = StringField(
+		'Last Name', 
+		validators=[DataRequired(), Length(min=1, max=60)]
+		)
+
+	first_name = StringField(
+		'First Name', 
+		validators=[DataRequired(), Length(min=1, max=60)]
+		)
+
+	middle_initial = StringField(
+		'M.I.', 
+		validators=[Optional(), Length(min=1, max=5)]
+		)
+
+	email = StringField(
+		'Email', 
+		validators=[DataRequired(), Email(), Length(max=120)]
+		)
+
+	subject = SelectField(
+		'Subject',
+		validators=[DataRequired()]
+		)
+
+	section = SelectField(
+		'Section',
+		validators=[DataRequired()]
+		)
+
+	submit = SubmitField('Update User')
+
+	def validate_email(self, email):
+		# bawal i currentuser dahil dynamic and mga accounts dito
+		user = User.query.filter_by(email=email.data).first()
+		if user:
+			raise ValidationError('Email is taken')
+
 class UpdateSubjectForm(FlaskForm):
 
 	name = StringField(
@@ -254,7 +305,7 @@ class UpdateSubjectForm(FlaskForm):
 	def validate_name(self, name):
 		subject = Subject.query.filter_by(name=name.data).first()
 
-		if subject and subject != self.subject: #subject name exists and not itself
+		if subject and subject != self.subject: #subject name exists and not itself meron neto dahil unlike sa user merong current_user to check
 			raise ValidationError("Name is already registered")
 
 class UpdateSectionForm(FlaskForm):

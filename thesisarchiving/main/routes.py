@@ -148,6 +148,10 @@ def reset_request():
 	
 	form = ResetRequestForm()
 	
+	if form.validate_on_submit():
+		flash('test good', 'success')
+		return redirect(url_for('main.reset_request'))
+
 	return render_template('main/reset_request.html', title='Reset Request', form=form)
 ###################AJAX
 
