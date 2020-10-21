@@ -289,21 +289,24 @@ def update_user(user_username):
 
 	form = UpdateUserForm()
 
-	form.subject.choices = [(str(r.id), r.name) for r in Subject.query.all()] if Subject.query.all() else [('None', 'None')]
+	form.subject.choices = [(str(r.name), r.name) for r in Subject.query.all()] if Subject.query.all() else [('None', 'None')]
 	form.subject.choices.insert(0,('None', 'None'))
-	form.section.choices = [(str(r.id), r.code) for r in Section.query.all()] if Section.query.all() else [('None', 'None')]
+	form.section.choices = [(str(r.code), r.code) for r in Section.query.all()] if Section.query.all() else [('None', 'None')]
 	form.section.choices.insert(0,('None', 'None'))
 
 	if form.validate_on_submit():
 		pass
 	elif request.method == 'GET':
-		# form.last_name.data = user.last_name
-		# form.first_name.data = user.first_name
-		# form.middle_initial.data = user.middle_initial
-		# form.email.data = user.email
-		form.subject.default = 'PLZ'
-		# print(form.subject.default,'WWWWWWWWWWw')
+		# form.admin_role.default = 
+		# form.acad_role.default = 
+		form.subject.default = user.subject.name if user.subject else 'None'
+		form.section.default = user.section.code if user.section else 'None'
 		form.process()
+		
+		form.last_name.data = user.last_name
+		form.first_name.data = user.first_name
+		form.middle_initial.data = user.middle_initial
+		form.email.data = user.email
 
 	return render_template('admin/update_user.html', form=form, s_user=s_user)
 
