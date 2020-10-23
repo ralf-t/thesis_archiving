@@ -1,5 +1,5 @@
 from flask import render_template, redirect, url_for, request, Blueprint, flash
-from thesisarchiving import bcrypt
+from thesisarchiving import db, bcrypt
 from thesisarchiving.utils import advanced_search, fuzz_tags, send_reset_email
 from thesisarchiving.main.forms import LoginForm, BasicSearchForm, AdvancedSearchForm, ResetRequestForm, ResetPasswordForm
 from thesisarchiving.models import Role, User, Program, Thesis, Semester
@@ -121,22 +121,27 @@ def thesis_profile(thesis_title):
 
 	return render_template('main/thesis_profile.html', thesis=thesis, adviser=adviser, student=student, contributor=contributor)
 
-@main.route("/thesis_archiving/reset_password", methods=['GET','POST'])
-def reset_password():
-	# /<token>
-	# token
+@main.route("/thesis_archiving/reset_password/<token>", methods=['GET','POST'])
+def reset_password(token):
+	
 	if current_user.is_authenticated:
 		return redirect(url_for('main.home'))
 	
-	# user = User.verify_reset_token(token)
+	user = User.verify_reset_token(token)
 
-	# if user is None:
-	# 	flash('That is an invalid or expired token', 'warning')
-	# 	return redirect(url_for('main.reset_request'))
+	if user is None:
+		flash('That is an invalid or expired token', 'warning')
+		return redirect(url_for('main.reset_request'))
 		
 	form = ResetPasswordForm()
 	
 	if form.validate_on_submit():
+		hashed_pw = bcrypt.generate_password_hash(form.new_password.data).decode('utf-8')
+		
+		user.password = hashed_pw
+
+		db.session.commit()
+
 		flash('Password changed. You may now log in.', 'success')
 		return redirect(url_for('main.login'))
 
