@@ -234,7 +234,8 @@ def register_general():
 
 	if form.validate_on_submit():
 		flash("test good","success")
-
+		return redirect(url_for('admin.register_general'))
+		
 	return render_template('admin/register_general.html', form=form)
 
 
