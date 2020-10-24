@@ -2,13 +2,37 @@
 
 {% block css %}
 
+	----place css reference here
+	----store referenced file in static/admin/custom css
+	----name should be register_general.css
+
 {% endblock %}
 
 {% block content %} 
+	
+	
+
+	dont forget hidden tag
+
+	fields:
+	form.select_data (drop down field, see register_user how i used custom-select)
+		.name
+		.code
+		.submit
+
+	jquery this:
+		if form.select_data value is Subject, show form.name field
+		else clear the input value then hide the field 
+
+	see other register_....html for reference
 
 {% endblock %}
 
 {% block js %}
+
+	----place jquery reference here
+	----store referenced file in static/admin/custom js
+	----name should be register_general.js
 
 {% endblock %}
 
