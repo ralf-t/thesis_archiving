@@ -278,10 +278,15 @@ class UpdateUserForm(FlaskForm):
 
 	submit = SubmitField('Update User')
 
+	def __init__(self, user_obj, **kwargs):
+		self.user = User.query.get(user_obj.id)
+
+		super().__init__(**kwargs)
+
 	def validate_email(self, email):
 		# bawal i currentuser dahil dynamic and mga accounts dito
 		user = User.query.filter_by(email=email.data).first()
-		if user:
+		if user and user != self.user:
 			raise ValidationError('Email is taken')
 
 class UpdateSubjectForm(FlaskForm):

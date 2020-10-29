@@ -288,7 +288,7 @@ def update_user(user_username):
 
 	s_user = Role.query.filter_by(name='Superuser').first().permitted
 
-	form = UpdateUserForm()
+	form = UpdateUserForm(user)
 
 	form.subject.choices = [(str(r.name), r.name) for r in Subject.query.all()] if Subject.query.all() else [('None', 'None')]
 	form.subject.choices.insert(0,('None', 'None'))
@@ -296,10 +296,42 @@ def update_user(user_username):
 	form.section.choices.insert(0,('None', 'None'))
 
 	if form.validate_on_submit():
-		pass
+
+		# nagloloko pag nagupdate ilang beses yung roles
+		# for i in user.roles:
+		# 	user.roles.remove(i)
+
+		# if form.admin_role.data != 'None':
+		# 	user.roles.append(Role.query.filter_by(name=form.admin_role.data).first_or_404())
+		# if form.acad_role.data != 'None':
+		# 	user.roles.append(Role.query.filter_by(name=form.acad_role.data).first_or_404())
+
+		user.last_name = form.last_name.data
+		user.first_name = form.first_name.data
+		user.middle_initial = form.middle_initial.data
+		user.email = form.email.data
+		user.subject_id = Subject.query.filter_by(name=form.subject.data).first().id if form.subject.data != 'None' else None
+		user.section_id = Section.query.filter_by(code=form.section.data).first().id if form.section.data != 'None' else None
+
+		db.session.commit()
+		flash('User update success','success')
+		return redirect(url_for('admin.update_user',user_username=user_username))
+
 	elif request.method == 'GET':
-		# form.admin_role.default = 
-		# form.acad_role.default = 
+
+		form.admin_role.default = 'None'
+		form.acad_role.default = 'None'
+
+		for i in ['Superuser','Admin']:
+			if Role.query.filter_by(name=i).first() in user.roles:
+				form.admin_role.default = i
+				break 
+
+		for i in ['Adviser','Student']:
+			if Role.query.filter_by(name=i).first() in user.roles:
+				form.acad_role.default = i
+				break
+
 		form.subject.default = user.subject.name if user.subject else 'None'
 		form.section.default = user.section.code if user.section else 'None'
 		form.process()

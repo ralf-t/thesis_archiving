@@ -54,7 +54,7 @@
 				<td>{{user.section.code}}</td>
 				<td>{{user.subject.code}}</td>
 				<td>{{user.date_register}}</td>
-				<td><a href="#" class="btn btn-secondary shadow-sm">Edit</a></td>
+				<td><a href="{{url_for('admin.update_user',user_username=user.username)}}" class="btn btn-secondary shadow-sm">Edit</a></td>
 			</tr>
 		{% endfor %}
 
