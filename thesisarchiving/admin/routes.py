@@ -359,6 +359,29 @@ def subjects():
 
 	return render_template('admin/subjects.html', subjects=subjects)
 
+@admin.route("/thesis_archiving/admin/update/subject/<string:subject_code>", methods=['GET','POST'])
+@login_required
+@has_roles('Admin')
+def update_subject(subject_code):
+
+	subject = Subject.query.filter_by(code=subject_code).first_or_404()
+	#form
+	return render_template('admin/update_subject.html')
+
+@admin.route("/thesis_archiving/admin/update/subject/<string:subject_code>", methods=['GET','POST'])
+@login_required
+@has_roles('Admin')
+def delete_subject(subject_code):
+
+	subject = Subject.query.filter_by(code=subject_code).first_or_404()
+
+	db.session.delete(subject)
+	db.session.commit()
+
+	flash("Subject has been deleted from the server","success")
+
+	return redirect(url_for('admin.subjects'))
+
 @admin.route("/thesis_archiving/admin/sections", methods=['GET','POST'])
 @login_required
 @has_roles('Admin')
@@ -369,6 +392,28 @@ def sections():
 
 	return render_template('admin/sections.html', sections=sections)
 
+@admin.route("/thesis_archiving/admin/update/section/<string:section_code>", methods=['GET','POST'])
+@login_required
+@has_roles('Admin')
+def update_section(section_code):
+
+	section = Section.query.filter_by(code=section_code).first_or_404()
+
+	return render_template('admin/update_section.html')
+
+@admin.route("/thesis_archiving/admin/update/section/<string:section_code>", methods=['GET','POST'])
+@login_required
+@has_roles('Admin')
+def delete_section(section_code):
+
+	section = Section.query.filter_by(code=section_code).first_or_404()
+
+	db.session.delete(section)
+	db.session.commit()
+
+	flash("Section has been deleted from the server","success")
+
+	return redirect(url_for('admin.sections'))
 
 ########################################## AJAX
 @admin.route('/thesis_archiving/admin/register/user/generated_user', methods=['POST'])
