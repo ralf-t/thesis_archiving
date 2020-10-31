@@ -296,15 +296,18 @@ def update_user(user_username):
 	form.section.choices.insert(0,('None', 'None'))
 
 	if form.validate_on_submit():
+		roles = [i for i in user.roles] # get all user's role
+		acad_role = Role.query.filter_by(name=form.acad_role.data).first()
+		admin_role = Role.query.filter_by(name=form.admin_role.data).first()
 
-		# nagloloko pag nagupdate ilang beses yung roles
-		# for i in user.roles:
-		# 	user.roles.remove(i)
+		for i in roles: #remove all user's roles
+			user.roles.remove(i)
 
-		# if form.admin_role.data != 'None':
-		# 	user.roles.append(Role.query.filter_by(name=form.admin_role.data).first_or_404())
-		# if form.acad_role.data != 'None':
-		# 	user.roles.append(Role.query.filter_by(name=form.acad_role.data).first_or_404())
+		if acad_role or admin_role: #append all selected roles
+			if acad_role:
+				user.roles.append(acad_role)
+			if admin_role:
+				user.roles.append(admin_role)
 
 		user.last_name = form.last_name.data
 		user.first_name = form.first_name.data
@@ -318,7 +321,6 @@ def update_user(user_username):
 		return redirect(url_for('admin.update_user',user_username=user_username))
 
 	elif request.method == 'GET':
-
 		form.admin_role.default = 'None'
 		form.acad_role.default = 'None'
 
@@ -341,7 +343,21 @@ def update_user(user_username):
 		form.middle_initial.data = user.middle_initial
 		form.email.data = user.email
 
-	return render_template('admin/update_user.html', form=form, s_user=s_user)
+	return render_template('admin/update_user.html', form=form, s_user=s_user, user=user)
+
+@admin.route("/thesis_archiving/admin/delete/user/<string:user_username>", methods=['GET','POST'])
+@login_required
+@has_roles('Admin')
+def delete_user(user_username):
+
+	user = User.query.filter_by(username=user_username).first_or_404()
+
+	db.session.delete(user)
+	db.session.commit()
+
+	flash("User has been deleted from the server","success")
+
+	return redirect(url_for('admin.users'))
 
 @admin.route("/thesis_archiving/admin/update/thesis/<string:thesis_title>", methods=['GET','POST'])
 @login_required
