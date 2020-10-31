@@ -249,6 +249,15 @@ def theses():
 
 	return render_template('admin/theses.html', theses=theses)
 
+@admin.route("/thesis_archiving/admin/update/thesis/<string:thesis_title>", methods=['GET','POST'])
+@login_required
+@has_roles('Admin')
+def update_thesis(thesis_title):
+
+	thesis = Thesis.query.filter_by(title=thesis_title).first_or_404()
+
+	return render_template('admin/update_thesis.html')
+	
 @admin.route("/thesis_archiving/admin/users", methods=['GET','POST'])
 @login_required
 @has_roles('Admin')
@@ -259,25 +268,6 @@ def users():
 
 	return render_template('admin/users.html', users=users)
 
-@admin.route("/thesis_archiving/admin/subjects", methods=['GET','POST'])
-@login_required
-@has_roles('Admin')
-def subjects():
-
-	page = request.args.get("page", 1, type=int)
-	subjects = Subject.query.order_by(Subject.name.asc()).paginate(page=page, per_page=10)
-
-	return render_template('admin/subjects.html', subjects=subjects)
-
-@admin.route("/thesis_archiving/admin/sections", methods=['GET','POST'])
-@login_required
-@has_roles('Admin')
-def sections():
-
-	page = request.args.get("page", 1, type=int)
-	sections = Section.query.order_by(Section.code.asc()).paginate(page=page, per_page=10)
-
-	return render_template('admin/sections.html', sections=sections)
 
 @admin.route("/thesis_archiving/admin/update/user/<string:user_username>", methods=['GET','POST'])
 @login_required
@@ -359,14 +349,26 @@ def delete_user(user_username):
 
 	return redirect(url_for('admin.users'))
 
-@admin.route("/thesis_archiving/admin/update/thesis/<string:thesis_title>", methods=['GET','POST'])
+@admin.route("/thesis_archiving/admin/subjects", methods=['GET','POST'])
 @login_required
 @has_roles('Admin')
-def update_thesis(thesis_title):
+def subjects():
 
-	thesis = Thesis.query.filter_by(title=thesis_title).first_or_404()
+	page = request.args.get("page", 1, type=int)
+	subjects = Subject.query.order_by(Subject.name.asc()).paginate(page=page, per_page=10)
 
-	return render_template('admin/update_thesis.html')
+	return render_template('admin/subjects.html', subjects=subjects)
+
+@admin.route("/thesis_archiving/admin/sections", methods=['GET','POST'])
+@login_required
+@has_roles('Admin')
+def sections():
+
+	page = request.args.get("page", 1, type=int)
+	sections = Section.query.order_by(Section.code.asc()).paginate(page=page, per_page=10)
+
+	return render_template('admin/sections.html', sections=sections)
+
 
 ########################################## AJAX
 @admin.route('/thesis_archiving/admin/register/user/generated_user', methods=['POST'])
