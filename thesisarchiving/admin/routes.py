@@ -306,8 +306,12 @@ def update_user(user_username):
 		user.subject_id = Subject.query.filter_by(code=form.subject.data).first().id if form.subject.data != 'None' else None
 		user.section_id = Section.query.filter_by(code=form.section.data).first().id if form.section.data != 'None' else None
 
-		db.session.commit()
-		flash('User update success','success')
+		try:
+			db.session.commit()
+			flash('User update success','success')
+		except:
+			flash('An unexpected error has occured','danger')
+
 		return redirect(url_for('admin.update_user',user_username=user_username))
 
 	elif request.method == 'GET':
@@ -342,8 +346,11 @@ def delete_user(user_username):
 
 	user = User.query.filter_by(username=user_username).first_or_404()
 
-	db.session.delete(user)
-	db.session.commit()
+	try:
+		db.session.delete(user)
+		db.session.commit()
+	except:
+		flash('An unexpected error has occured','danger')
 
 	flash("User has been deleted from the server","success")
 
@@ -370,9 +377,13 @@ def update_subject(subject_code):
 	if form.validate_on_submit():
 		subject.name = form.name.data
 		subject.code = form.code.data
-		db.session.commit()
 
-		flash('Subject update success','success')
+		try:
+			db.session.commit()
+			flash('Subject update success','success')
+		except:
+			flash('An unexpected error has occured','danger')
+
 		return redirect(url_for('admin.update_subject',subject_code=form.code.data))
 
 	elif request.method == 'GET':
@@ -388,8 +399,11 @@ def delete_subject(subject_code):
 
 	subject = Subject.query.filter_by(code=subject_code).first_or_404()
 
-	db.session.delete(subject)
-	db.session.commit()
+	try:
+		db.session.delete(subject)
+		db.session.commit()
+	except:
+		flash('An unexpected error has occured','danger')
 
 	flash("Subject has been deleted from the server","success")
 
@@ -416,9 +430,13 @@ def update_section(section_code):
 
 	if form.validate_on_submit():
 		section.code = form.code.data
-		db.session.commit()
 
-		flash('Section update success','success')
+		try:
+			db.session.commit()
+			flash('Section update success','success')
+		except:
+			flash('An unexpected error has occured','danger')
+
 		return redirect(url_for('admin.update_section',section_code=form.code.data))
 
 	elif request.method == 'GET':
@@ -433,8 +451,11 @@ def delete_section(section_code):
 
 	section = Section.query.filter_by(code=section_code).first_or_404()
 
-	db.session.delete(section)
-	db.session.commit()
+	try:
+		db.session.delete(section)
+		db.session.commit()
+	except:
+		flash('An unexpected error has occured','danger')
 
 	flash("Section has been deleted from the server","success")
 
@@ -466,62 +487,3 @@ def similar_thesis():
 	#returns a dict w/ keys of 'query','count'
 	
 	return render_template('main/theses_query.html', query=query)
-
-##################################################################################################################################################
-# @admin.route("/thesis_archiving/admin/subjects")
-# @login_required
-# @has_roles('Admin')
-# def subjects_read():
-
-# 	subjects = Subject.query.all()
-
-# 	return render_template('admin/subjects.html', subjects=subjects)
-
-# @admin.route("/thesis_archiving/admin/subjects/create")
-# @login_required
-# @has_roles('Admin')
-# def subjects_create():
-
-
-
-# 	return render_template('admin/subjects.html', subjects=subjects)
-
-# @admin.route("/thesis_archiving/admin/subjects/update/<uuid:subject_id>")
-# @login_required
-# @has_roles('Admin')
-# def subjects_update(subject_id):
-
-# 	subject = Subject.query.get_or_404(subject_id)
-# 	code = subject.code
-
-# 	form = SubjectUpdateForm()
-
-# 	if form.validate_on_submit():
-# 		subject.name = form.name.data
-# 		subject.code = form.code.data
-
-# 		try:
-# 			db.session.commit()
-# 			flash('Successfully updated {}'.format(code),'success')
-# 		except:
-# 			flash('An unexpected error has occured','danger')
-
-# 	return render_template('admin/subjects_update.html', subject=subject)
-
-# @admin.route("/thesis_archiving/admin/subjects/delete/<uuid:subject_id>")
-# @login_required
-# @has_roles('Admin')
-# def subjects_delete(subject_id):
-
-# 	subject = Subject.query.get_or_404(subject_id)
-# 	code = subject.code
-
-# 	try:
-# 		db.session.delete(subject)
-# 		db.session.commit()
-# 		flash('Successfully deleted {}'.format(code),'success')
-# 	except:
-# 		flash('An unexpected error has occured','danger')
-
-# 	return redirect(url_for('admin.subjects_read'))
-
