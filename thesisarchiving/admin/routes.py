@@ -280,7 +280,7 @@ def update_user(user_username):
 
 	form = UpdateUserForm(user)
 
-	form.subject.choices = [(str(r.name), r.name) for r in Subject.query.all()] if Subject.query.all() else [('None', 'None')]
+	form.subject.choices = [(str(r.code), r.name) for r in Subject.query.all()] if Subject.query.all() else [('None', 'None')]
 	form.subject.choices.insert(0,('None', 'None'))
 	form.section.choices = [(str(r.code), r.code) for r in Section.query.all()] if Section.query.all() else [('None', 'None')]
 	form.section.choices.insert(0,('None', 'None'))
@@ -303,7 +303,7 @@ def update_user(user_username):
 		user.first_name = form.first_name.data
 		user.middle_initial = form.middle_initial.data
 		user.email = form.email.data
-		user.subject_id = Subject.query.filter_by(name=form.subject.data).first().id if form.subject.data != 'None' else None
+		user.subject_id = Subject.query.filter_by(code=form.subject.data).first().id if form.subject.data != 'None' else None
 		user.section_id = Section.query.filter_by(code=form.section.data).first().id if form.section.data != 'None' else None
 
 		db.session.commit()
@@ -324,7 +324,7 @@ def update_user(user_username):
 				form.acad_role.default = i
 				break
 
-		form.subject.default = user.subject.name if user.subject else 'None'
+		form.subject.default = user.subject.code if user.subject else 'None'
 		form.section.default = user.section.code if user.section else 'None'
 		form.process()
 		
@@ -365,10 +365,23 @@ def subjects():
 def update_subject(subject_code):
 
 	subject = Subject.query.filter_by(code=subject_code).first_or_404()
-	#form
-	return render_template('admin/update_subject.html')
+	form = UpdateSubjectForm(subject)
 
-@admin.route("/thesis_archiving/admin/update/subject/<string:subject_code>", methods=['GET','POST'])
+	if form.validate_on_submit():
+		subject.name = form.name.data
+		subject.code = form.code.data
+		db.session.commit()
+
+		flash('Subject update success','success')
+		return redirect(url_for('admin.update_subject',subject_code=form.code.data))
+
+	elif request.method == 'GET':
+		form.name.data = subject.name
+		form.code.data = subject.code
+
+	return render_template('admin/update_subject.html', form=form, subject=subject)
+
+@admin.route("/thesis_archiving/admin/delete/subject/<string:subject_code>", methods=['GET','POST'])
 @login_required
 @has_roles('Admin')
 def delete_subject(subject_code):
@@ -399,9 +412,21 @@ def update_section(section_code):
 
 	section = Section.query.filter_by(code=section_code).first_or_404()
 
-	return render_template('admin/update_section.html')
+	form = UpdateSectionForm(section)
 
-@admin.route("/thesis_archiving/admin/update/section/<string:section_code>", methods=['GET','POST'])
+	if form.validate_on_submit():
+		section.code = form.code.data
+		db.session.commit()
+
+		flash('Section update success','success')
+		return redirect(url_for('admin.update_section',section_code=form.code.data))
+
+	elif request.method == 'GET':
+		form.code.data = section.code
+
+	return render_template('admin/update_section.html', form=form, section=section)
+
+@admin.route("/thesis_archiving/admin/delete/section/<string:section_code>", methods=['GET','POST'])
 @login_required
 @has_roles('Admin')
 def delete_section(section_code):

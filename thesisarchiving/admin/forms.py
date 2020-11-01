@@ -279,7 +279,7 @@ class UpdateUserForm(FlaskForm):
 	submit = SubmitField('Update User')
 
 	def __init__(self, user_obj, **kwargs):
-		self.user = User.query.get(user_obj.id)
+		self.user = user_obj
 
 		super().__init__(**kwargs)
 
@@ -293,7 +293,7 @@ class UpdateSubjectForm(FlaskForm):
 
 	name = StringField(
 		'Name', 
-		validators=[Optional(), Length(min=3, max=120)]
+		validators=[DataRequired(), Length(min=3, max=120)]
 		)
 	code = StringField(
 		'Code', 
@@ -303,7 +303,7 @@ class UpdateSubjectForm(FlaskForm):
 	submit = SubmitField('Update subject')
 
 	def __init__(self, subject_obj, **kwargs):
-		self.subject = Subject.query.get(subject_obj.id) #set instance variable for current subj
+		self.subject = subject_obj #set instance variable for current subj
 
 		super().__init__(**kwargs) #sends arbitarary arguments to base class
 
@@ -312,6 +312,12 @@ class UpdateSubjectForm(FlaskForm):
 
 		if subject and subject != self.subject: #subject name exists and not itself meron neto dahil unlike sa user merong current_user to check
 			raise ValidationError("Name is already registered")
+
+	def validate_code(self, code):
+		subject = Subject.query.filter_by(code=code.data).first()
+
+		if subject and  subject != self.subject: #section code exists and not itself
+			raise ValidationError("Code is already registered")
 
 class UpdateSectionForm(FlaskForm):
 	code = StringField(
@@ -322,15 +328,15 @@ class UpdateSectionForm(FlaskForm):
 	submit = SubmitField('Update subject')
 
 	def __init__(self, section_obj, **kwargs):
-		self.section = Section.query.get(section_obj.id) #set instance variable for current subj
+		self.section = section_obj #set instance variable for current subj
 
 		super().__init__(**kwargs) #sends arbitarary arguments to base class
 
 	def validate_code(self, code):
 		section = Section.query.filter_by(code=code.data).first()
 
-		if section and section != self.subject: #section code exists and not itself
-			raise ValidationError("Name is already registered")
+		if section and section != self.section: #section code exists and not itself
+			raise ValidationError("Code is already registered")
 
 # class UpdateThesisForm(FlaskForm):
 # class UpdateUserForm(FlaskForm):

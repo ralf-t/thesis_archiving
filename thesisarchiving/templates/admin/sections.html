@@ -32,7 +32,7 @@
   	{% for section in sections.items %}
   		<tr>
       		<td class="col-10">{{section.code}}</td>
-        	<td class="col-2"><a href="#" class="btn btn-secondary shadow-sm">Edit</a></td>
+        	<td class="col-2"><a href="{{url_for('admin.update_section',section_code=section.code)}}" class="btn btn-secondary shadow-sm">Edit</a></td>
         </tr>
   	{% endfor %}
 
