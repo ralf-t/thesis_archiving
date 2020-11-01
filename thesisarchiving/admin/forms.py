@@ -338,5 +338,28 @@ class UpdateSectionForm(FlaskForm):
 		if section and section != self.section: #section code exists and not itself
 			raise ValidationError("Code is already registered")
 
-# class UpdateThesisForm(FlaskForm):
-# class UpdateUserForm(FlaskForm):
+# editables
+
+# title
+# prog
+# date deploy
+# sy
+# sem
+# area
+# keywords
+# contributors
+# attachments
+# category -> will affect call number
+
+
+# will have two forms (thesis details, removing contributors)
+
+# for i in contributors
+# 	input readonly value = username + full name
+	
+# 	if len(contributors) > 1
+# 		button remove href = remove_contrib, user=user.id/username
+
+# button add contrib by username ajax check if user exist/in another thesis
+
+
