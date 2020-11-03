@@ -1,39 +1,81 @@
 {% extends "admin/base_admin.html" %}
 
 {% block css %}
-
-	----place css reference here
-	----store referenced file in static/admin/custom css
-	----name should be register_general.css
-
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='admin/custom css/register_general.css') }}"> 
 {% endblock %}
 
 {% block content %} 
-	
-	
+	<div class="width">
+	<div class="bg-white p-3 rounded shadow" id="main">
+		<h4 class="mb-4">Create New Data</h4>
 
-	dont forget hidden tag
+		<form method="POST" action="">
+			{{ form.hidden_tag() }}
 
-	fields:
-	form.select_data (drop down field, see register_user how i used custom-select)
-		.name
-		.code
-		.submit
+			<div class="form-row">
+		       	<div class="form-group col col-12">
+				    {{ form.select_data.label }}
+				    <!-- academic role -->
+				    
+				    {% if form.select_data.errors %}
+				    	{{ form.select_data(class='custom-select is-invalid') }}
+			                <div class="invalid-feedback order-last">
+					        	{% for error in form.select_data.errors %}
+				                  	{{ error }}
+					            {% endfor %}
+			              	</div>
 
-	jquery this:
-		if form.select_data value is Subject, show form.name field
-		else clear the input value then hide the field 
+				    {% else %}
+				        {{ form.select_data(class='custom-select') }}
+				    {% endif %} 
+				</div>
 
-	see other register_....html for reference
+				<div class="form-group col-12">
+					<!-- name -->
+					{% if form.name.errors %}
+						{{ form.name(class="form-control form-control-lg is-invalid") }}
+						<div class="invalid-feedback order-last">
+							{% for error in form.name.errors %}
+								{{ error }}
+							{% endfor %}
+						</div>
+
+					{% else %}
+						{{ form.name(class='form-control', placeholder="Name", maxlength="11") }}
+					{% endif %}
+				</div>
+
+				<div class="form-group col-12">
+					<!-- code -->
+					{% if form.code.errors %}
+						{{ form.code(class="form-control form-control-lg is-invalid") }}
+						<div class="invalid-feedback order-last">
+							{% for error in form.code.errors %}
+								{{ error }}
+							{% endfor %}
+						</div>
+
+					{% else %}
+						{{ form.code(class='form-control', placeholder="Code", maxlength="11") }}
+					{% endif %}
+				</div>
+			</div>
+
+			<div class="d-flex justify-content-end">
+			<div class="form-group">
+				{{ form.submit(class="btn btn-block") }}
+			</div>
+			</div>
+		</form>
+	</div>
+	</div>
+
+
 
 {% endblock %}
 
 {% block js %}
-
-	----place jquery reference here
-	----store referenced file in static/admin/custom js
-	----name should be register_general.js
-
+	<script src="{{ url_for('static', filename='admin/custom js/register_general.js') }}"></script>
 {% endblock %}
 
 
