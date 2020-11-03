@@ -1,9 +1,13 @@
 $( document ).ready(function() {
-	//if($("#select_data").val("Section")) {
 
-		//{
 	$("#select_data").change(function(){
-		console.log(1);
-	}); 
- 
-});
+		if($("#select_data").val() == "Subject") {
+				$("#name").show();
+		}
+		else if($("#select_data").val() == "Section") {
+				$("#name").val("");
+				$("#name").hide();
+			}
+	});
+});	
+
