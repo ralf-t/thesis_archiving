@@ -159,7 +159,7 @@ def reset_request():
 		user = User.query.filter_by(email=form.email.data).first()
 		send_reset_email(user)
 		flash('Email sent. Please check your inbox or spam folder.', 'info')
-		return redirect(url_for('main.reset_request'))
+		return redirect(url_for('main.login'))
 
 	return render_template('main/reset_request.html', title='Reset Request', form=form)
 ###################AJAX
