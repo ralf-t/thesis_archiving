@@ -45,7 +45,7 @@
 				<td class="col-1">{{ thesis.school_year }}</td>
 				<td class="col-1">{{ thesis.date_deploy }}</td>
 				<td class="col-1">{{ thesis.date_register  }}</td>
-				<td class="col-1"><a href="#" class="btn btn-secondary shadow-sm">Edit</a></td>
+				<td class="col-1"><a href="{{ url_for('admin.update_thesis',thesis_title=thesis.title) }}" class="btn btn-secondary shadow-sm">Edit</a></td>
 			</tr>
 		{% endfor %}
 		</table>

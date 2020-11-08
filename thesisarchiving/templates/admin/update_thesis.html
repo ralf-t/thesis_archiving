@@ -1,1 +1,285 @@
-include delete button
+{% extends "admin/base_admin.html" %}
+
+{% block css %}
+<!-- 	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='admin/custom css/register_thesis.css') }}"> 
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='plugins/bootstrap-datepicker/bootstrap-datepicker3.standalone.min.css') }}"> 
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='plugins/bootstrap-tokenfield/bootstrap-tokenfield.min.css') }}">  -->
+{% endblock %}
+
+{% block content %} 
+
+<div class="row d-flex justify-content-center">
+  <div class="col-md-7 col-lg-6 my-4 px-3">
+      <div class="bg-white p-4 shadow-sm">
+        <form method="POST" action="" autocomplete="off" enctype="multipart/form-data">
+          {{ thesis_form.hidden_tag() }}
+
+          <div class="form-group">
+              <!-- username -->
+              <label>Call Number</label>
+            <input type="text" class="form-control" value="{{thesis.call_number}}" readonly>
+              
+          </div>
+
+          <div class="form-group">
+                <!-- code -->
+              {{ thesis_form.title.label }}
+              {% if thesis_form.title.errors %}
+                {{ thesis_form.title(class='form-control is-invalid', placeholder='Title', maxlength="250") }}
+                      <div class="invalid-feedback order-last">
+                        {% for error in thesis_form.title.errors %}
+                            {{ error }}
+                        {% endfor %}
+                      </div>
+              {% else %}
+                {{ thesis_form.title(class='form-control', placeholder='Title', maxlength="250") }}
+              {% endif %}
+          </div>
+
+          <div class="form-group">
+            {{ thesis_form.area.label }}
+            {% if thesis_form.area.errors %}
+              {{ thesis_form.area(class='form-control is-invalid', placeholder='Area', maxlength="60") }}
+                    <div class="invalid-feedback order-last">
+                      {% for error in thesis_form.area.errors %}
+                          {{ error }}
+                      {% endfor %}
+                    </div>
+            {% else %}
+              {{ thesis_form.area(class='form-control', placeholder='Area', maxlength="60") }}
+            {% endif %}
+        
+              <div class="row">
+                
+              </div>
+          
+          </div>
+
+          <div class="form-group">
+            {{ thesis_form.keywords.label }}
+            {% if thesis_form.keywords.errors %}
+              {{ thesis_form.keywords(class='form-control is-invalid', placeholder='Keywords', maxlength="609") }}
+                    <div class="invalid-feedback order-last">
+                      {% for error in thesis_form.keywords.errors %}
+                          {{ error }}
+                      {% endfor %}
+                    </div>
+            {% else %}
+              {{ thesis_form.keywords(class='form-control', placeholder='Keywords', maxlength="609") }}
+            {% endif %}
+        
+              <div class="row">
+                
+              </div>
+            <small class="form-text text-muted">
+              Enter only 3-10 keywords
+            </small>
+          </div>
+
+          <div class="form-row">
+
+              <div class="form-group col-lg-6">
+                {{ thesis_form.program.label }}
+                {% if thesis_form.program.errors %}
+                  {{ thesis_form.program(class='custom-select is-invalid') }}
+                        <div class="invalid-feedback order-last">
+                          {% for error in thesis_form.program.errors %}
+                              {{ error }}
+                          {% endfor %}
+                        </div>
+                {% else %}
+                  {{ thesis_form.program(class='custom-select') }}
+                {% endif %}
+              </div>
+
+              <div class="form-group col-lg-6">
+                {{ thesis_form.category.label }}
+                {% if thesis_form.category.errors %}
+                  {{ thesis_form.category(class='custom-select is-invalid') }}
+                        <div class="invalid-feedback order-last">
+                          {% for error in thesis_form.category.errors %}
+                              {{ error }}
+                          {% endfor %}
+                        </div>
+                {% else %}
+                  {{ thesis_form.category(class='custom-select') }}
+                {% endif %}
+              </div>
+              <div class="form-group col-lg-6">
+                {{ thesis_form.school_year.label }}
+                {% if thesis_form.school_year.errors %}
+                  {{ thesis_form.school_year(class='custom-select is-invalid') }}
+                        <div class="invalid-feedback order-last">
+                          {% for error in thesis_form.school_year.errors %}
+                              {{ error }}
+                          {% endfor %}
+                        </div>
+                {% else %}
+                  {{ thesis_form.school_year(class='custom-select') }}
+                {% endif %}
+              </div>
+
+              <div class="form-group col-lg-6">
+                {{ thesis_form.semester.label }}
+                {% if thesis_form.semester.errors %}
+                  {{ thesis_form.semester(class='custom-select is-invalid') }}
+                        <div class="invalid-feedback order-last">
+                          {% for error in thesis_form.semester.errors %}
+                              {{ error }}
+                          {% endfor %}
+                        </div>
+                {% else %}
+                  {{ thesis_form.semester(class='custom-select') }}
+                {% endif %}
+              </div>
+
+          </div>
+
+          <div class="form-group">
+                <!-- code -->
+              {{ thesis_form.date_deploy.label }}
+              {% if thesis_form.date_deploy.errors %}
+              {{ thesis_form.date_deploy(class='form-control is-invalid', placeholder='Date of Deployment', maxlength="10") }}
+                      <div class="invalid-feedback order-last">
+                        {% for error in thesis_form.date_deploy.errors %}
+                            {{ error }}
+                        {% endfor %}
+                      </div>
+              {% else %}
+                {{ thesis_form.date_deploy(class='form-control', placeholder='Date of Deployment', maxlength="10") }}
+              {% endif %}
+
+          </div>
+
+          <label>Proposal form</label>
+          <br>
+          
+          {% if thesis.form_file %}
+            <a href="#">{{thesis.form_file}}</a>
+          {% else %}
+            <a href="###########">No attached file</a>
+          {% endif %}
+
+          <div class="custom-file mb-3">
+            {{ thesis_form.form_file(class="custom-file-input") }}
+            {{ thesis_form.form_file.label(class="custom-file-label") }}
+            {% if thesis_form.form_file.errors %}
+                <div class="invalid-feedback d-block">
+                  {% for error in thesis_form.form_file.errors %}
+                    {{ error }}
+                  {% endfor %}
+                </div>
+            {% endif %}
+          </div>
+
+          <label>Thesis file</label>
+          <br>
+
+          {% if thesis.thesis_file %}
+            <a href="#">{{thesis.thesis_file}}</a>
+          {% else %}
+            <a href="###########">No attached file</a>
+          {% endif %}
+          
+          <div class="custom-file mb-3">
+            {{ thesis_form.thesis_file(class="custom-file-input") }}
+            {{ thesis_form.thesis_file.label(class="custom-file-label") }}
+            {% if thesis_form.thesis_file.errors %}
+                <div class="invalid-feedback d-block">
+                  {% for error in thesis_form.thesis_file.errors %}
+                    {{ error }}
+                  {% endfor %}
+                </div>
+            {% endif %}
+          </div>
+
+          <div class="form-group">
+              {{ thesis_form.adviser.label }}
+              {% if thesis_form.adviser.errors %}
+                {{ thesis_form.adviser(class='custom-select is-invalid') }}
+                      <div class="invalid-feedback order-last">
+                        {% for error in thesis_form.adviser.errors %}
+                            {{ error }}
+                        {% endfor %}
+                      </div>
+              {% else %}
+                {{ thesis_form.adviser(class='custom-select') }}
+              {% endif %}
+            </div>
+
+          {{ thesis_form.submit(class="btn btn-primary btn-block") }}
+        </form>
+      </div>
+  </div>
+</div>
+
+<div class="row d-flex justify-content-center">
+  <div class="col-md-7 col-lg-6 px-3 mb-4">
+      <div class="bg-white p-4 shadow-sm">
+          <h5> Authors </h5>
+          <form method="POST" action="">
+            {{ author_form.hidden_tag() }}
+
+
+            <table class="table table-borderless">
+              <thead>
+                <tr>
+                  <th scope="col">Username</th>
+                  <th scope="col">First</th>
+                  <th scope="col">Last</th>
+                  <th scope="col">MI</th>
+                  <th scope="col">Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for author in thesis.contributors %}
+                        {% if author in students.permitted %}
+                          <tr>
+                            <td>{{author.username}}</td>
+                            <td>{{author.first_name}}</td>
+                            <td>{{author.last_name}}</td>
+                            <td>{{author.middle_initial}}</td>
+                            {% if thesis.contributors|length > 2 %}
+                              <td><a class="btn btn-sm btn-danger" href="{{ url_for('admin.delete_thesis_contributor',thesis_title=thesis.title,username=author.username) }}" role="button">Remove</a></td>
+                            {% else %}
+                              <td><a class="btn btn-sm btn-danger disabled" href="#" role="button" >Remove</a></td>
+                            {% endif %}
+                          </tr>
+                        {% endif %}
+                    {% endfor %}
+              </tbody>
+            </table>
+
+            <div class="input-group">
+
+              {% if author_form.username.errors %}
+                {{ author_form.username(class='form-control is-invalid', placeholder="Student Number", maxlength="11") }}
+                <div class="invalid-feedback order-last">
+                  {% for error in author_form.username.errors %}
+                    {{ error }}
+                  {% endfor %}
+                </div>
+
+              {% else %}
+                {{ author_form.username(class='form-control', placeholder="Student Number", maxlength="11") }}
+              {% endif %}
+            <div class="input-group-append">
+              {{ author_form.submit_author(class="btn btn-primary") }}
+            </div>
+          </div>
+
+          </form>
+      </div>
+  </div>
+</div>
+
+
+{% endblock %}
+
+{% block js %}
+<!-- <script src="{{ url_for('static', filename='admin/custom js/register_thesis.js') }}"></script>
+<script src="{{ url_for('static', filename='plugins/bootstrap-datepicker/bootstrap-datepicker.min.js') }}"></script>
+<script src="{{ url_for('static', filename='plugins/bootstrap-tokenfield/bootstrap-tokenfield.min.js') }}"></script> -->
+{% endblock %}
+
+

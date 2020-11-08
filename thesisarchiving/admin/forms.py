@@ -338,17 +338,126 @@ class UpdateSectionForm(FlaskForm):
 		if section and section != self.section: #section code exists and not itself
 			raise ValidationError("Code is already registered")
 
+class UpdateThesisAuthorForm(FlaskForm):
+	username = StringField(validators=[DataRequired(), Length(min=11, max=11)])
+	submit_author = SubmitField('Add')
+
+	def __init__(self, thesis_obj, **kwargs):
+		self.thesis = thesis_obj #set instance variable for current subj
+
+		super().__init__(**kwargs) #sends arbitarary arguments to base class
+
+	def validate_username(self, username):
+		user = User.query.filter_by(username=username.data).first()
+		
+		if user:
+			if not re.fullmatch(studentnumRegex, username.data):
+				raise ValidationError("Please enter a valid UE Student number")
+			else:
+				if user in self.thesis.contributors:
+					raise ValidationError("User is already a contributor")	
+		else:
+			raise ValidationError('No user is found with the student number.')
+		
+class UpdateThesisForm(FlaskForm):
+	yr_start = 2019
+	yr_end = datetime.now(tz=pytz.timezone('Asia/Manila')).year + 10
+
+	title = TextAreaField(
+		'Title',
+		validators=[Optional(), Length(min=3,max=250)]
+		)
+	area = StringField(
+		'Area',
+		validators=[Optional(), Length(min=3,max=60)]
+		)
+	keywords = StringField(
+		'Keywords',
+		validators=[Optional(), Length(min=3,max=609)]
+		)
+
+	program = SelectField(
+		'Program',
+		validators=[DataRequired()]
+		)
+
+	school_year = SelectField(
+			'School Year',
+			choices=[(y, f'{y}-{y+1}') for y in range(yr_start, yr_end)],
+			coerce=int,
+			validators=[DataRequired()]
+		)
+	
+	semester = SelectField(
+		'Semester',
+		validators=[DataRequired()]
+		)
+
+	category = SelectField(
+		'Category',
+		validators=[DataRequired()]
+		)
+
+	date_deploy = StringField(
+		'Date of Deployment',
+		validators=[DataRequired(), Length(min=10,max=10)]
+		)
+
+	form_file = FileField(
+		'Proposal form (.pdf, .doc, docx)', 
+		validators=[Optional(), FileAllowed(['pdf', 'doc','docx'])]
+		)
+
+	thesis_file = FileField(
+		'Thesis file (.pdf, .doc, docx)', 
+		validators=[Optional(), FileAllowed(['pdf', 'doc','docx'])]
+		)
+
+	adviser = SelectField(
+		'Adviser',
+		validators=[DataRequired()]
+		)	
+
+	submit = SubmitField('Update thesis')
+
+	def validate_form_file(self, form_file):
+
+		formfile = form_file.data
+		formfile.seek(0, os.SEEK_END) #set cursor right at the end
+		size = formfile.tell() / 1024 / 1024 #bytes -> mb
+
+		formfile.seek(0) #set cursor again to beginning to read all the file
+
+		if size > 15:
+			raise ValidationError('File too large (max 15mb)')
+
+	def validate_thesis_file(self, thesis_file):
+
+		thesisfile = thesis_file.data
+		thesisfile.seek(0, os.SEEK_END) #set cursor right at the end
+		size = thesisfile.tell() / 1024 / 1024 #bytes -> mb
+
+		thesisfile.seek(0) #set cursor again to beginning to read all the file
+
+		if size > 15:
+			raise ValidationError('File too large (max 15mb)')
+
+	def validate_adviser(self, adviser):
+		adv = User.query.filter_by(username=adviser.data).first()
+		if adv not in Role.query.filter_by(name='Adviser').first().permitted:
+			raise ValidationError('Adviser not found')
+
 # editables
 
-# title
-# prog
+# title`
+# prog`
 # date deploy
-# sy
-# sem
-# area
-# keywords
-# contributors
-# attachments
+# sy`
+# sem`
+# area`
+# keywords`
+# contributors`
+# attachments`
 # category -> will affect call number
 
 

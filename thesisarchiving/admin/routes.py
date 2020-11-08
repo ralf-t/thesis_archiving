@@ -1,7 +1,7 @@
 from flask import render_template, redirect, url_for, flash, jsonify, request, abort, Blueprint
 from thesisarchiving import db, bcrypt
 from thesisarchiving.utils import has_roles, advanced_search, send_reset_email
-from thesisarchiving.admin.forms import RegisterUserForm, RegisterThesisForm, GeneralCreateForm, UpdateSubjectForm, UpdateSectionForm, UpdateUserForm
+from thesisarchiving.admin.forms import RegisterUserForm, RegisterThesisForm, GeneralCreateForm, UpdateSubjectForm, UpdateSectionForm, UpdateUserForm, UpdateThesisAuthorForm, UpdateThesisForm
 from thesisarchiving.admin.utils import save_file, del_old_file
 from thesisarchiving.models import Role, User, Subject, Section, Area, Keyword, Thesis, Semester, Program, Category #tinggal yung models idk why it worked lol
 from flask_login import login_user, current_user, logout_user, login_required
@@ -255,9 +255,81 @@ def theses():
 def update_thesis(thesis_title):
 
 	thesis = Thesis.query.filter_by(title=thesis_title).first_or_404()
-
-	return render_template('admin/update_thesis.html')
+	students = Role.query.filter_by(name="Student").first()
 	
+	author_form = UpdateThesisAuthorForm(thesis)
+	thesis_form = UpdateThesisForm()
+
+	thesis_form.program.choices = [(program.college, program.college) for program in Program.query.all()]
+	thesis_form.semester.choices = [(str(sem.code), sem.code) for sem in Semester.query.order_by(Semester.code).all() ]
+	thesis_form.category.choices = [(cat.name, cat.name) for cat in Category.query.order_by(Category.name).all() ]
+	thesis_form.adviser.choices = [(adv.username, f"{adv.last_name}, {adv.first_name}, {adv.middle_initial}") for adv in Role.query.filter_by(name="Adviser").first().permitted ]
+	thesis_form.adviser.choices.insert(0,('None','None'))
+	# save_file(form.form_file.data, 'thesis_file')
+
+	# adding author
+	if author_form.submit_author.data and author_form.validate_on_submit():
+		try:
+			user = User.query.filter_by(username=author_form.username.data).first()
+			thesis.contributors.append(user)
+			db.session.commit()
+			flash("Added an author","success")
+		except:
+			flash("An error occured while adding an author","danger")
+		return redirect(url_for('admin.update_thesis', thesis_title=thesis_title))	
+
+	# modifying details
+	if thesis_form.submit.data and thesis_form.validate_on_submit():
+		# try catch
+		flash("Update thesis","success")
+		return redirect(url_for('admin.update_thesis', thesis_title=thesis_title))
+
+	elif request.method == 'GET':
+		
+		thesis_adviser = None
+
+		for contrib in thesis.contributors:
+			if contrib in Role.query.filter_by(name='Adviser').first().permitted:
+				thesis_adviser = contrib
+				break
+
+		thesis_form.program.default = thesis.program.college #
+		thesis_form.school_year.default = thesis.school_year.lower #
+		thesis_form.semester.default = str(thesis.semester.code)
+		thesis_form.category.default = thesis.category.name 
+		thesis_form.adviser.default = thesis_adviser.username if thesis_adviser else 'None'#
+		thesis_form.process()
+
+		thesis_form.title.data = thesis.title #
+		thesis_form.area.data = thesis.area #
+		thesis_form.keywords.data = ",".join( kw.name for kw in thesis.research_keywords ) #
+
+		thesis_form.form_file.data = thesis.form_file#
+		thesis_form.thesis_file.data = thesis.thesis_file#
+
+	return render_template('admin/update_thesis.html', thesis=thesis, students=students, author_form=author_form, thesis_form=thesis_form)
+
+@admin.route("/thesis_archiving/admin/delete/thesis/<string:thesis_title>/user/<string:username>", methods=['GET','POST'])
+@login_required
+@has_roles('Admin')
+def delete_thesis_contributor(thesis_title,username):
+
+	thesis = Thesis.query.filter_by(title=thesis_title).first_or_404()
+	user = User.query.filter_by(username=username).first_or_404()
+	
+	if user not in thesis.contributors:
+		abort(405)
+
+	try:
+		thesis.contributors.remove(user)
+		db.session.commit()
+		flash("Removed an author","success")
+	except:		
+		flash("An error occured while removing an author","danger")
+
+	return redirect(url_for('admin.update_thesis', thesis_title=thesis_title))	
+
+
 @admin.route("/thesis_archiving/admin/users", methods=['GET','POST'])
 @login_required
 @has_roles('Admin')
@@ -339,7 +411,7 @@ def update_user(user_username):
 
 	return render_template('admin/update_user.html', form=form, s_user=s_user, user=user)
 
-@admin.route("/thesis_archiving/admin/delete/user/<string:user_username>", methods=['GET','POST'])
+@admin.route("/thesis_archiving/admin/delete/user/<string:user_username>", methods=['POST'])
 @login_required
 @has_roles('Admin')
 def delete_user(user_username):
@@ -349,10 +421,10 @@ def delete_user(user_username):
 	try:
 		db.session.delete(user)
 		db.session.commit()
+		flash("User has been deleted from the server","success")
 	except:
 		flash('An unexpected error has occured','danger')
 
-	flash("User has been deleted from the server","success")
 
 	return redirect(url_for('admin.users'))
 
@@ -392,7 +464,7 @@ def update_subject(subject_code):
 
 	return render_template('admin/update_subject.html', form=form, subject=subject)
 
-@admin.route("/thesis_archiving/admin/delete/subject/<string:subject_code>", methods=['GET','POST'])
+@admin.route("/thesis_archiving/admin/delete/subject/<string:subject_code>", methods=['POST'])
 @login_required
 @has_roles('Admin')
 def delete_subject(subject_code):
@@ -444,7 +516,7 @@ def update_section(section_code):
 
 	return render_template('admin/update_section.html', form=form, section=section)
 
-@admin.route("/thesis_archiving/admin/delete/section/<string:section_code>", methods=['GET','POST'])
+@admin.route("/thesis_archiving/admin/delete/section/<string:section_code>", methods=['POST'])
 @login_required
 @has_roles('Admin')
 def delete_section(section_code):
