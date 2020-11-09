@@ -232,8 +232,27 @@ def register_general():
 
 	form.select_data.choices.extend([('Subject','Subject'),('Section','Section')])
 
+	to_insert = None
+
 	if form.validate_on_submit():
-		flash("test good","success")
+
+		if form.select_data.data == "Subject":
+			to_insert = Subject(
+					name=form.name.data,
+					code=form.code.data
+				)
+		elif form.select_data.data == "Section":
+			to_insert = Section(
+					code=form.code.data
+				)
+
+		try:
+			db.session.add(to_insert)
+			db.session.commit()
+			flash(f"{form.select_data.data} added successfully","success")
+		except:
+			flash("An error occured while adding data","danger")
+
 		return redirect(url_for('admin.register_general'))
 		
 	return render_template('admin/register_general.html', form=form)
