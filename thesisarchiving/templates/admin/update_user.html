@@ -1,0 +1,220 @@
+{% extends "admin/base_admin.html" %}
+
+{% block css %}
+
+{% endblock %}
+
+
+{% block content %}
+<div class="row d-flex justify-content-center">
+	<div class="col-md-6 col-lg-5 my-4 px-3">
+  		<div class="p-3">
+  			
+  			<div class="row d-flex justify-content-center mb-3">
+  				<i class="fas fa-user-circle fa-7x"></i>
+  			</div>
+
+  		  		<form method="POST" action="">
+  					{{ form.hidden_tag() }}
+
+  					<div class="form-group">
+	  					<!-- username -->
+	  					<label for="exampleInputEmail1">Username</label>
+						<input type="text" class="form-control" value="{{user.username}}" readonly>
+							
+					</div>
+  					<h6>Permissions</h6>
+  					<div class="form-row">
+		       			<div class="form-group col">
+				            {{ form.acad_role.label }}
+				            <!-- academic role -->
+				            {% if form.acad_role.errors %}
+				              {{ form.acad_role(class='custom-select is-invalid') }}
+			                	<div class="invalid-feedback order-last">
+					                {% for error in form.acad_role.errors %}
+				                  		{{ error }}
+					                {% endfor %}
+			              		</div>
+
+				            {% else %}
+				              {{ form.acad_role(class='custom-select') }}
+
+				            {% endif %}
+				        </div>          
+
+				        {% if current_user in s_user %}
+			  					<div class="form-group col">
+				  					{{ form.admin_role.label }}
+				  					<!-- admin role -->
+				  					{% if form.admin_role.errors %}
+				  						{{ form.admin_role(class='custom-select is-invalid') }}
+				  						<div class="invalid-feedback order-last">
+				    						{% for error in form.admin_role.errors %}
+				    							{{ error }}
+				    						{% endfor %}
+				  						</div>
+
+				  					{% else %}
+				  						{{ form.admin_role(class='custom-select') }}
+
+				  					{% endif %}
+			  					</div>
+
+				        {% endif %}
+
+  					</div>
+  					<!--  -->
+  					<!--  -->
+  					<!--  -->
+  					<h6>Basic Details</h6>
+
+					<div class="form-group">
+		  					<!-- last name -->
+							{% if form.last_name.errors %}
+								{{ form.last_name(class='form-control is-invalid', placeholder="Last Name", maxlength="60") }}
+								<div class="invalid-feedback order-last">
+									{% for error in form.last_name.errors %}
+										{{ error }}
+									{% endfor %}
+								</div>
+
+							{% else %}
+								{{ form.last_name(class='form-control', placeholder="Last Name", maxlength="60") }}
+
+							{% endif %}
+					</div>
+
+					<div class="form-group">
+		  					<!-- first name -->
+							{% if form.first_name.errors %}
+								{{ form.first_name(class='form-control is-invalid', placeholder="First Name", maxlength="60") }}
+								<div class="invalid-feedback order-last">
+									{% for error in form.first_name.errors %}
+										{{ error }}
+									{% endfor %}
+								</div>
+
+							{% else %}
+								{{ form.first_name(class='form-control', placeholder="First Name", maxlength="60") }}
+
+							{% endif %}
+					</div>
+
+					<div class="form-group">
+		  					<!-- m.i -->
+							{% if form.middle_initial.errors %}
+								{{ form.middle_initial(class='form-control is-invalid', placeholder="M.I.", maxlength="5") }}
+								<div class="invalid-feedback order-last">
+									{% for error in form.middle_initial.errors %}
+										{{ error }}
+									{% endfor %}
+								</div>
+
+							{% else %}
+								{{ form.middle_initial(class='form-control', placeholder="M.I.", maxlength="5") }}
+
+							{% endif %}
+					</div>
+
+					<div class="form-group">
+		  					<!-- email -->
+							{% if form.email.errors %}
+								{{ form.email(class='form-control is-invalid', placeholder="Email", maxlength="120") }}
+								<div class="invalid-feedback order-last">
+									{% for error in form.email.errors %}
+										{{ error }}
+									{% endfor %}
+								</div>
+
+							{% else %}
+								{{ form.email(class='form-control', placeholder="Email", maxlength="120") }}
+
+							{% endif %}
+					</div>
+
+					<div class="form-row">
+		       			<div class="form-group col">
+				            {{ form.subject.label }}
+				            <!-- academic role -->
+				            {% if form.subject.errors %}
+				              {{ form.subject(class='custom-select is-invalid') }}
+			                	<div class="invalid-feedback order-last">
+					                {% for error in form.subject.errors %}
+				                  		{{ error }}
+					                {% endfor %}
+			              		</div>
+
+				            {% else %}
+				              {{ form.subject(class='custom-select') }}
+
+				            {% endif %}
+				        </div>          
+
+
+	  					<div class="form-group col">
+		  					{{ form.section.label }}
+		  					<!-- admin role -->
+		  					{% if form.section.errors %}
+		  						{{ form.section(class='custom-select is-invalid') }}
+		  						<div class="invalid-feedback order-last">
+		    						{% for error in form.section.errors %}
+		    							{{ error }}
+		    						{% endfor %}
+		  						</div>
+
+		  					{% else %}
+		  						{{ form.section(class='custom-select') }}
+
+		  					{% endif %}
+	  					</div>
+
+
+  					</div>
+	  			
+	  				{{ form.submit(class="btn btn-primary btn-block mt-4") }}
+	  				<button type="button" class="btn btn-danger btn-block btn-sm" data-toggle="modal" data-target="#deleteConfirm">
+					  Delete
+					</button>
+
+					<!-- Modal -->
+					<div class="modal fade" id="deleteConfirm" tabindex="-1" role="dialog">
+					  <div class="modal-dialog" role="document">
+					    <div class="modal-content">
+					      <div class="modal-header">
+					        <h5 class="modal-title" id="exampleModalLabel">Confirm delete</h5>
+					        <button type="button" class="close" data-dismiss="modal">
+					          <span>&times;</span>
+					        </button>
+					      </div>
+					      <div class="modal-body">
+					        Are you sure you want to delete user {{user.username}}?
+					      </div>
+					      <div class="modal-footer">
+					        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+					        <a class="btn btn-danger" href="{{url_for('admin.delete_user',user_username=user.username)}}" role="button">Delete</a>
+					      </div>
+					    </div>
+					  </div>
+					</div>
+
+	  				<small class="form-text text-muted">
+						By creating an account, the User agrees to the <a href="#">Terms of Use</a> and <a href="#">Privacy Policy</a> of the system.
+					</small>
+
+
+					
+			</form>
+  		</div>
+	</div>
+</div>
+<!-- DELETE BUTTON -->
+
+{% endblock %}
+
+
+
+{% block js %}
+<!-- js scripts-->
+
+<!-- store in static/admin/custom js -->
+{% endblock %}

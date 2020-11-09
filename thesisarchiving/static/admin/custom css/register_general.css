@@ -1,0 +1,38 @@
+html {
+    height: 100%
+}
+
+.width {
+    width: 50%!important;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.bg-white {
+    background-color: #fff!important;
+}
+
+.p-3 {
+    padding: 1rem!important;
+}
+
+.shadow-sm {
+    box-shadow: 0 .1rem .6rem rgba(0,0,0,.10)!important;
+}
+
+#main {
+    padding: 20px;
+    margin-top: 70px;
+}
+
+.btn {
+    font-weight: bold;
+    color: white;
+    background: #78F79C;
+    border: 1px;
+}
+
+.btn:hover {
+    color: white;
+    background: #83eca1;
+}

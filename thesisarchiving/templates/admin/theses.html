@@ -1,34 +1,77 @@
 {% extends "admin/base_admin.html" %}
 
 {% block css %}
-<!-- css scripts -->
-<!-- store in static/admin/custom css -->
+  <!-- css scripts -->
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='admin/custom css/theses.css') }}">
+  <!-- store in static/admin/custom css -->
 {% endblock %}
 
 {% block content %} 
+<div class="width">
+	<div class="bg-white p-3 shadow-sm" id="sections">
 
-	<!-- main stuff here -->
-	{% for thesis in theses.items %}
-		<p>{{thesis.title}}</p>
-	<!-- 
+		<div class="row">
+	   	<div class="col-8">
+	   		<h1>Theses</h1>
+	   	</div>
 
-	thesis.call_number
-	thesis.title
-	thesis.program.college
-	thesis.category.name
-	thesis.semester.code
-	thesis.date_deploy
-	thesis.date_register 
+		<div class="col-4">
+		<div class="d-flex justify-content-end">
+			<a href="{{ url_for('admin.register_thesis') }}" class="btn btn-secondary shadow-sm">Add</a></div>
+		</div>
+	</div>
 
-	-->
-	{% endfor %}
+	    <table class="table">
+	    	<tr>
+				<th scope="col" class="col-1">Call No.</th>
+				<th scope="col" class="col-2">Title</th>
+				<th scope="col" class="col-1">Program</th>
+	       		<th scope="col" class="col-1">Category</th>
+	        	<th scope="col" class="col-1">Semester</th>
+				<th scope="col" class="col-1">School Year</th>
+			    <th scope="col" class="col-1">Date Deployed</th>
+			    <th scope="col" class="col-1">Date Registered</th>
+			    <th scope="col" class="col-1">Action</th>
+			</tr>
+			
+    <!-- main stuff here -->
+		{% for thesis in theses.items %}
+			<tr>
+				<td class="col-1">{{ thesis.call_number }}</td>
+				<td class="col-2">{{ thesis.title }}</td>
+			    <td class="col-1">{{ thesis.program.college }}</td>
+		      	<td class="col-1">{{ thesis.category.name }}</td>
+	        	<td class="col-1">{{ thesis.semester.code }}</td>
+				<td class="col-1">{{ thesis.school_year }}</td>
+				<td class="col-1">{{ thesis.date_deploy }}</td>
+				<td class="col-1">{{ thesis.date_register  }}</td>
+				<td class="col-1"><a href="#" class="btn btn-secondary shadow-sm">Edit</a></td>
+			</tr>
+		{% endfor %}
+		</table>
 
+
+	<div class="d-flex justify-content-end">
+    {% for page_num in theses.iter_pages() %}
+		{% if page_num %}
+			{% if theses.page == page_num %}
+				<a class="btn btn-info mb-4" href="{{ url_for('admin.theses', page=page_num) }}">{{ page_num }}</a>
+			{% else %}
+				<a class="btn btn-outline-info mb-4" href="{{ url_for('admin.theses', page=page_num) }}">{{ page_num }}</a>
+			{% endif %}
+        {% else %}
+          ...
+		{% endif %}
+		{% endfor %}
+		</div>
+    </div>
+</div>
 
 {% endblock %}
+
 
 {% block js %}
 <!-- js scripts-->
+
 <!-- store in static/admin/custom js -->
 {% endblock %}
-
-

@@ -1,6 +1,7 @@
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileField, FileAllowed
 from flask import flash
+from flask_login import current_user
 from wtforms import StringField, SelectField, SubmitField, DateField, FieldList, FormField, Form, PasswordField, TextAreaField, BooleanField
 from wtforms.validators import Optional, Length, DataRequired, ValidationError, EqualTo, Email
 from datetime import datetime
@@ -233,11 +234,66 @@ class GeneralCreateForm(FlaskForm):
 			raise ValidationError("Code is already registered")
 
 #edit subj
+class UpdateUserForm(FlaskForm):
+	admin_role = SelectField(
+		'Administrative', 
+		choices=[('None', 'None'),('Superuser','Superuser'),('Admin','Admin')], 
+		validators=[Optional()]
+		)
+	acad_role = SelectField(
+		'Academic', 
+		choices=[('None', 'None'),('Adviser','Adviser'),('Student','Student')], 
+		validators=[DataRequired()]
+		)
+
+	last_name = StringField(
+		'Last Name', 
+		validators=[DataRequired(), Length(min=1, max=60)]
+		)
+
+	first_name = StringField(
+		'First Name', 
+		validators=[DataRequired(), Length(min=1, max=60)]
+		)
+
+	middle_initial = StringField(
+		'M.I.', 
+		validators=[Optional(), Length(min=1, max=5)]
+		)
+
+	email = StringField(
+		'Email', 
+		validators=[DataRequired(), Email(), Length(max=120)]
+		)
+
+	subject = SelectField(
+		'Subject',
+		validators=[DataRequired()]
+		)
+
+	section = SelectField(
+		'Section',
+		validators=[DataRequired()]
+		)
+
+	submit = SubmitField('Update User')
+
+	def __init__(self, user_obj, **kwargs):
+		self.user = user_obj
+
+		super().__init__(**kwargs)
+
+	def validate_email(self, email):
+		# bawal i currentuser dahil dynamic and mga accounts dito
+		user = User.query.filter_by(email=email.data).first()
+		if user and user != self.user:
+			raise ValidationError('Email is taken')
+
 class UpdateSubjectForm(FlaskForm):
 
 	name = StringField(
 		'Name', 
-		validators=[Optional(), Length(min=3, max=120)]
+		validators=[DataRequired(), Length(min=3, max=120)]
 		)
 	code = StringField(
 		'Code', 
@@ -247,15 +303,21 @@ class UpdateSubjectForm(FlaskForm):
 	submit = SubmitField('Update subject')
 
 	def __init__(self, subject_obj, **kwargs):
-		self.subject = Subject.query.get(subject_obj.id) #set instance variable for current subj
+		self.subject = subject_obj #set instance variable for current subj
 
 		super().__init__(**kwargs) #sends arbitarary arguments to base class
 
 	def validate_name(self, name):
 		subject = Subject.query.filter_by(name=name.data).first()
 
-		if subject and subject != self.subject: #subject name exists and not itself
+		if subject and subject != self.subject: #subject name exists and not itself meron neto dahil unlike sa user merong current_user to check
 			raise ValidationError("Name is already registered")
+
+	def validate_code(self, code):
+		subject = Subject.query.filter_by(code=code.data).first()
+
+		if subject and  subject != self.subject: #section code exists and not itself
+			raise ValidationError("Code is already registered")
 
 class UpdateSectionForm(FlaskForm):
 	code = StringField(
@@ -266,15 +328,15 @@ class UpdateSectionForm(FlaskForm):
 	submit = SubmitField('Update subject')
 
 	def __init__(self, section_obj, **kwargs):
-		self.section = Section.query.get(section_obj.id) #set instance variable for current subj
+		self.section = section_obj #set instance variable for current subj
 
 		super().__init__(**kwargs) #sends arbitarary arguments to base class
 
 	def validate_code(self, code):
 		section = Section.query.filter_by(code=code.data).first()
 
-		if section and section != self.subject: #section code exists and not itself
-			raise ValidationError("Name is already registered")
+		if section and section != self.section: #section code exists and not itself
+			raise ValidationError("Code is already registered")
 
 # class UpdateThesisForm(FlaskForm):
 # class UpdateUserForm(FlaskForm):
