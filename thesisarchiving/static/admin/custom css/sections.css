@@ -32,7 +32,7 @@ tr:nth-child(even) {
     box-shadow: 0 .125rem .25rem rgba(0,0,0,.075)!important;
 }
 
-.sections {
+#overflow {
     overflow-x: auto;
 }
 
