@@ -135,7 +135,7 @@ def thesis_download_attachment(thesis_title,file,file_name):
 		if attch:
 			return send_file(BytesIO(attch.read_bytes()),attachment_filename=file_name,as_attachment=True)
 		else:
-			abort(404)
+			abort(404) #if file/path doest exist
 	else:
 		abort(406)
 
