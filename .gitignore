@@ -1,3 +1,7 @@
 thesisarchiving/static/images/profile pictures
+!thesisarchiving/static/images/profile pictures/.gitkeep
+!thesisarchiving/static/images/profile pictures/all.jpg
+!thesisarchiving/static/thesis attachments/form file/.gitkeep
+!thesisarchiving/static/thesis attachments/thesis file/.gitkeep
 thesisarchiving/config.py
 thesisarchiving/__pycache__
