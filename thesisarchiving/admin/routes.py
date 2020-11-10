@@ -323,9 +323,6 @@ def update_thesis(thesis_title):
 		thesis_form.area.data = thesis.area #
 		thesis_form.keywords.data = ",".join( kw.name for kw in thesis.research_keywords ) #
 
-		thesis_form.form_file.data = thesis.form_file#
-		thesis_form.thesis_file.data = thesis.thesis_file#
-
 	return render_template('admin/update_thesis.html', thesis=thesis, students=students, author_form=author_form, thesis_form=thesis_form)
 
 @admin.route("/thesis_archiving/admin/delete/thesis/<string:thesis_title>/user/<string:username>", methods=['GET','POST'])
