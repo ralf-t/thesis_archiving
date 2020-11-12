@@ -360,20 +360,20 @@ class UpdateThesisAuthorForm(FlaskForm):
 			raise ValidationError('No user is found with the student number.')
 		
 class UpdateThesisForm(FlaskForm):
-	yr_start = 2019
+	yr_start = 2010
 	yr_end = datetime.now(tz=pytz.timezone('Asia/Manila')).year + 10
 
 	title = TextAreaField(
 		'Title',
-		validators=[Optional(), Length(min=3,max=250)]
+		validators=[DataRequired(), Length(min=3,max=250)]
 		)
 	area = StringField(
 		'Area',
-		validators=[Optional(), Length(min=3,max=60)]
+		validators=[DataRequired(), Length(min=3,max=60)]
 		)
 	keywords = StringField(
 		'Keywords',
-		validators=[Optional(), Length(min=3,max=609)]
+		validators=[DataRequired(), Length(min=3,max=609)]
 		)
 
 	program = SelectField(
@@ -398,9 +398,9 @@ class UpdateThesisForm(FlaskForm):
 		validators=[DataRequired()]
 		)
 
-	date_deploy = StringField(
-		'Date of Deployment',
-		validators=[DataRequired(), Length(min=10,max=10)]
+	date_deploy = DateField(
+		'Date of Deployment',format='%m/%d/%Y',
+		validators=[Optional()]
 		)
 
 	form_file = FileField(
@@ -419,6 +419,22 @@ class UpdateThesisForm(FlaskForm):
 		)	
 
 	submit = SubmitField('Update thesis')
+
+	def __init__(self, thesis_obj, **kwargs):
+		self.thesis = thesis_obj #set instance variable for current subj
+
+		super().__init__(**kwargs) #sends arbitarary arguments to base class
+
+
+	def validate_title(self, title):
+		thesis = Thesis.query.filter_by(title=title.data).first()
+		
+		if thesis and thesis != self.thesis: #section code exists and not itself
+			raise ValidationError('Title is already taken.')
+		else:
+			if not re.fullmatch(titleRegex, title.data):
+				raise ValidationError("Allowed characters: A-z 0-9 , ' : _ % # ( ) @ & ? . -")
+
 
 	def validate_form_file(self, form_file):
 

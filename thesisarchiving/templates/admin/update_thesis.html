@@ -1,9 +1,8 @@
 {% extends "admin/base_admin.html" %}
 
 {% block css %}
-<!-- 	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='admin/custom css/register_thesis.css') }}"> 
 	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='plugins/bootstrap-datepicker/bootstrap-datepicker3.standalone.min.css') }}"> 
-	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='plugins/bootstrap-tokenfield/bootstrap-tokenfield.min.css') }}">  -->
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='plugins/bootstrap-tokenfield/bootstrap-tokenfield.min.css') }}"> 
 {% endblock %}
 
 {% block content %} 
@@ -49,7 +48,7 @@
               {{ thesis_form.area(class='form-control', placeholder='Area', maxlength="60") }}
             {% endif %}
         
-              <div class="row">
+              <div class="row" id="areatags">
                 
               </div>
           
@@ -68,7 +67,7 @@
               {{ thesis_form.keywords(class='form-control', placeholder='Keywords', maxlength="609") }}
             {% endif %}
         
-              <div class="row">
+              <div class="row" id="keywordstags">
                 
               </div>
             <small class="form-text text-muted">
@@ -176,7 +175,7 @@
           <br>
 
           {% if thesis.thesis_file %}
-            <a href="url_for('main.thesis_download_attachment',thesis_title=thesis.title, file='thesis_file',file_name=thesis.thesis_file)">{{thesis.thesis_file}}</a>
+            <a href="{{ url_for('main.thesis_download_attachment',thesis_title=thesis.title, file='thesis_file',file_name=thesis.thesis_file) }}">{{thesis.thesis_file}}</a>
           {% else %}
             <a href="">No attached file</a>
           {% endif %}
@@ -277,9 +276,9 @@
 {% endblock %}
 
 {% block js %}
-<!-- <script src="{{ url_for('static', filename='admin/custom js/register_thesis.js') }}"></script>
+<script src="{{ url_for('static', filename='admin/custom js/update_thesis.js') }}"></script>
 <script src="{{ url_for('static', filename='plugins/bootstrap-datepicker/bootstrap-datepicker.min.js') }}"></script>
-<script src="{{ url_for('static', filename='plugins/bootstrap-tokenfield/bootstrap-tokenfield.min.js') }}"></script> -->
+<script src="{{ url_for('static', filename='plugins/bootstrap-tokenfield/bootstrap-tokenfield.min.js') }}"></script>
 {% endblock %}
 
 

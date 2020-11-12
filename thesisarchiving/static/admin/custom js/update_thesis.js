@@ -1,20 +1,25 @@
 $( document ).ready(function() {
-
-	// instantiate token plugin
-	// wag gawing global variable dahil di lang iisa ang magiging tokenfield
-	$('#form_file').change(function(e) {
-	  var file = e.target.files; 
-
-	  $(this).next('.custom-file-label').html(file[0]['name']);
-
+	
+	$('#date_deploy').attr('data-provide','datepicker');
+	$('#date_deploy').datepicker({
+	    startDate: "01/01/2010",
+	    todayBtn: 'linked',
+	    clearBtn: true
 	});
-
 
 	$("[name$='keywords']").tokenfield({
 		limit:10,
 		beautify:false
 	});
 
+	$('#form_file,#thesis_file').change(function(e) {
+	  var file = e.target.files; 
+
+	  $(this).next('.custom-file-label').html(file[0]['name']);
+
+	});
+
+	// for tags and shit
 	// setting name for infield token input for dom purposes
 	$("[id^='keywords'].token-input").attr('name','keywords')
 
@@ -94,59 +99,5 @@ $( document ).ready(function() {
 		
 		tags_div.slideUp();
 	});
-
-	$("[name^='accept']").hide();
-	$("[name^='edit']").hide();
-
-	$("[name^='search']").click(function(){
-
-		fieldset = $(this).closest("fieldset");
-
-		query_div = $("#query")
-
-		entry_index = $(this).attr('id').split('-')[1];
-
-		title_id = '#' + 'title' + entry_index
-		title_val = $(title_id).val().trim() ? $(title_id).val().trim() : null;
-
-		area_id = '#' + 'area' + entry_index
-		area_val = $(area_id).val().trim() ? $(area_id).val().trim() : null;
-
-		keywords_id = '#' + 'keywords' + entry_index
-		keywords_val = $(keywords_id).tokenfield('getTokensList').trim()
-		keywords_arr = keywords_val.trim() ? keywords_val.split(',') : null;
-
-		req = $.ajax({
-			url:'/thesis_archiving/admin/register/thesis/advanced_search',
-			type: 'POST',
-			data: JSON.stringify({title:title_val, area:area_val, keywords:keywords_arr})
-		});
-
-		req.done(function(query){
-			query_div.html(query)
-		});
-		// send values to ajax
-		// returned must be filtered html
-
-		fieldset.find("[name^='accept']").show();
-	});
-
-
-	$("[name^='accept']").click(function(){
-		const fieldset = $(this).closest("fieldset");
-		fieldset.find('input, textarea').attr('readonly','');
-		fieldset.find("[name^='search']").hide();
-		fieldset.find("[name^='edit']").show();
-		// hide tags div
-		$(this).hide();
-	});
-
-	$("[name^='edit']").click(function(){
-		const fieldset = $(this).closest("fieldset");
-		fieldset.find('input, textarea').removeAttr('readonly','');
-		fieldset.find("[name^='accept']").show();
-		fieldset.find("[name^='search']").show();
-		$(this).hide();
-	});
-
+	
 });

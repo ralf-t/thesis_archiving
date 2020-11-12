@@ -275,16 +275,15 @@ def update_thesis(thesis_title):
 
 	thesis = Thesis.query.filter_by(title=thesis_title).first_or_404()
 	students = Role.query.filter_by(name="Student").first()
-	
+
 	author_form = UpdateThesisAuthorForm(thesis)
-	thesis_form = UpdateThesisForm()
+	thesis_form = UpdateThesisForm(thesis)
 
 	thesis_form.program.choices = [(program.college, program.college) for program in Program.query.all()]
 	thesis_form.semester.choices = [(str(sem.code), sem.code) for sem in Semester.query.order_by(Semester.code).all() ]
 	thesis_form.category.choices = [(cat.name, cat.name) for cat in Category.query.order_by(Category.name).all() ]
 	thesis_form.adviser.choices = [(adv.username, f"{adv.last_name}, {adv.first_name}, {adv.middle_initial}") for adv in Role.query.filter_by(name="Adviser").first().permitted ]
 	thesis_form.adviser.choices.insert(0,('None','None'))
-	# save_file(form.form_file.data, 'thesis_file')
 
 	# adding author
 	if author_form.submit_author.data and author_form.validate_on_submit():
@@ -299,16 +298,86 @@ def update_thesis(thesis_title):
 
 	# modifying details
 	if thesis_form.submit.data and thesis_form.validate_on_submit():
-		# try catch
-		flash("Update thesis","success")
-		return redirect(url_for('admin.update_thesis', thesis_title=thesis_title))
+		# getting vals
+		title = thesis_form.title.data.strip()
+		area = thesis_form.area.data.strip()
+		keywords = thesis_form.keywords.data.strip().split(',')
+		program = thesis_form.program.data.strip()
+		category = thesis_form.category.data.strip()
+		school_year = thesis_form.school_year.data
+		semester = thesis_form.semester.data.strip()
+		date_deploy = thesis_form.date_deploy.data
+		form_file = thesis_form.form_file.data
+		thesis_file = thesis_form.thesis_file.data
+		adviser = thesis_form.adviser.data.strip()
+		
+		curr_keywords = [i for i in thesis.research_keywords] # get all thesis's keywords
+		curr_form_file = thesis.form_file
+		curr_thesis_file = thesis.thesis_file
+
+		# set new vals
+		thesis.title = title
+		thesis.area = Area.query.filter_by(name=area).first() if Area.query.filter_by(name=area).first() else Area(name=area) 
+
+		for i in curr_keywords: #remove all thesis keywords
+			thesis.research_keywords.remove(i)
+
+		for k in keywords:
+			if Keyword.query.filter_by(name=k).first():
+				thesis.research_keywords.append(Keyword.query.filter_by(name=k).first())
+			else:
+				thesis.research_keywords.append(Keyword(name=k))
+		
+		thesis.program = Program.query.filter_by(college=program).first()
+		thesis.category = Category.query.filter_by(name=category).first()
+		thesis.school_year = NumericRange(school_year, school_year + 1,'[]')
+		thesis.semester = Semester.query.filter_by(code=int(semester)).first()
+		thesis.date_deploy = date_deploy
+		
+			# check if nag upload. pag None kasi madedelete yung prev files w/o replacement
+		if form_file:
+			thesis.form_file = save_file(form_file,'form_file')
+
+		if thesis_file:
+			thesis.thesis_file = save_file(thesis_file,'thesis_file')
+
+
+			# get current adviser then remove
+		for contrib in thesis.contributors:
+			if Role.query.filter_by(name='Adviser').first() in contrib.roles:
+				thesis.contributors.remove(contrib) 	
+		
+			# append selected adivser
+		thesis.contributors.append(User.query.filter_by(username=adviser).first()) 
+			
+			#updating call num
+		thesis.call_number = '{}-{}-{}{}-{}'.format(
+										thesis.school_year.lower, 
+										thesis.semester.code, 
+										thesis.category.code, 
+										thesis.program.code, 
+										thesis.call_number.split('-')[-1]
+									)
+		try:
+			db.session.commit()
+			flash("Updated thesis details","success")
+		except:
+			flash("An error has occured while updating thesis details","danger")
+		
+		# delete previous files if nag upload ng bago
+		if form_file and curr_form_file:
+			del_old_file(curr_form_file,'form_file')
+		if thesis_file and curr_thesis_file:
+			del_old_file(curr_thesis_file,'thesis_file')
+		
+		return redirect(url_for('admin.update_thesis', thesis_title=thesis_form.title.data.strip()))
 
 	elif request.method == 'GET':
 		
 		thesis_adviser = None
 
 		for contrib in thesis.contributors:
-			if contrib in Role.query.filter_by(name='Adviser').first().permitted:
+			if Role.query.filter_by(name='Adviser').first() in contrib.roles:
 				thesis_adviser = contrib
 				break
 
@@ -322,6 +391,7 @@ def update_thesis(thesis_title):
 		thesis_form.title.data = thesis.title #
 		thesis_form.area.data = thesis.area #
 		thesis_form.keywords.data = ",".join( kw.name for kw in thesis.research_keywords ) #
+		thesis_form.date_deploy.data = thesis.date_deploy
 
 	return render_template('admin/update_thesis.html', thesis=thesis, students=students, author_form=author_form, thesis_form=thesis_form)
 
