@@ -9,7 +9,7 @@
 
 {% block content %}
 <div class="width"> 
-	<div class="bg-white p-3 shadow-sm" id="overflow">
+	<div class="bg-white p-3 shadow-sm" id="UsersBody">
 
 		<div class="row">
 	    <div class="col-8">
@@ -22,7 +22,8 @@
   		</div>    
   	</div>
 
-		<table class="table">
+		<table class="table table-striped">
+			<thead>
 			<tr>
 				<th scope="col">Username</th>
 				<th scope="col">Surname</th>
@@ -35,8 +36,10 @@
 			    <th scope="col">Date Register</th>
 			    <th scope="col">Action</th>
 			</tr>
+			</thead>
 
 	<!-- main stuff here -->
+			<tbody>
 		{% for user in users.items %}
 			<tr>
 				<td>{{user.username}}</td>
@@ -57,6 +60,7 @@
 				<td><a href="{{url_for('admin.update_user',user_username=user.username)}}" class="btn btn-secondary shadow-sm">Edit</a></td>
 			</tr>
 		{% endfor %}
+		</tbody>
 
 
 		</table>
@@ -65,9 +69,9 @@
 	{% for page_num in users.iter_pages() %}
 		{% if page_num %}
 			{% if users.page == page_num %}
-				<a class="btn btn-info mb-4" href="{{ url_for('admin.users', page=page_num) }}">{{ page_num }}</a>
+				<a class="btn btn-secondary mb-4" href="{{ url_for('admin.users', page=page_num) }}">{{ page_num }}</a>
 			{% else %}
-				<a class="btn btn-outline-info mb-4" href="{{ url_for('admin.users', page=page_num) }}">{{ page_num }}</a>
+				<a class="btn btn-outline-secondary mb-4" href="{{ url_for('admin.users', page=page_num) }}">{{ page_num }}</a>
 			{% endif %}
 		{% else %}
 		  ...
