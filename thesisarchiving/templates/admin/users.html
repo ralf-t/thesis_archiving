@@ -65,7 +65,7 @@
 	{% for page_num in users.iter_pages() %}
 		{% if page_num %}
 			{% if users.page == page_num %}
-				<a class="btn btn-info mb-4" href="{{ url_for('admin.users', page=page_num) }}">{{ page_num }}</a>
+				<a class="btn btn-info mb-4" href="{{ url_for('admin.users', page=page_num) }}">{{ page_num }}</a> <!-- change btn-info/btn-outline-info to its secondary color scheme variant (bootstrap buttons) -->
 			{% else %}
 				<a class="btn btn-outline-info mb-4" href="{{ url_for('admin.users', page=page_num) }}">{{ page_num }}</a>
 			{% endif %}

@@ -1,3 +1,4 @@
+/*can be removed*/
 table {
       font-family: arial, sans-serif;
       border-collapse: collapse;
@@ -29,12 +30,24 @@ tr:nth-child(even) {
 .shadow-sm {
   	box-shadow: 0 .125rem .25rem rgba(0,0,0,.075);
 }
+/*all the way here*/
 
+
+/* rename id to something more related to the element not the attribute*/
 #overflow {
     overflow-x: auto;
 }
 
+/*can be removed*/
 .h1 {
     font-weight: bold;
   	margin-top: 0;
 }
+
+
+/*
+
+if trip mo yung striped tables, may style na ganun si bootstrap sa docs
+pati rin yung bold texts(bootstrap typography)
+
+*/
