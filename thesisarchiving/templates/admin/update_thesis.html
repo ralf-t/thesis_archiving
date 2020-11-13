@@ -1,6 +1,8 @@
 {% extends "admin/base_admin.html" %}
 
 {% block css %}
+
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='admin/custom css/update_thesis.css') }}">
 	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='plugins/bootstrap-datepicker/bootstrap-datepicker3.standalone.min.css') }}"> 
 	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='plugins/bootstrap-tokenfield/bootstrap-tokenfield.min.css') }}"> 
 {% endblock %}
@@ -220,7 +222,7 @@
             {{ author_form.hidden_tag() }}
 
 
-            <table class="table table-borderless">
+            <table class="table table-borderless table-sm">
               <thead>
                 <tr>
                   <th scope="col">Username</th>

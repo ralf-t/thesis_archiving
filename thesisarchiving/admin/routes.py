@@ -23,6 +23,16 @@ def admin_view():
 	admins = Role.query.filter_by(name='Admin').first().permitted.count()
 
 	return render_template('admin/admin.html', s_user=s_user, thesis=thesis, advisers=advisers, students=students, admins=admins)
+##################################################################################################################################################
+@admin.route("/thesis_archiving/admin/users", methods=['GET','POST'])
+@login_required
+@has_roles('Admin')
+def users():
+
+	page = request.args.get("page", 1, type=int)
+	users = User.query.order_by(User.username.asc()).paginate(page=page, per_page=10)
+
+	return render_template('admin/users.html', users=users)
 
 @admin.route("/thesis_archiving/admin/register/user", methods=['GET','POST'])
 @login_required
@@ -43,11 +53,11 @@ def register_user():
 		hashed_pw = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
 
 		user = User(
-			username=form.username.data,
-			last_name=form.last_name.data if form.last_name.data.strip() else None,
-			first_name=form.first_name.data if form.first_name.data.strip() else None,
-			middle_initial=form.middle_initial.data if form.middle_initial.data.strip() else None,
-			email=form.email.data,
+			username=form.username.data.strip(),
+			last_name=form.last_name.data.strip() if form.last_name.data.strip() else None,
+			first_name=form.first_name.data.strip() if form.first_name.data.strip() else None,
+			middle_initial=form.middle_initial.data.strip() if form.middle_initial.data.strip() else None,
+			email=form.email.data.strip(),
 			password=hashed_pw,
 			subject_id=uuid.UUID(form.subject.data) if form.subject.data != 'None' else None,
 			section_id=uuid.UUID(form.section.data) if form.section.data != 'None' else None
@@ -62,10 +72,10 @@ def register_user():
 			db.session.add(user)
 			db.session.commit()
 
-			user = User.query.filter_by(username=form.username.data).first()
+			user = User.query.filter_by(username=form.username.data.strip()).first()
 			send_reset_email(user) #pass in user object
 
-			flash(f'Account emailed to {form.username.data}', 'success')
+			flash(f'Account emailed to {form.username.data.strip()}', 'success')
 		except Exception as e:
 			print(e)
 			flash('An unexpected error has occured', 'danger')
@@ -73,6 +83,102 @@ def register_user():
 
 	return render_template('admin/register_user.html', form=form, s_user=s_user)
 
+@admin.route("/thesis_archiving/admin/update/user/<string:user_username>", methods=['GET','POST'])
+@login_required
+@has_roles('Admin')
+def update_user(user_username):
+
+	user = User.query.filter_by(username=user_username).first_or_404()
+
+	s_user = Role.query.filter_by(name='Superuser').first().permitted
+
+	form = UpdateUserForm(user)
+
+	form.subject.choices = [(str(r.code), r.name) for r in Subject.query.all()] if Subject.query.all() else [('None', 'None')]
+	form.subject.choices.insert(0,('None', 'None'))
+	form.section.choices = [(str(r.code), r.code) for r in Section.query.all()] if Section.query.all() else [('None', 'None')]
+	form.section.choices.insert(0,('None', 'None'))
+
+	if form.validate_on_submit():
+		roles = [i for i in user.roles] # get all user's role
+		acad_role = Role.query.filter_by(name=form.acad_role.data).first()
+		admin_role = Role.query.filter_by(name=form.admin_role.data).first()
+
+		for i in roles: #remove all user's roles
+			user.roles.remove(i)
+
+		if acad_role or admin_role: #append all selected roles
+			if acad_role:
+				user.roles.append(acad_role)
+			if admin_role:
+				user.roles.append(admin_role)
+
+		user.last_name = form.last_name.data.strip()
+		user.first_name = form.first_name.data.strip()
+		user.middle_initial = form.middle_initial.data.strip()
+		user.email = form.email.data.strip()
+		user.subject_id = Subject.query.filter_by(code=form.subject.data).first().id if form.subject.data != 'None' else None
+		user.section_id = Section.query.filter_by(code=form.section.data).first().id if form.section.data != 'None' else None
+
+		try:
+			db.session.commit()
+			flash('User update success','success')
+		except:
+			flash('An unexpected error has occured','danger')
+
+		return redirect(url_for('admin.update_user',user_username=user_username))
+
+	elif request.method == 'GET':
+		form.admin_role.default = 'None'
+		form.acad_role.default = 'None'
+
+		for i in ['Superuser','Admin']:
+			if Role.query.filter_by(name=i).first() in user.roles:
+				form.admin_role.default = i
+				break 
+
+		for i in ['Adviser','Student']:
+			if Role.query.filter_by(name=i).first() in user.roles:
+				form.acad_role.default = i
+				break
+
+		form.subject.default = user.subject.code if user.subject else 'None'
+		form.section.default = user.section.code if user.section else 'None'
+		form.process()
+		
+		form.last_name.data = user.last_name
+		form.first_name.data = user.first_name
+		form.middle_initial.data = user.middle_initial
+		form.email.data = user.email
+
+	return render_template('admin/update_user.html', form=form, s_user=s_user, user=user)
+
+@admin.route("/thesis_archiving/admin/delete/user/<string:user_username>", methods=['POST'])
+@login_required
+@has_roles('Admin')
+def delete_user(user_username):
+
+	user = User.query.filter_by(username=user_username).first_or_404()
+
+	try:
+		db.session.delete(user)
+		db.session.commit()
+		flash("User has been deleted from the server","success")
+	except:
+		flash('An unexpected error has occured','danger')
+
+
+	return redirect(url_for('admin.users'))
+##################################################################################################################################################
+@admin.route("/thesis_archiving/admin/theses", methods=['GET','POST'])
+@login_required
+@has_roles('Admin')
+def theses():
+
+	page = request.args.get("page", 1, type=int)
+	theses = Thesis.query.order_by(Thesis.call_number.asc()).paginate(page=page, per_page=10)
+
+	return render_template('admin/theses.html', theses=theses)
 
 @admin.route("/thesis_archiving/admin/register/thesis", methods=['GET','POST'])
 @login_required
@@ -143,7 +249,7 @@ def register_thesis():
 
 		if len(author_inputs) > len(set(author_inputs)):
 			for field in form.authors.entries:
-				if field.username.data:
+				if field.username.data.strip():
 					field.username.errors.append('Authors must be unique from one another.')
 					custom_errors += 1
 		
@@ -202,8 +308,8 @@ def register_thesis():
 					thesis.contributors.append(User.query.get(uuid.UUID(adviser)))
 					
 					for author_field in form.authors.entries:
-						if author_field.username.data:
-							contributor = author_field.username.data
+						if author_field.username.data.strip():
+							contributor = author_field.username.data.strip()
 							thesis.contributors.append(User.query.filter_by(username=contributor).first())
 					
 					file_name_error.append(thesis.form_file)
@@ -222,51 +328,6 @@ def register_thesis():
 			return redirect(url_for('admin.register_thesis'))
 
 	return render_template('admin/register_thesis.html', form=form)
-
-@admin.route("/thesis_archiving/admin/register/general", methods=['GET','POST'])
-@login_required
-@has_roles('Admin')
-def register_general():
-	
-	form = GeneralCreateForm()
-
-	form.select_data.choices.extend([('Subject','Subject'),('Section','Section')])
-
-	to_insert = None
-
-	if form.validate_on_submit():
-
-		if form.select_data.data == "Subject":
-			to_insert = Subject(
-					name=form.name.data,
-					code=form.code.data
-				)
-		elif form.select_data.data == "Section":
-			to_insert = Section(
-					code=form.code.data
-				)
-
-		try:
-			db.session.add(to_insert)
-			db.session.commit()
-			flash(f"{form.select_data.data} added successfully","success")
-		except:
-			flash("An error occured while adding data","danger")
-
-		return redirect(url_for('admin.register_general'))
-		
-	return render_template('admin/register_general.html', form=form)
-
-
-@admin.route("/thesis_archiving/admin/theses", methods=['GET','POST'])
-@login_required
-@has_roles('Admin')
-def theses():
-
-	page = request.args.get("page", 1, type=int)
-	theses = Thesis.query.order_by(Thesis.call_number.asc()).paginate(page=page, per_page=10)
-
-	return render_template('admin/theses.html', theses=theses)
 
 @admin.route("/thesis_archiving/admin/update/thesis/<string:thesis_title>", methods=['GET','POST'])
 @login_required
@@ -288,7 +349,7 @@ def update_thesis(thesis_title):
 	# adding author
 	if author_form.submit_author.data and author_form.validate_on_submit():
 		try:
-			user = User.query.filter_by(username=author_form.username.data).first()
+			user = User.query.filter_by(username=author_form.username.data.strip()).first()
 			thesis.contributors.append(user)
 			db.session.commit()
 			flash("Added an author","success")
@@ -415,105 +476,41 @@ def delete_thesis_contributor(thesis_title,username):
 
 	return redirect(url_for('admin.update_thesis', thesis_title=thesis_title))	
 
-
-@admin.route("/thesis_archiving/admin/users", methods=['GET','POST'])
+##################################################################################################################################################
+@admin.route("/thesis_archiving/admin/register/general", methods=['GET','POST'])
 @login_required
 @has_roles('Admin')
-def users():
+def register_general():
+	
+	form = GeneralCreateForm()
 
-	page = request.args.get("page", 1, type=int)
-	users = User.query.order_by(User.username.asc()).paginate(page=page, per_page=10)
+	form.select_data.choices.extend([('Subject','Subject'),('Section','Section')])
 
-	return render_template('admin/users.html', users=users)
-
-
-@admin.route("/thesis_archiving/admin/update/user/<string:user_username>", methods=['GET','POST'])
-@login_required
-@has_roles('Admin')
-def update_user(user_username):
-
-	user = User.query.filter_by(username=user_username).first_or_404()
-
-	s_user = Role.query.filter_by(name='Superuser').first().permitted
-
-	form = UpdateUserForm(user)
-
-	form.subject.choices = [(str(r.code), r.name) for r in Subject.query.all()] if Subject.query.all() else [('None', 'None')]
-	form.subject.choices.insert(0,('None', 'None'))
-	form.section.choices = [(str(r.code), r.code) for r in Section.query.all()] if Section.query.all() else [('None', 'None')]
-	form.section.choices.insert(0,('None', 'None'))
+	to_insert = None
 
 	if form.validate_on_submit():
-		roles = [i for i in user.roles] # get all user's role
-		acad_role = Role.query.filter_by(name=form.acad_role.data).first()
-		admin_role = Role.query.filter_by(name=form.admin_role.data).first()
 
-		for i in roles: #remove all user's roles
-			user.roles.remove(i)
-
-		if acad_role or admin_role: #append all selected roles
-			if acad_role:
-				user.roles.append(acad_role)
-			if admin_role:
-				user.roles.append(admin_role)
-
-		user.last_name = form.last_name.data
-		user.first_name = form.first_name.data
-		user.middle_initial = form.middle_initial.data
-		user.email = form.email.data
-		user.subject_id = Subject.query.filter_by(code=form.subject.data).first().id if form.subject.data != 'None' else None
-		user.section_id = Section.query.filter_by(code=form.section.data).first().id if form.section.data != 'None' else None
+		if form.select_data.data == "Subject":
+			to_insert = Subject(
+					name=form.name.data.strip(),
+					code=form.code.data.strip()
+				)
+		elif form.select_data.data == "Section":
+			to_insert = Section(
+					code=form.code.data.strip()
+				)
 
 		try:
+			db.session.add(to_insert)
 			db.session.commit()
-			flash('User update success','success')
+			flash(f"{form.select_data.data} added successfully","success")
 		except:
-			flash('An unexpected error has occured','danger')
+			flash("An error occured while adding data","danger")
 
-		return redirect(url_for('admin.update_user',user_username=user_username))
-
-	elif request.method == 'GET':
-		form.admin_role.default = 'None'
-		form.acad_role.default = 'None'
-
-		for i in ['Superuser','Admin']:
-			if Role.query.filter_by(name=i).first() in user.roles:
-				form.admin_role.default = i
-				break 
-
-		for i in ['Adviser','Student']:
-			if Role.query.filter_by(name=i).first() in user.roles:
-				form.acad_role.default = i
-				break
-
-		form.subject.default = user.subject.code if user.subject else 'None'
-		form.section.default = user.section.code if user.section else 'None'
-		form.process()
+		return redirect(url_for('admin.register_general'))
 		
-		form.last_name.data = user.last_name
-		form.first_name.data = user.first_name
-		form.middle_initial.data = user.middle_initial
-		form.email.data = user.email
-
-	return render_template('admin/update_user.html', form=form, s_user=s_user, user=user)
-
-@admin.route("/thesis_archiving/admin/delete/user/<string:user_username>", methods=['POST'])
-@login_required
-@has_roles('Admin')
-def delete_user(user_username):
-
-	user = User.query.filter_by(username=user_username).first_or_404()
-
-	try:
-		db.session.delete(user)
-		db.session.commit()
-		flash("User has been deleted from the server","success")
-	except:
-		flash('An unexpected error has occured','danger')
-
-
-	return redirect(url_for('admin.users'))
-
+	return render_template('admin/register_general.html', form=form)
+#  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
 @admin.route("/thesis_archiving/admin/subjects", methods=['GET','POST'])
 @login_required
 @has_roles('Admin')
@@ -533,8 +530,8 @@ def update_subject(subject_code):
 	form = UpdateSubjectForm(subject)
 
 	if form.validate_on_submit():
-		subject.name = form.name.data
-		subject.code = form.code.data
+		subject.name = form.name.data.strip()
+		subject.code = form.code.data.strip()
 
 		try:
 			db.session.commit()
@@ -542,7 +539,7 @@ def update_subject(subject_code):
 		except:
 			flash('An unexpected error has occured','danger')
 
-		return redirect(url_for('admin.update_subject',subject_code=form.code.data))
+		return redirect(url_for('admin.update_subject',subject_code=form.code.data.strip()))
 
 	elif request.method == 'GET':
 		form.name.data = subject.name
@@ -550,7 +547,7 @@ def update_subject(subject_code):
 
 	return render_template('admin/update_subject.html', form=form, subject=subject)
 
-@admin.route("/thesis_archiving/admin/delete/subject/<string:subject_code>", methods=['POST'])
+@admin.route("/thesis_archiving/admin/delete/subject/<string:subject_code>", methods=['GET','POST'])
 @login_required
 @has_roles('Admin')
 def delete_subject(subject_code):
@@ -560,13 +557,13 @@ def delete_subject(subject_code):
 	try:
 		db.session.delete(subject)
 		db.session.commit()
+		flash("Subject has been deleted from the server","success")
 	except:
 		flash('An unexpected error has occured','danger')
 
-	flash("Subject has been deleted from the server","success")
 
 	return redirect(url_for('admin.subjects'))
-
+#  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
 @admin.route("/thesis_archiving/admin/sections", methods=['GET','POST'])
 @login_required
 @has_roles('Admin')
@@ -587,7 +584,7 @@ def update_section(section_code):
 	form = UpdateSectionForm(section)
 
 	if form.validate_on_submit():
-		section.code = form.code.data
+		section.code = form.code.data.strip()
 
 		try:
 			db.session.commit()
@@ -602,7 +599,7 @@ def update_section(section_code):
 
 	return render_template('admin/update_section.html', form=form, section=section)
 
-@admin.route("/thesis_archiving/admin/delete/section/<string:section_code>", methods=['POST'])
+@admin.route("/thesis_archiving/admin/delete/section/<string:section_code>", methods=['GET','POST'])
 @login_required
 @has_roles('Admin')
 def delete_section(section_code):
@@ -612,14 +609,15 @@ def delete_section(section_code):
 	try:
 		db.session.delete(section)
 		db.session.commit()
+		flash("Section has been deleted from the server","success")
 	except:
 		flash('An unexpected error has occured','danger')
 
-	flash("Section has been deleted from the server","success")
 
 	return redirect(url_for('admin.sections'))
+##################################################################################################################################################
 
-########################################## AJAX
+##################### AJAX #####################
 @admin.route('/thesis_archiving/admin/register/user/generated_user', methods=['POST'])
 def generate_username():
 	role = request.form['role']
