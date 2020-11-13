@@ -8,10 +8,10 @@
 
 
 {% block content %}
-<div class="width"> 
+<div class="width"> <!-- this div doesnt seem to be useful anymore -->
 	<div class="bg-white p-3 shadow-sm" id="UsersBody">
-
-		<div class="row">
+		
+		<div class="row"> <!--indent all elements properly  -->
 	    <div class="col-8">
 	    	<h1>Users</h1>
 	    </div>
@@ -21,10 +21,13 @@
 	    <a href="{{ url_for('admin.register_user') }}" class="btn btn-secondary shadow-sm">Add</a></div>
   		</div>    
   	</div>
-
+  		
+  		<!-- enclose the table element in another div w/ class table-responsive para madelete na entirely yung css + dont forget to remove the link element (bootstrap responsive tables)-->
+  		<!-- this will also prevent yung awkward alignment ng Add button pag nag horizontal scroll -->
+  		<!-- set y margins in this new div rin para may space away from the heading and pagination (bootstrap spacing) -->
 		<table class="table table-striped">
 			<thead>
-			<tr>
+			<tr> <!-- indent/nest properly-->
 				<th scope="col">Username</th>
 				<th scope="col">Surname</th>
 				<th scope="col">First Name</th>
@@ -57,7 +60,7 @@
 				<td>{{user.section.code}}</td>
 				<td>{{user.subject.code}}</td>
 				<td>{{user.date_register}}</td>
-				<td><a href="{{url_for('admin.update_user',user_username=user.username)}}" class="btn btn-secondary shadow-sm">Edit</a></td>
+				<td><a href="{{url_for('admin.update_user',user_username=user.username)}}" class="btn btn-secondary shadow-sm">Edit</a></td> <!-- make the button its small variant (bootstrap buttons) -->
 			</tr>
 		{% endfor %}
 		</tbody>
@@ -65,7 +68,8 @@
 
 		</table>
 
-	<div class="d-flex justify-content-end">
+
+	<div class="d-flex justify-content-end">  <!-- indent properly -->
 	{% for page_num in users.iter_pages() %}
 		{% if page_num %}
 			{% if users.page == page_num %}
