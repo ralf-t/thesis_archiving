@@ -1,86 +1,80 @@
 {% extends "admin/base_admin.html" %}
 
 {% block css %}
-<!-- css scripts -->
-	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='admin/custom css/users.css') }}">
-<!-- store in static/admin/custom css -->
+
 {% endblock %}
 
 
 {% block content %}
-<div class="width"> <!-- this div doesnt seem to be useful anymore -->
-	<div class="bg-white p-3 shadow-sm" id="UsersBody">
+<div class="bg-white p-3 shadow-sm">
 		
-		<div class="row"> <!--indent all elements properly  -->
+	<div class="row">
 	    <div class="col-8">
-	    	<h1>Users</h1>
-	    </div>
+		    <h1>Users</h1>
+		</div>
 
 	   	<div class="col-4">
-		<div class="d-flex justify-content-end">
-	    <a href="{{ url_for('admin.register_user') }}" class="btn btn-secondary shadow-sm">Add</a></div>
+			<div class="d-flex justify-content-end">
+		    	<a href="{{ url_for('admin.register_user') }}" class="btn btn-secondary shadow-sm">Add</a>
+			</div>
   		</div>    
   	</div>
-  		
-  		<!-- enclose the table element in another div w/ class table-responsive para madelete na entirely yung css + dont forget to remove the link element (bootstrap responsive tables)-->
-  		<!-- this will also prevent yung awkward alignment ng Add button pag nag horizontal scroll -->
-  		<!-- set y margins in this new div rin para may space away from the heading and pagination (bootstrap spacing) -->
+
+  	<div class="table-responsive my-auto">
 		<table class="table table-striped">
 			<thead>
-			<tr> <!-- indent/nest properly-->
-				<th scope="col">Username</th>
-				<th scope="col">Surname</th>
-				<th scope="col">First Name</th>
-				<th scope="col">M.I.</th>
-				<th scope="col">Email</th>
-			    <th scope="col">Roles</th>
-			    <th scope="col">Section</th>
-			    <th scope="col">Subject</th>
-			    <th scope="col">Date Register</th>
-			    <th scope="col">Action</th>
-			</tr>
+				<tr>
+					<th scope="col">Username</th>
+					<th scope="col">Surname</th>
+					<th scope="col">First Name</th>
+					<th scope="col">M.I.</th>
+					<th scope="col">Email</th>
+				    <th scope="col">Roles</th>
+				    <th scope="col">Section</th>
+				    <th scope="col">Subject</th>
+				    <th scope="col">Date Register</th>
+				    <th scope="col">Action</th>
+				</tr>
 			</thead>
 
-	<!-- main stuff here -->
+
 			<tbody>
-		{% for user in users.items %}
-			<tr>
-				<td>{{user.username}}</td>
-				<td>{{user.last_name}}</td>
-				<td>{{user.first_name}}</td>
-				<td>{{user.middle_initial}}</td>
-				<td>{{user.email}}</td>
-				
-				<td>
-				{% for roles in user.roles %}
-					{{roles}}
-				{% endfor %}
-				</td>
+			{% for user in users.items %}
+				<tr>
+					<td>{{user.username}}</td>
+					<td>{{user.last_name}}</td>
+					<td>{{user.first_name}}</td>
+					<td>{{user.middle_initial}}</td>
+					<td>{{user.email}}</td>
+					
+					<td>
+					{% for roles in user.roles %}
+						{{roles}}
+					{% endfor %}
+					</td>
 
-				<td>{{user.section.code}}</td>
-				<td>{{user.subject.code}}</td>
-				<td>{{user.date_register}}</td>
-				<td><a href="{{url_for('admin.update_user',user_username=user.username)}}" class="btn btn-secondary shadow-sm">Edit</a></td> <!-- make the button its small variant (bootstrap buttons) -->
-			</tr>
-		{% endfor %}
-		</tbody>
-
-
+					<td>{{user.section.code}}</td>
+					<td>{{user.subject.code}}</td>
+					<td>{{user.date_register}}</td>
+					<td><a href="{{url_for('admin.update_user',user_username=user.username)}}" class="btn btn-secondary btn-sm">Edit</a></td>
+				</tr>
+			{% endfor %}
+			</tbody>
 		</table>
 
 
-	<div class="d-flex justify-content-end">  <!-- indent properly -->
-	{% for page_num in users.iter_pages() %}
-		{% if page_num %}
-			{% if users.page == page_num %}
-				<a class="btn btn-secondary mb-4" href="{{ url_for('admin.users', page=page_num) }}">{{ page_num }}</a>
+		<div class="d-flex justify-content-end">
+		{% for page_num in users.iter_pages() %}
+			{% if page_num %}
+				{% if users.page == page_num %}
+					<a class="btn btn-secondary mb-4" href="{{ url_for('admin.users', page=page_num) }}">{{ page_num }}</a>
+				{% else %}
+					<a class="btn btn-outline-secondary mb-4" href="{{ url_for('admin.users', page=page_num) }}">{{ page_num }}</a>
+				{% endif %}
 			{% else %}
-				<a class="btn btn-outline-secondary mb-4" href="{{ url_for('admin.users', page=page_num) }}">{{ page_num }}</a>
+			  ...
 			{% endif %}
-		{% else %}
-		  ...
-		{% endif %}
-		{% endfor %}
+			{% endfor %}
 		</div>
 	</div>
 </div>
@@ -90,7 +84,6 @@
 
 
 {% block js %}
-<!-- js scripts-->
 
-<!-- store in static/admin/custom js -->
+
 {% endblock %}
