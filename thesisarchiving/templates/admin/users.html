@@ -1,80 +1,82 @@
 {% extends "admin/base_admin.html" %}
 
 {% block css %}
-<!-- css scripts -->
-	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='admin/custom css/users.css') }}">
-<!-- store in static/admin/custom css -->
+
 {% endblock %}
 
 
 {% block content %}
-<div class="width"> 
-	<div class="bg-white p-3 shadow-sm" id="sections">
-
-		<div class="row">
+<div class="bg-white p-3 shadow-sm mb-4">
+		
+	<div class="row">
 	    <div class="col-8">
-	    	<h1>Users</h1>
-	    </div>
+		    <h1>Users</h1>
+		</div>
 
 	   	<div class="col-4">
-		<div class="d-flex justify-content-end">
-	    <a href="{{ url_for('admin.register_user') }}" class="btn btn-secondary shadow-sm">Add</a></div>
+			<div class="d-flex justify-content-end">
+		    	<a href="{{ url_for('admin.register_user') }}" class="btn btn-secondary shadow-sm">Add</a>
+			</div>
   		</div>    
   	</div>
 
-		<table class="table">
-			<tr>
-				<th scope="col">Username</th>
-				<th scope="col">Surname</th>
-				<th scope="col">First Name</th>
-				<th scope="col">M.I.</th>
-				<th scope="col">Email</th>
-			    <th scope="col">Roles</th>
-			    <th scope="col">Section</th>
-			    <th scope="col">Subject</th>
-			    <th scope="col">Date Register</th>
-			    <th scope="col">Action</th>
-			</tr>
-
-	<!-- main stuff here -->
-		{% for user in users.items %}
-			<tr>
-				<td>{{user.username}}</td>
-				<td>{{user.last_name}}</td>
-				<td>{{user.first_name}}</td>
-				<td>{{user.middle_initial}}</td>
-				<td>{{user.email}}</td>
-				
-				<td>
-				{% for roles in user.roles %}
-					{{roles}}
-				{% endfor %}
-				</td>
-
-				<td>{{user.section.code}}</td>
-				<td>{{user.subject.code}}</td>
-				<td>{{user.date_register}}</td>
-				<td><a href="{{url_for('admin.update_user',user_username=user.username)}}" class="btn btn-secondary shadow-sm">Edit</a></td>
-			</tr>
-		{% endfor %}
+  	<div class="table-responsive my-3">
+		<table class="table table-striped">
+			<thead>
+				<tr>
+					<th scope="col">Username</th>
+					<th scope="col">Surname</th>
+					<th scope="col">First Name</th>
+					<th scope="col">M.I.</th>
+					<th scope="col">Email</th>
+				    <th scope="col">Roles</th>
+				    <th scope="col">Section</th>
+				    <th scope="col">Subject</th>
+				    <th scope="col">Date Register</th>
+				    <th scope="col">Action</th>
+				</tr>
+			</thead>
 
 
+			<tbody>
+			{% for user in users.items %}
+				<tr>
+					<td>{{user.username}}</td>
+					<td>{{user.last_name}}</td>
+					<td>{{user.first_name}}</td>
+					<td>{{user.middle_initial}}</td>
+					<td>{{user.email}}</td>
+					
+					<td>
+					{% for roles in user.roles %}
+						{{roles}}
+					{% endfor %}
+					</td>
+
+					<td>{{user.section.code}}</td>
+					<td>{{user.subject.code}}</td>
+					<td>{{user.date_register}}</td>
+					<td><a href="{{url_for('admin.update_user',user_username=user.username)}}" class="btn btn-secondary btn-sm">Edit</a></td>
+				</tr>
+			{% endfor %}
+			</tbody>
 		</table>
-
-	<div class="d-flex justify-content-end">
-	{% for page_num in users.iter_pages() %}
-		{% if page_num %}
-			{% if users.page == page_num %}
-				<a class="btn btn-info mb-4" href="{{ url_for('admin.users', page=page_num) }}">{{ page_num }}</a>
-			{% else %}
-				<a class="btn btn-outline-info mb-4" href="{{ url_for('admin.users', page=page_num) }}">{{ page_num }}</a>
-			{% endif %}
-		{% else %}
-		  ...
-		{% endif %}
-		{% endfor %}
-		</div>
 	</div>
+
+		<div class="d-flex justify-content-end">
+		{% for page_num in users.iter_pages() %}
+			{% if page_num %}
+				{% if users.page == page_num %}
+					<a class="btn btn-secondary mb-4" href="{{ url_for('admin.users', page=page_num) }}">{{ page_num }}</a>
+				{% else %}
+					<a class="btn btn-outline-secondary mb-4" href="{{ url_for('admin.users', page=page_num) }}">{{ page_num }}</a>
+				{% endif %}
+			{% else %}
+			  ...
+			{% endif %}
+			{% endfor %}
+		</div>
+
 </div>
 
 
@@ -82,7 +84,6 @@
 
 
 {% block js %}
-<!-- js scripts-->
 
-<!-- store in static/admin/custom js -->
+
 {% endblock %}
