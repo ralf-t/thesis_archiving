@@ -26,7 +26,7 @@
 				<tr>
 					<th scope="col">Username</th>
 					<th scope="col">Surname</th>
-					<th scope="col">First Name</th>
+					<th scope="col">First Name</th>  <!--add nowrap attribute-->
 					<th scope="col">M.I.</th>
 					<th scope="col">Email</th>
 				    <th scope="col">Roles</th>
@@ -53,9 +53,9 @@
 					{% endfor %}
 					</td>
 
-					<td>{{user.section.code}}</td>
-					<td>{{user.subject.code}}</td>
-					<td>{{user.date_register}}</td>
+					<td>{{user.section.code}}</td>  <!--add nowrap attribute-->
+					<td>{{user.subject.code}}</td>  <!--add nowrap attribute-->
+					<td>{{user.date_register.strftime('%m/%d/%Y')}}</td>
 					<td><a href="{{url_for('admin.update_user',user_username=user.username)}}" class="btn btn-secondary btn-sm">Edit</a></td>
 				</tr>
 			{% endfor %}
