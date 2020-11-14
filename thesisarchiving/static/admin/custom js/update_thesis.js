@@ -100,4 +100,27 @@ $( document ).ready(function() {
 		tags_div.slideUp();
 	});
 	
+	$("#username").keyup( function(){
+		const field = $(this);
+		const val = field.val();
+		const valid_feedback = $("#username-valid");
+		const invalid_feedback = $("#username-invalid");
+		
+		req = $.ajax({
+			url:'/thesis_archiving/validate_sn',
+			type: 'POST',
+			data: {val:val}
+		});
+
+		req.done(function(found){
+			if(found){
+				field.attr('class','form-control is-valid');
+				valid_feedback.html("Student found with name: "+found);
+			}else{
+				field.attr('class','form-control is-invalid');
+				invalid_feedback.html('Student number does not exist');
+			}
+		});
+		
+	});
 });

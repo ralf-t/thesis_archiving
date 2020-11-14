@@ -255,7 +255,7 @@
 
               {% if author_form.username.errors %}
                 {{ author_form.username(class='form-control is-invalid', placeholder="Student Number", maxlength="11") }}
-                <div class="invalid-feedback order-last">
+                <div class="invalid-feedback order-last" id="username-invalid">
                   {% for error in author_form.username.errors %}
                     {{ error }}
                   {% endfor %}
@@ -263,7 +263,11 @@
 
               {% else %}
                 {{ author_form.username(class='form-control', placeholder="Student Number", maxlength="11") }}
+                <div class="invalid-feedback order-last" id="username-invalid">
+                </div>
               {% endif %}
+              <div class="valid-feedback order-last" id="username-valid">
+              </div>
             <div class="input-group-append">
               {{ author_form.submit_author(class="btn btn-primary") }}
             </div>
