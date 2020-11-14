@@ -28,9 +28,9 @@
 						<th scope="col">Program</th>
 			       		<th scope="col">Category</th>
 			        	<th scope="col">Semester</th>
-						<th scope="col">School Year</th>  <!--add nowrap attribute-->
-					    <th scope="col">Date Deployed</th>  <!--add nowrap attribute-->
-					    <th scope="col">Date Registered</th>  <!--add nowrap attribute-->
+						<th nowrap scope="col">School Year</th>  <!--add nowrap attribute-->
+					    <th nowrap scope="col">Date Deployed</th>  <!--add nowrap attribute-->
+					    <th nowrap scope="col">Date Registered</th>  <!--add nowrap attribute-->
 					    <th scope="col">Action</th>
 					</tr>
 				</thead>
@@ -38,14 +38,14 @@
 				<tbody>
 				{% for thesis in theses.items %}
 					<tr><!--remove all class="col" from td's-->
-						<td class="col">{{ thesis.call_number }}</td> <!--add nowrap attribute-->
-						<td class="col">{{ thesis.title }}</td> 
-					    <td class="col">{{ thesis.program.college }}</td> <!--add nowrap attribute-->
-				      	<td class="col">{{ thesis.category.name }}</td> <!--add nowrap attribute-->
-			        	<td class="col">{{ thesis.semester.code }}</td>
-						<td class="col">{{ thesis.school_year.lower }} - {{ thesis.school_year.upper }}</td>
-						<td class="col">{{ thesis.date_deploy.strftime('%m/%d/%Y') if thesis.date_deploy else thesis.date_deploy }}</td> <!--add nowrap attribute-->
-						<td class="col">{{ thesis.date_register.strftime('%m/%d/%Y')  }}</td> <!--add nowrap attribute-->
+						<td nowrap>{{ thesis.call_number }}</td> <!--add nowrap attribute-->
+						<td>{{ thesis.title }}</td> 
+					    <td nowrap>{{ thesis.program.college }}</td> <!--add nowrap attribute-->
+				      	<td nowrap>{{ thesis.category.name }}</td> <!--add nowrap attribute-->
+			        	<td>{{ thesis.semester.code }}</td>
+						<td>{{ thesis.school_year.lower }} - {{ thesis.school_year.upper }}</td>
+						<td nowrap>{{ thesis.date_deploy.strftime('%m/%d/%Y') if thesis.date_deploy else thesis.date_deploy }}</td> <!--add nowrap attribute-->
+						<td nowrap>{{ thesis.date_register.strftime('%m/%d/%Y')  }}</td> <!--add nowrap attribute-->
 						<td class="col"><a href="#" class="btn btn-secondary btn-sm">Edit</a></td>
 					</tr>
 				{% endfor %}

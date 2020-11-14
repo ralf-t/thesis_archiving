@@ -6,7 +6,7 @@
 
 
 {% block content %}
-<div class="bg-white p-3 shadow-sm mb-4">
+<div class="bg-white p-3 shadow-sm mb-4 w-100 mx-auto">
 		
 	<div class="row">
 	    <div class="col-8">
@@ -26,13 +26,13 @@
 				<tr>
 					<th scope="col">Username</th>
 					<th scope="col">Surname</th>
-					<th scope="col">First Name</th>  <!--add nowrap attribute-->
+					<th nowrap scope="col">First Name</th>
 					<th scope="col">M.I.</th>
 					<th scope="col">Email</th>
 				    <th scope="col">Roles</th>
 				    <th scope="col">Section</th>
 				    <th scope="col">Subject</th>
-				    <th scope="col">Date Register</th>
+				    <th nowrap scope="col">Date Register</th>
 				    <th scope="col">Action</th>
 				</tr>
 			</thead>
@@ -53,8 +53,8 @@
 					{% endfor %}
 					</td>
 
-					<td>{{user.section.code}}</td>  <!--add nowrap attribute-->
-					<td>{{user.subject.code}}</td>  <!--add nowrap attribute-->
+					<td nowrap>{{user.section.code}}</td>
+					<td nowrap>{{user.subject.code}}</td>
 					<td>{{user.date_register.strftime('%m/%d/%Y')}}</td>
 					<td><a href="{{url_for('admin.update_user',user_username=user.username)}}" class="btn btn-secondary btn-sm">Edit</a></td>
 				</tr>
