@@ -24,16 +24,16 @@
       <table class="table table-striped">
         <thead>
           <tr>
-      			<th scope="col">Code</th>
-      			<th scope="col">Action</th>
+      			<th scope="col" class="col-10">Code</th>
+      			<th scope="col" class="col-2">Action</th>
       		</tr>
         </thead>  
 
         <tbody>
       	{% for section in sections.items %}
       		<tr>
-          	<td>{{section.code}}</td>
-          	<td><a href="{{url_for('admin.update_section',section_code=section.code)}}" class="btn btn-secondary btn-sm">Edit</a></td>
+          	<td div="col-10">{{section.code}}</td>
+          	<td div="col-2"><a href="{{url_for('admin.update_section',section_code=section.code)}}" class="btn btn-secondary btn-sm">Edit</a></td>
           </tr>
       	{% endfor %}
         </tbody>
