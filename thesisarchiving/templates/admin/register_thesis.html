@@ -172,18 +172,24 @@
 						{% for field in form.authors %}
 						<div class="form-row">
 						 	{% set author_id = 'author' + loop.index0|string %}
+						 	{% set valid_feedback = author_id + 'valid' %}
+						 	{% set invalid_feedback = author_id + 'invalid' %}
 							
 			  				<div class="form-group col-12">
 			  					{% if field.username.errors %}
 			  						{{ field.username(class='form-control is-invalid', placeholder='Student Number', maxlength="11", id=author_id) }}
-				                	<div class="invalid-feedback order-last">
+				                	<div class="invalid-feedback order-last" id={{invalid_feedback}}>
 						                {% for error in field.username.errors %}
 					                  		{{ error }}
 						                {% endfor %}
 				              		</div>
 			  					{% else %}
 			  						{{ field.username(class='form-control', placeholder='Student Number', maxlength="11", id=author_id) }}
+			  						<div class="invalid-feedback order-last" id={{invalid_feedback}}>
+				              		</div>
 			  					{% endif %}
+			  					<div class="valid-feedback order-last" id={{valid_feedback}}>
+			              		</div>
 			  				</div>
 						
 						</div>

@@ -149,4 +149,27 @@ $( document ).ready(function() {
 		$(this).hide();
 	});
 
+	$("[name^='author']").keyup( function(){
+		const field = $(this);
+		const val = field.val();
+		const valid_feedback = $("#"+field.attr("id") + "valid");
+		const invalid_feedback = $("#"+field.attr("id") + "invalid");
+		
+		req = $.ajax({
+			url:'/thesis_archiving/validate_sn',
+			type: 'POST',
+			data: {val:val}
+		});
+
+		req.done(function(found){
+			if(found){
+				field.attr('class','form-control is-valid');
+				valid_feedback.html("Student found with name: "+found);
+			}else{
+				field.attr('class','form-control is-invalid');
+				invalid_feedback.html('Student number does not exist');
+			}
+		});
+	});
+
 });

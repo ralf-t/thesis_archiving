@@ -46,7 +46,7 @@
 						<td>{{ thesis.school_year.lower }} - {{ thesis.school_year.upper }}</td>
 						<td nowrap>{{ thesis.date_deploy.strftime('%m/%d/%Y') if thesis.date_deploy else thesis.date_deploy }}</td>
 						<td nowrap>{{ thesis.date_register.strftime('%m/%d/%Y')  }}</td>
-						<td class="col"><a href="#" class="btn btn-secondary btn-sm">Edit</a></td>
+						<td class="col"><a href="{{ url_for('admin.update_thesis',thesis_title=thesis.title) }}" class="btn btn-secondary btn-sm">Edit</a></td>
 					</tr>
 				{% endfor %}
 				</tbody>

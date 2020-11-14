@@ -618,18 +618,17 @@ def delete_section(section_code):
 ##################################################################################################################################################
 
 ##################### AJAX #####################
-@admin.route('/thesis_archiving/admin/register/user/generated_user', methods=['POST'])
-def generate_username():
-	role = request.form['role']
-	generated_user = ''
+@admin.route('/thesis_archiving/validate_sn', methods=['POST'])
+def validate_sn():
+	val = request.form['val']
 
-	if role != 'Student':
-		while True:
-			generated_user = ''.join(random.choices(string.ascii_letters + string.digits, k=3))
-			if (User.query.filter_by(username=generated_user).first() == None):
-				break	
+	user = User.query.filter_by(username=val).first()
+	stud_role = Role.query.filter_by(name='Student').first()
 
-	return jsonify(generated_user)
+	if user and stud_role in user.roles:
+		return jsonify(f'{user.last_name}, {user.first_name} {user.middle_initial}')
+	else:
+		return jsonify(False)
 
 @admin.route("/thesis_archiving/admin/register/thesis/advanced_search", methods=['POST'])
 def similar_thesis():
