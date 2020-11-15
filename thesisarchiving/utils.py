@@ -1,9 +1,9 @@
-from flask import flash, jsonify, request, abort, url_for
+from flask import flash, jsonify, request, abort, url_for, current_app
 from thesisarchiving import bcrypt, mail
 from thesisarchiving.models import Role, Area, Keyword, Thesis, Semester, Program
 from flask_login import current_user
 from flask_mail import Message
-import uuid
+import uuid, os, pathlib
 from fuzzywuzzy import fuzz
 from functools import wraps
 
@@ -31,6 +31,19 @@ def has_roles(*roles):
 
     return decorator
 
+def get_file(file,form_fn):
+
+    form_path = None
+    form_file = None
+
+    if file == 'form_file':
+        form_path = os.path.join(current_app.root_path, 'static','thesis attachments','form file', form_fn)
+    if file == 'thesis_file':
+        form_path = os.path.join(current_app.root_path, 'static','thesis attachments','thesis file', form_fn)
+    
+    form_file = pathlib.Path(form_path)
+
+    return form_file if form_file.is_file() else None
 
 def fuzz_tags(tag_input, table_name):
 

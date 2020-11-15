@@ -1,11 +1,12 @@
-from flask import render_template, redirect, url_for, request, Blueprint, flash
+from flask import render_template, redirect, url_for, request, Blueprint, flash, abort, send_file
 from thesisarchiving import db, bcrypt
-from thesisarchiving.utils import advanced_search, fuzz_tags, send_reset_email
+from thesisarchiving.utils import advanced_search, fuzz_tags, send_reset_email, get_file
 from thesisarchiving.main.forms import LoginForm, BasicSearchForm, AdvancedSearchForm, ResetRequestForm, ResetPasswordForm
 from thesisarchiving.models import Role, User, Program, Thesis, Semester
 from flask_login import login_user, current_user, logout_user, login_required
 from urllib import parse
 import random, uuid
+from io import BytesIO
 
 main = Blueprint('main', __name__)
 
@@ -120,6 +121,23 @@ def thesis_profile(thesis_title):
 		# return redirect(url_for('home'))
 
 	return render_template('main/thesis_profile.html', thesis=thesis, adviser=adviser, student=student, contributor=contributor)
+
+@main.route("/thesis_archiving/thesis/<string:thesis_title>/download/<string:file>/<string:file_name>", methods=['GET','POST'])
+@login_required
+def thesis_download_attachment(thesis_title,file,file_name):
+
+	thesis = Thesis.query.filter_by(title=thesis_title).first_or_404()
+
+	if (thesis.form_file==file_name or thesis.thesis_file==file_name) and (file=='form_file' or file=='thesis_file'):
+
+		attch = get_file(file,file_name)
+
+		if attch:
+			return send_file(BytesIO(attch.read_bytes()),attachment_filename=file_name,as_attachment=True)
+		else:
+			abort(404) #if file/path doest exist
+	else:
+		abort(406)
 
 @main.route("/thesis_archiving/reset_password/<token>", methods=['GET','POST'])
 def reset_password(token):
