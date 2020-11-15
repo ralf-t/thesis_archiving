@@ -6,7 +6,7 @@
 	
 
 {% block content %}
-	<div class="bg-white p-3 shadow-sm mb-4 w-50 mx-auto">
+	<div class="bg-white p-3 shadow-sm mb-4 mx-auto col-lg-6 col-md-8">
 
 		<div class="row">
 			<div class="col-8">
@@ -33,8 +33,8 @@
 				<tbody>
 				{% for subject in subjects.items %}
 					<tr>
-						<td>{{subject.name}}</td>
-						<td>{{subject.code}}</td>
+						<td nowrap>{{subject.name}}</td>
+						<td nowrap>{{subject.code}}</td>
 						<td><a href="{{url_for('admin.update_subject',subject_code=subject.code)}}" class="btn btn-secondary btn-sm">Edit</a></td>
 					</tr>
 				{% endfor %}
