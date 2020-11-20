@@ -13,7 +13,7 @@
 						<span class="{{'badge badge-'+t.category.code}}">{{t.category.name}}</span>
 						<small class="text-muted">{{t.school_year.lower}}-{{t.school_year.upper}}</small>
 						<br>
-						<a class="thesis-title mt-2" href="{{ url_for('main.thesis_profile', thesis_id=t.id)}}">{{t.title}}</a>
+						<a class="thesis-title mt-2" href="{{ url_for('main.thesis_profile', thesis_title=t.title)}}">{{t.title}}</a>
 						<p class="text-muted mb-0">{{t.call_number}}</p>
 						<span class="badge badge-pill badge-dark">{{t.area.name}}</span>
 						<br>
