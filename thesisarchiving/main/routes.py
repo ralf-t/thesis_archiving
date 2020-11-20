@@ -165,36 +165,6 @@ def reset_password(token):
 
 	return render_template('main/reset_password.html', title='Reset Password', form=form)
 
-##### ERRORS
-@main.route("/401", methods=['GET','POST'])
-def error_401():
-	return render_template('errors/401.html')
-
-@main.route("/403", methods=['GET','POST'])
-def error_403():
-	return render_template('errors/403.html')
-
-@main.route("/404", methods=['GET','POST'])
-def error_404():
-	return render_template('errors/404.html')
-
-@main.route("/405", methods=['GET','POST'])
-def error_405():
-	return render_template('errors/405.html')
-
-@main.route("/406", methods=['GET','POST'])
-def error_406():
-	return render_template('errors/406.html')
-
-@main.route("/413", methods=['GET','POST'])
-def error_413():
-	return render_template('errors/413.html')
-
-@main.route("/500", methods=['GET','POST'])
-def error_500():
-	return render_template('errors/500.html')
-
-
 @main.route("/thesis_archiving/reset_request", methods=['GET','POST'])
 def reset_request():
 	
