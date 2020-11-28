@@ -160,15 +160,17 @@ def delete_user(user_username):
 
 	user = User.query.filter_by(username=user_username).first_or_404()
 
-	try:
-		db.session.delete(user)
-		db.session.commit()
-		flash("User has been deleted from the server","success")
-	except:
-		flash('An unexpected error has occured','danger')
-
-
-	return redirect(url_for('admin.users'))
+	if len(user.thesis) == 0:
+		try:
+			db.session.delete(user)
+			db.session.commit()
+			flash("User has been deleted from the server","success")
+		except:
+			flash('An unexpected error has occured','danger')
+		return redirect(url_for('admin.users'))
+	else:
+		flash('User is a contributor of an existing thesis. Remove user from thesis contributors before deleting.','danger')
+		return redirect(url_for('admin.update_user',user_username=user.username))
 ##################################################################################################################################################
 @admin.route("/thesis_archiving/admin/theses", methods=['GET','POST'])
 @login_required
@@ -456,6 +458,22 @@ def update_thesis(thesis_title):
 
 	return render_template('admin/update_thesis.html', thesis=thesis, students=students, author_form=author_form, thesis_form=thesis_form)
 
+@admin.route("/thesis_archiving/admin/delete/thesis/<string:thesis_title>", methods=['POST'])
+@login_required
+@has_roles('Admin')
+def delete_thesis(thesis_title):
+
+	thesis = Thesis.query.filter_by(title=thesis_title).first_or_404()
+
+	try:
+		db.session.delete(thesis)
+		db.session.commit()
+		flash(f"Succesfully deleted {thesis.call_number}","success")
+	except:		
+		flash("An error occured while deleting thesis","danger")
+
+	return redirect(url_for('admin.theses'))	
+
 @admin.route("/thesis_archiving/admin/delete/thesis/<string:thesis_title>/user/<string:username>", methods=['GET','POST'])
 @login_required
 @has_roles('Admin')
@@ -545,9 +563,9 @@ def update_subject(subject_code):
 		form.name.data = subject.name
 		form.code.data = subject.code
 
-	return render_template('admin/update_subject.html', form=form, subject=subject)
+	return render_template('admin/update_subject.html', form=form)
 
-@admin.route("/thesis_archiving/admin/delete/subject/<string:subject_code>", methods=['GET','POST'])
+@admin.route("/thesis_archiving/admin/delete/subject/<string:subject_code>", methods=['POST'])
 @login_required
 @has_roles('Admin')
 def delete_subject(subject_code):
@@ -557,10 +575,9 @@ def delete_subject(subject_code):
 	try:
 		db.session.delete(subject)
 		db.session.commit()
-		flash("Subject has been deleted from the server","success")
+		flash(f"Subject {subject_code} has been deleted from the server","success")
 	except:
-		flash('An unexpected error has occured','danger')
-
+		flash('An unexpected error has occured while deleting subject','danger')
 
 	return redirect(url_for('admin.subjects'))
 #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
@@ -597,9 +614,9 @@ def update_section(section_code):
 	elif request.method == 'GET':
 		form.code.data = section.code
 
-	return render_template('admin/update_section.html', form=form, section=section)
+	return render_template('admin/update_section.html', form=form)
 
-@admin.route("/thesis_archiving/admin/delete/section/<string:section_code>", methods=['GET','POST'])
+@admin.route("/thesis_archiving/admin/delete/section/<string:section_code>", methods=['POST'])
 @login_required
 @has_roles('Admin')
 def delete_section(section_code):
@@ -609,7 +626,7 @@ def delete_section(section_code):
 	try:
 		db.session.delete(section)
 		db.session.commit()
-		flash("Section has been deleted from the server","success")
+		flash(f"Section {section_code} has been deleted from the server","success")
 	except:
 		flash('An unexpected error has occured','danger')
 

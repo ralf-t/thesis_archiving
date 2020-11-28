@@ -172,6 +172,10 @@
   					</div>
 	  			
 	  				{{ form.submit(class="btn btn-primary btn-block mt-4") }}
+			</form>
+			
+			<form action="{{url_for('admin.delete_user',user_username=form.user.username)}}" method="POST" class="mt-2">
+				
 	  				<button type="button" class="btn btn-danger btn-block btn-sm" data-toggle="modal" data-target="#deleteConfirm">
 					  Delete
 					</button>
@@ -191,18 +195,11 @@
 					      </div>
 					      <div class="modal-footer">
 					        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-					        <a class="btn btn-danger" href="{{url_for('admin.delete_user',user_username=user.username)}}" role="button">Delete</a>
+					        <input type="submit" class="btn btn-danger" name="delete" value="Delete">
 					      </div>
 					    </div>
 					  </div>
 					</div>
-
-	  				<small class="form-text text-muted">
-						By creating an account, the User agrees to the <a href="#">Terms of Use</a> and <a href="#">Privacy Policy</a> of the system.
-					</small>
-
-
-					
 			</form>
   		</div>
 	</div>
