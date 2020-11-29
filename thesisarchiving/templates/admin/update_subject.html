@@ -47,6 +47,10 @@
 					</div>
 
 	  				{{ form.submit(class="btn btn-primary btn-block mt-4") }}
+					
+			</form>
+			<form action="{{url_for('admin.delete_subject',subject_code=form.subject.code)}}" method="POST" class="mt-2">
+				
 	  				<button type="button" class="btn btn-danger btn-block btn-sm" data-toggle="modal" data-target="#deleteConfirm">
 					  Delete
 					</button>
@@ -62,16 +66,15 @@
 					        </button>
 					      </div>
 					      <div class="modal-body">
-					        Are you sure you want to delete subject {{subject.code}}?
+					        Are you sure you want to delete subject {{form.subject.code}}?
 					      </div>
 					      <div class="modal-footer">
 					        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-					        <a class="btn btn-danger" href="{{url_for('admin.delete_subject',subject_code=subject.code)}}" role="button">Delete</a>
+				        	<input type="submit" class="btn btn-danger" name="delete" value="Delete">
 					      </div>
 					    </div>
 					  </div>
 					</div>
-					
 			</form>
   		</div>
 	</div>

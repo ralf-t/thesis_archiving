@@ -210,6 +210,34 @@
 
           {{ thesis_form.submit(class="btn btn-primary btn-block") }}
         </form>
+        <form action="{{url_for('admin.delete_thesis',thesis_title=thesis_form.thesis.title)}}" method="POST" class="mt-2">
+          
+
+          <button type="button" class="btn btn-danger btn-block btn-sm" data-toggle="modal" data-target="#deleteConfirm">
+            Delete thesis
+          </button>
+
+          <!-- Modal -->
+          <div class="modal fade" id="deleteConfirm" tabindex="-1" role="dialog">
+            <div class="modal-dialog" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="exampleModalLabel">Confirm delete</h5>
+                  <button type="button" class="close" data-dismiss="modal">
+                    <span>&times;</span>
+                  </button>
+                </div>
+                <div class="modal-body">
+                  Are you sure you want to delete thesis {{thesis_form.thesis.title}}?
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                  <input type="submit" class="btn btn-danger" name="delete" value="Delete">
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
       </div>
   </div>
 </div>
