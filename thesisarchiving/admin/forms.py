@@ -5,7 +5,7 @@ from flask_login import current_user
 from wtforms import StringField, SelectField, SubmitField, DateField, FieldList, FormField, Form, PasswordField, TextAreaField, BooleanField
 from wtforms.validators import Optional, Length, DataRequired, ValidationError, EqualTo, Email
 from datetime import datetime
-import re, pytz, os, uuid
+import re, pytz, os#, uuid
 from thesisarchiving.models import User, Role, Thesis, Subject, Section
 
 titleRegex = r"^([A-z0-9,':_%#()@&?. -]{3,250})$"
@@ -114,7 +114,7 @@ class RegisterThesisForm(FlaskForm):
 			raise ValidationError('File too large (max 15mb)')
 
 	def validate_adviser(self, adviser):
-		adv = User.query.get(uuid.UUID(adviser.data))
+		adv = User.query.get(int(adviser.data))
 		if adv not in Role.query.filter_by(name='Adviser').first().permitted:
 			raise ValidationError('Adviser not found')
 

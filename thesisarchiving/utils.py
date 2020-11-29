@@ -3,7 +3,7 @@ from thesisarchiving import bcrypt, mail
 from thesisarchiving.models import Role, Area, Keyword, Thesis, Semester, Program
 from flask_login import current_user
 from flask_mail import Message
-import uuid, os, pathlib
+import os, pathlib #uuid
 from fuzzywuzzy import fuzz
 from functools import wraps
 
@@ -110,14 +110,14 @@ def advanced_search(title=None,area=None,keywords=None, program=None, category=N
 
     #by id since non modifiable by user naman to
     if program:
-        if Program.query.get(uuid.UUID(program)):  
-            sq_filters.append((Program.query.get(uuid.UUID(program)).theses).subquery())
+        if Program.query.get(int(program)):  
+            sq_filters.append((Program.query.get(int(program)).theses).subquery())
         else:
             return None
 
     if semester:
-        if Semester.query.get(uuid.UUID(semester)):  
-            sq_filters.append((Semester.query.get(uuid.UUID(semester)).theses).subquery())
+        if Semester.query.get(int(semester)):  
+            sq_filters.append((Semester.query.get(int(semester)).theses).subquery())
         else:
             return None
 

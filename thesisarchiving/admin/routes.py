@@ -5,8 +5,8 @@ from thesisarchiving.admin.forms import RegisterUserForm, RegisterThesisForm, Ge
 from thesisarchiving.admin.utils import save_file, del_old_file
 from thesisarchiving.models import Role, User, Subject, Section, Area, Keyword, Thesis, Semester, Program, Category #tinggal yung models idk why it worked lol
 from flask_login import login_user, current_user, logout_user, login_required
-import random, string, uuid
-from psycopg2.extras import NumericRange
+import random, string #, uuid
+# from psycopg2.extras import NumericRange
 
 admin = Blueprint('admin', __name__)
 
@@ -59,8 +59,8 @@ def register_user():
 			middle_initial=form.middle_initial.data.strip() if form.middle_initial.data.strip() else None,
 			email=form.email.data.strip(),
 			password=hashed_pw,
-			subject_id=uuid.UUID(form.subject.data) if form.subject.data != 'None' else None,
-			section_id=uuid.UUID(form.section.data) if form.section.data != 'None' else None
+			subject_id=int(form.subject.data) if form.subject.data != 'None' else None,
+			section_id=int(form.section.data) if form.section.data != 'None' else None
 			)
 
 		if adminrole:
@@ -261,9 +261,9 @@ def register_thesis():
 		added = 0
 		try:
 			c_num_int = 1
-			program = Program.query.get(uuid.UUID(form.program.data))
+			program = Program.query.get(int(form.program.data))
 			school_year = form.school_year.data #int coerced
-			semester = Semester.query.get(uuid.UUID(form.semester.data))
+			semester = Semester.query.get(int(form.semester.data))
 			
 			for field in form.title_area_keywords.entries:
 				
@@ -291,7 +291,8 @@ def register_thesis():
 						title=title,
 						program_id=program.id,
 						category_id=category.id,
-						school_year=NumericRange(school_year, school_year + 1,'[]'),
+						sy_start=school_year,
+						sy_end= school_year + 1,
 						semester_id=semester.id,
 						form_file=save_file(form.form_file.data, 'form_file')
 						)
@@ -307,7 +308,7 @@ def register_thesis():
 						else:
 							thesis.research_keywords.append(Keyword(name=keyword))
 					
-					thesis.contributors.append(User.query.get(uuid.UUID(adviser)))
+					thesis.contributors.append(User.query.get(int(adviser)))
 					
 					for author_field in form.authors.entries:
 						if author_field.username.data.strip():
@@ -393,7 +394,8 @@ def update_thesis(thesis_title):
 		
 		thesis.program = Program.query.filter_by(college=program).first()
 		thesis.category = Category.query.filter_by(name=category).first()
-		thesis.school_year = NumericRange(school_year, school_year + 1,'[]')
+		thesis.sy_start = school_year,
+		thesis.sy_end = school_year + 1,
 		thesis.semester = Semester.query.filter_by(code=int(semester)).first()
 		thesis.date_deploy = date_deploy
 		

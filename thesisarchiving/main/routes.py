@@ -5,7 +5,7 @@ from thesisarchiving.main.forms import LoginForm, BasicSearchForm, AdvancedSearc
 from thesisarchiving.models import Role, User, Program, Thesis, Semester
 from flask_login import login_user, current_user, logout_user, login_required
 from urllib import parse
-import random, uuid
+import random#, uuid
 from io import BytesIO
 
 main = Blueprint('main', __name__)
