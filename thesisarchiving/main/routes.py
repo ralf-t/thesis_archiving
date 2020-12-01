@@ -2,7 +2,7 @@ from flask import render_template, redirect, url_for, request, Blueprint, flash,
 from thesisarchiving import db, bcrypt
 from thesisarchiving.utils import advanced_search, fuzz_tags, send_reset_email, get_file
 from thesisarchiving.main.forms import LoginForm, BasicSearchForm, AdvancedSearchForm, ResetRequestForm, ResetPasswordForm
-from thesisarchiving.models import Role, User, Program, Thesis, Semester, Log
+from thesisarchiving.models import Role, User, Program, Thesis, Semester, Log, Category
 from flask_login import login_user, current_user, logout_user, login_required
 from urllib import parse
 import random#, uuid
@@ -74,6 +74,8 @@ def home(college_name=None):
 	query_str = parse.urlencode(request.args)
 
 	college = Program.query.filter_by(college=college_name).first() #gets from navbar filter
+
+
 	prog_id = str(college) if college else None #turns __repr__ to string
 
 	#set only value if argument is present and not str'None'
@@ -89,7 +91,12 @@ def home(college_name=None):
 		title = basic_search.title.data
 		return redirect(url_for('main.home', college_name=college_name, title=title))
 
-	query = advanced_search(title=title, area=area, keywords=keywords, program=prog_id if prog_id else program, semester=semester)
+	if college_name == 'Suggested':
+		sg = Category.query.filter_by(name=college_name).first()
+		th = Thesis.query.filter_by(category=sg).order_by(Thesis.title).all()
+		query = {'query':th, 'count':len(th)}
+	else:
+		query = advanced_search(title=title, area=area, keywords=keywords, program=prog_id if prog_id else program, semester=semester)
 
 	return render_template('main/home.html', basic_search=basic_search, query=query, query_str=query_str, programs=Program.query.all())
 

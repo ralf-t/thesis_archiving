@@ -8,6 +8,7 @@
 				{% for p in programs %}
 					<a href="{{ url_for('main.home', college_name=p.college) + '?' + query_str }}" class="custom-nav-link">{{p.college}}</a>
 				{% endfor %}
+					<a href="{{ url_for('main.home', college_name='Suggested') + '?' + query_str }}" class="custom-nav-link">Suggested</a>
 			</div>
 		</div>
 	</div>

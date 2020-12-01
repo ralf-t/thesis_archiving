@@ -1,6 +1,6 @@
 from flask import flash, jsonify, request, abort, url_for, current_app
 from thesisarchiving import bcrypt, mail
-from thesisarchiving.models import Role, Area, Keyword, Thesis, Semester, Program
+from thesisarchiving.models import Role, Area, Keyword, Thesis, Semester, Program, Category
 from flask_login import current_user
 from flask_mail import Message
 import os, pathlib #uuid
@@ -75,7 +75,8 @@ def advanced_search(title=None,area=None,keywords=None, program=None, category=N
     #maganda maimplement yung 'OR' for general searching
 
     #declare variables
-    query = Thesis.query #gumagana yung fuzz_title sort dito
+    suggested = Category.query.filter_by(name='Suggested').first()
+    query = Thesis.query.filter(Thesis.category != suggested) #gumagana yung fuzz_title sort dito
     sq_filters = []    
     query_lev = []
     #levenshtein sorting
