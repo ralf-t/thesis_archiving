@@ -417,7 +417,7 @@ def update_thesis(thesis_title):
 			
 			#updating call num
 		thesis.call_number = '{}-{}-{}{}-{}'.format(
-										thesis.school_year.lower, 
+										thesis.sy_start, 
 										thesis.semester.code, 
 										thesis.category.code, 
 										thesis.program.code, 
@@ -447,7 +447,7 @@ def update_thesis(thesis_title):
 				break
 
 		thesis_form.program.default = thesis.program.college #
-		thesis_form.school_year.default = thesis.school_year.lower #
+		thesis_form.school_year.default = thesis.sy_start #
 		thesis_form.semester.default = str(thesis.semester.code)
 		thesis_form.category.default = thesis.category.name 
 		thesis_form.adviser.default = thesis_adviser.username if thesis_adviser else 'None'#
