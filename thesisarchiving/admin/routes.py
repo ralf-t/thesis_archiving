@@ -394,8 +394,8 @@ def update_thesis(thesis_title):
 		
 		thesis.program = Program.query.filter_by(college=program).first()
 		thesis.category = Category.query.filter_by(name=category).first()
-		thesis.sy_start = school_year,
-		thesis.sy_end = school_year + 1,
+		thesis.sy_start = school_year
+		thesis.sy_end = school_year + 1
 		thesis.semester = Semester.query.filter_by(code=int(semester)).first()
 		thesis.date_deploy = date_deploy
 		
