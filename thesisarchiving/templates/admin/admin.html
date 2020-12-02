@@ -53,54 +53,30 @@
 			<table class="table table-striped" id="logsTable">
 			  <thead>
 			    <tr>
-			      <th scope="col">Date</th>
-			      <th scope="col">Time</th>
-			      <th scope="col">Action</th>
-			      <th scope="col">Admin</th>
-			      <th scope="col">Data</th>
+			      <th scope="col">ID</th>
+			      <th scope="col">Description</th>
+			      <th scope="col">Date/Time</th>
+			      <th scope="col">Error Code</th>
 			    </tr>
 			  </thead>
 			  <tbody>
+			  	<!-- also make the tables responsive ulit -->
+
+			  	<!-- remove spaces sa curly. nageeror pag piangtatabi ko sa comment e -->
+			  	<!-- for datetime column { { ITERATORVARIABLE.date_time.strftime("%m/%d/%Y, %H:%M:%S") } }  -->
+			  	<!-- ternary for error code { { value if True else None} } -->
 			    <tr>
-			      <td>01/01/2020</td>
-			      <td>00:00:00</td>
-			      <td>POST</td>
-			      <td>rnd</td>
-			      <td>User('2020202020')</td>
-			    </tr>
-			    <tr>
-			      <td>01/01/2020</td>
-			      <td>00:00:00</td>
-			      <td>POST</td>
-			      <td>rnd</td>
-			      <td>User('2020202020')</td>
-			    </tr>
-			    <tr>
-			      <td>01/01/2020</td>
-			      <td>00:00:00</td>
-			      <td>POST</td>
-			      <td>rnd</td>
-			      <td>User('2020202020')</td>
-			    </tr>
-			    <tr>
-			      <td>01/01/2020</td>
-			      <td>00:00:00</td>
-			      <td>POST</td>
-			      <td>rnd</td>
-			      <td>User('2020202020')</td>
-			    </tr>
-			    <tr>
-			      <td>01/01/2020</td>
-			      <td>00:00:00</td>
-			      <td>POST</td>
-			      <td>rnd</td>
-			      <td>User('2020202020')</td>
+			      <td></td>
+			      <td></td>
+			      <td></td>
+			      <td></td>
+			      <td></td>
 			    </tr>
 			  </tbody>
 			</table> 
 			<div class="row">
 				<div class="col d-flex justify-content-end">
-					<a href="#" class="btn btn-primary btn-sm" role="button">View All</a>
+					<a href="{{url_for('admin.logs')}}" class="btn btn-primary btn-sm" role="button">View All</a>
 				</div>
 			</div>
 		</div>

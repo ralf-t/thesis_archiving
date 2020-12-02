@@ -3,7 +3,7 @@ from thesisarchiving import db, bcrypt
 from thesisarchiving.utils import has_roles, advanced_search, send_reset_email
 from thesisarchiving.admin.forms import RegisterUserForm, RegisterThesisForm, GeneralCreateForm, UpdateSubjectForm, UpdateSectionForm, UpdateUserForm, UpdateThesisAuthorForm, UpdateThesisForm
 from thesisarchiving.admin.utils import save_file, del_old_file
-from thesisarchiving.models import Role, User, Subject, Section, Area, Keyword, Thesis, Semester, Program, Category #tinggal yung models idk why it worked lol
+from thesisarchiving.models import Role, User, Subject, Section, Area, Keyword, Thesis, Semester, Program, Category, Log #tinggal yung models idk why it worked lol
 from flask_login import login_user, current_user, logout_user, login_required
 import random, string #, uuid
 # from psycopg2.extras import NumericRange
@@ -21,8 +21,21 @@ def admin_view():
 	advisers = Role.query.filter_by(name='Adviser').first().permitted.count()
 	students = Role.query.filter_by(name='Student').first().permitted.count()
 	admins = Role.query.filter_by(name='Admin').first().permitted.count()
+	logs = Log.query.order_by(Log.date_time.desc()).limit(20).all()
 
-	return render_template('admin/admin.html', s_user=s_user, thesis=thesis, advisers=advisers, students=students, admins=admins)
+
+
+	return render_template('admin/admin.html', s_user=s_user, thesis=thesis, advisers=advisers, students=students, admins=admins, logs=logs)
+##################################################################################################################################################
+@admin.route("/thesis_archiving/admin/logs", methods=['GET','POST'])
+@login_required
+@has_roles('Admin')
+def logs():
+
+	page = request.args.get("page", 1, type=int)
+	logs = Log.query.order_by(Log.date_time.desc()).paginate(page=page, per_page=20)
+
+	return render_template('admin/logs.html', logs=logs)
 ##################################################################################################################################################
 @admin.route("/thesis_archiving/admin/users", methods=['GET','POST'])
 @login_required

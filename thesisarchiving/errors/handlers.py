@@ -8,8 +8,11 @@ errors = Blueprint('errors', __name__)
 @errors.app_errorhandler(401)
 def error_401(error):
 
-	log = Log(description=f"{current_user.roles} {current_user.username} encountered a (401)")
-	log.user = current_user
+	if current_user.is_anonymous:
+		log = Log(description=f"Anonymous user encountered a (401)",http_error=401)
+	else:
+		log = Log(description=f"{current_user.roles} {current_user.username} encountered a (401)",http_error=401)
+		log.user = current_user
 
 	try:
 		db.session.add(log)
@@ -22,8 +25,11 @@ def error_401(error):
 @errors.app_errorhandler(403)
 def error_403(error):
 
-	log = Log(description=f"{current_user.roles} {current_user.username} tried accessing {request.full_path} (403)")
-	log.user = current_user
+	if current_user.is_anonymous:
+		log = Log(description=f"Anonymous user tried accessing {request.full_path} (403)",http_error=403)
+	else:
+		log = Log(description=f"{current_user.roles} {current_user.username} tried accessing {request.full_path} (403)",http_error=403)
+		log.user = current_user
 
 	try:
 		db.session.add(log)
@@ -36,9 +42,12 @@ def error_403(error):
 @errors.app_errorhandler(404)
 def error_404(error):
 
-	log = Log(description=f"{current_user.roles} {current_user.username} tried accessing {request.full_path} (404)")
-	log.user = current_user
-
+	if current_user.is_anonymous:
+		log = Log(description=f"Anonymous user tried accessing {request.full_path} (404)",http_error=404)
+	else:
+		log = Log(description=f"{current_user.roles} {current_user.username} tried accessing {request.full_path} (404)",http_error=404)
+		log.user = current_user
+		
 	try:
 		db.session.add(log)
 		db.session.commit()
@@ -50,8 +59,11 @@ def error_404(error):
 @errors.app_errorhandler(405)
 def error_405(error):
 
-	log = Log(description=f"{current_user.roles} {current_user.username} encountered a (405)")
-	log.user = current_user
+	if current_user.is_anonymous:
+		log = Log(description=f"Anonymous user encountered a (405)",http_error=405)
+	else:
+		log = Log(description=f"{current_user.roles} {current_user.username} encountered a (405)",http_error=405)
+		log.user = current_user
 
 	try:
 		db.session.add(log)
@@ -64,8 +76,12 @@ def error_405(error):
 @errors.app_errorhandler(406)
 def error_406(error):
 
-	log = Log(description=f"{current_user.roles} {current_user.username} encountered a (406)")
-	log.user = current_user
+	if current_user.is_anonymous:
+		log = Log(description=f"Anonymous user encountered a (406)",http_error=406)
+	else:
+		log = Log(description=f"{current_user.roles} {current_user.username} encountered a (406)",http_error=406)
+		log.user = current_user
+
 
 	try:
 		db.session.add(log)
@@ -78,8 +94,11 @@ def error_406(error):
 @errors.app_errorhandler(413)
 def error_413(error):
 
-	log = Log(description=f"{current_user.roles} {current_user.username} tried uploading a large entity (413)")
-	log.user = current_user
+	if current_user.is_anonymous:
+		log = Log(description=f"Anonymous user tried uploading a large entity (413)",http_error=413)
+	else:
+		log = Log(description=f"{current_user.roles} {current_user.username} tried uploading a large entity (413)",http_error=413)
+		log.user = current_user
 
 	try:
 		db.session.add(log)
@@ -92,8 +111,11 @@ def error_413(error):
 @errors.app_errorhandler(500)
 def error_500(error):
 
-	log = Log(description=f"{current_user.roles} {current_user.username} encountered a (500)")
-	log.user = current_user
+	if current_user.is_anonymous:
+		log = Log(description=f"Anonymous user encountered a (500)",http_error=500)
+	else:
+		log = Log(description=f"{current_user.roles} {current_user.username} encountered a (500)",http_error=500)
+		log.user = current_user
 
 	try:
 		db.session.add(log)

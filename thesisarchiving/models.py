@@ -4,7 +4,7 @@ from flask import current_app
 import pytz
 from thesisarchiving import db, login_manager
 from flask_login import UserMixin
-from sqlalchemy.dialects.mysql import YEAR, BIGINT, LONGTEXT
+from sqlalchemy.dialects.mysql import YEAR, BIGINT, LONGTEXT, SMALLINT
 
 # CASACADE LAHAT NG MGA RELATIONSHIP
 
@@ -155,10 +155,11 @@ thesis_keywords = db.Table('thesis_keywords',
 
 class Log(db.Model):
 	id = db.Column(BIGINT(unsigned=True), primary_key=True)
-	user_id = db.Column(BIGINT(unsigned=True), db.ForeignKey('user.id'), nullable=False)
+	user_id = db.Column(BIGINT(unsigned=True), db.ForeignKey('user.id'), nullable=True)
 	description = db.Column(db.String(250), nullable=False)
+	http_error = db.Column(SMALLINT, nullable=True)
 	date_time = db.Column(db.DateTime, nullable=False, default=lambda:datetime.now(tz=pytz.timezone('Asia/Manila')))
 
 	def __repr__(self):
-		return f"({self.id},{self.date})"
+		return f"({self.id},{self.date_time})"
 
