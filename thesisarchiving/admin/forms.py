@@ -71,6 +71,11 @@ class RegisterThesisForm(FlaskForm):
 
 	title_area_keywords = FieldList(FormField(TitleAreaKeywords), min_entries=1, max_entries=1)
 	
+	overview = TextAreaField(
+		'Overview',
+		validators=[DataRequired()]
+		)
+
 	program = SelectField(
 		'Program',
 		validators=[DataRequired()]
@@ -374,6 +379,11 @@ class UpdateThesisForm(FlaskForm):
 	keywords = StringField(
 		'Keywords',
 		validators=[DataRequired(), Length(min=3,max=609)]
+		)
+	
+	overview = TextAreaField(
+		'Overview',
+		validators=[DataRequired()]
 		)
 
 	program = SelectField(

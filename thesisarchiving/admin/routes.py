@@ -1,4 +1,4 @@
-from flask import render_template, redirect, url_for, flash, jsonify, request, abort, Blueprint
+from flask import render_template, redirect, url_for, flash, jsonify, request, abort, Blueprint, Markup
 from thesisarchiving import db, bcrypt
 from thesisarchiving.utils import has_roles, advanced_search, send_reset_email
 from thesisarchiving.admin.forms import RegisterUserForm, RegisterThesisForm, GeneralCreateForm, UpdateSubjectForm, UpdateSectionForm, UpdateUserForm, UpdateThesisAuthorForm, UpdateThesisForm
@@ -22,8 +22,6 @@ def admin_view():
 	students = Role.query.filter_by(name='Student').first().permitted.count()
 	admins = Role.query.filter_by(name='Admin').first().permitted.count()
 	logs = Log.query.order_by(Log.date_time.desc()).limit(20).all()
-
-
 
 	return render_template('admin/admin.html', s_user=s_user, thesis=thesis, advisers=advisers, students=students, admins=admins, logs=logs)
 ##################################################################################################################################################
@@ -274,6 +272,7 @@ def register_thesis():
 		added = 0
 		try:
 			c_num_int = 1
+			overview = form.overview.data.strip()
 			program = Program.query.get(int(form.program.data))
 			school_year = form.school_year.data #int coerced
 			semester = Semester.query.get(int(form.semester.data))
@@ -302,6 +301,7 @@ def register_thesis():
 					thesis = Thesis(
 						call_number=thesis_c_num,
 						title=title,
+						overview=str(Markup.escape(overview)),
 						program_id=program.id,
 						category_id=category.id,
 						sy_start=school_year,
@@ -333,7 +333,8 @@ def register_thesis():
 					db.session.commit()
 					added += 1
 
-		except:
+		except Exception as e:
+			print(e)
 			del_old_file(file_name_error[added], 'form_file') #on call ng save_file(), nasasave agad
 			db.session.rollback()
 			flash(f'An error occured while registering entry-{added}','danger')
@@ -380,6 +381,7 @@ def update_thesis(thesis_title):
 		area = thesis_form.area.data.strip()
 		keywords = thesis_form.keywords.data.strip().split(',')
 		program = thesis_form.program.data.strip()
+		overview = thesis_form.overview.data.strip()
 		category = thesis_form.category.data.strip()
 		school_year = thesis_form.school_year.data
 		semester = thesis_form.semester.data.strip()
@@ -406,6 +408,7 @@ def update_thesis(thesis_title):
 				thesis.research_keywords.append(Keyword(name=k))
 		
 		thesis.program = Program.query.filter_by(college=program).first()
+		thesis.overview = str(Markup.escape(overview))
 		thesis.category = Category.query.filter_by(name=category).first()
 		thesis.sy_start = school_year
 		thesis.sy_end = school_year + 1
@@ -451,14 +454,14 @@ def update_thesis(thesis_title):
 		return redirect(url_for('admin.update_thesis', thesis_title=thesis_form.title.data.strip()))
 
 	elif request.method == 'GET':
-		
+		test = Markup.escape(thesis.overview)
 		thesis_adviser = None
 
 		for contrib in thesis.contributors:
 			if Role.query.filter_by(name='Adviser').first() in contrib.roles:
 				thesis_adviser = contrib
 				break
-
+		thesis_form.overview.default = Markup(thesis.overview).unescape()
 		thesis_form.program.default = thesis.program.college #
 		thesis_form.school_year.default = thesis.sy_start #
 		thesis_form.semester.default = str(thesis.semester.code)

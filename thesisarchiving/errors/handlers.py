@@ -42,52 +42,15 @@ def error_403(error):
 @errors.app_errorhandler(404)
 def error_404(error):
 
-	if current_user.is_anonymous:
-		log = Log(description=f"Anonymous user tried accessing {request.full_path} (404)",http_error=404)
-	else:
-		log = Log(description=f"{current_user.roles} {current_user.username} tried accessing {request.full_path} (404)",http_error=404)
-		log.user = current_user
-		
-	try:
-		db.session.add(log)
-		db.session.commit()
-	except:
-		flash("An error has occured while trying to log","danger")
-	
 	return render_template('errors/404.html'), 404
 
 @errors.app_errorhandler(405)
 def error_405(error):
 
-	if current_user.is_anonymous:
-		log = Log(description=f"Anonymous user encountered a (405)",http_error=405)
-	else:
-		log = Log(description=f"{current_user.roles} {current_user.username} encountered a (405)",http_error=405)
-		log.user = current_user
-
-	try:
-		db.session.add(log)
-		db.session.commit()
-	except:
-		flash("An error has occured while trying to log","danger")
-
 	return render_template('errors/405.html'), 405
 
 @errors.app_errorhandler(406)
 def error_406(error):
-
-	if current_user.is_anonymous:
-		log = Log(description=f"Anonymous user encountered a (406)",http_error=406)
-	else:
-		log = Log(description=f"{current_user.roles} {current_user.username} encountered a (406)",http_error=406)
-		log.user = current_user
-
-
-	try:
-		db.session.add(log)
-		db.session.commit()
-	except:
-		flash("An error has occured while trying to log","danger")
 
 	return render_template('errors/406.html'), 406
 
@@ -110,18 +73,6 @@ def error_413(error):
 
 @errors.app_errorhandler(500)
 def error_500(error):
-
-	if current_user.is_anonymous:
-		log = Log(description=f"Anonymous user encountered a (500)",http_error=500)
-	else:
-		log = Log(description=f"{current_user.roles} {current_user.username} encountered a (500)",http_error=500)
-		log.user = current_user
-
-	try:
-		db.session.add(log)
-		db.session.commit()
-	except:
-		flash("An error has occured while trying to log","danger")
 
 	return render_template('errors/500.html'), 500
 

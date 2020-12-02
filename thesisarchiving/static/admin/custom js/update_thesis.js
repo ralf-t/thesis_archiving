@@ -1,4 +1,16 @@
 $( document ).ready(function() {
+
+
+	$('.summernote').summernote({
+	  toolbar: [
+	    // [groupName, [list of button]]
+	    ['style', ['style','bold', 'italic', 'underline', 'clear']],
+	    ['font', ['strikethrough', 'superscript', 'subscript']],
+	    ['fontsize', ['fontsize']],
+	    ['para', ['ul', 'ol', 'paragraph']],
+	    ['height', ['height']]
+	  ]
+	});
 	
 	$('#date_deploy').attr('data-provide','datepicker');
 	$('#date_deploy').datepicker({
