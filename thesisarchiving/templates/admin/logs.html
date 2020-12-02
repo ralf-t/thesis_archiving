@@ -6,13 +6,55 @@
 
 
 {% block content %}
-	<!-- make table with pagination only. no CRUd dito -->
-<!-- also make the tables responsive ulit -->
+<div class="row" id="Logs">
+	<div class="col mb-3 px-3" >
+		<div class="bg-white p-3 shadow-sm" id="sysLogs">
+			<h5>System Logs</h5>
+			<div class="table-responsive">
+				<table class="table table-striped" id="logsTable">
+				  <thead>
+				    <tr>
+				      <th scope="col">ID</th>
+				      <th scope="col">Description</th>
+				      <th scope="col">Date/Time</th>
+				      <th scope="col">Error Code</th>
+				    </tr>
+				  </thead>
+				  <tbody>
 
-          <!-- remove spaces sa curly. nageeror pag piangtatabi ko sa comment e -->
-          <!-- for datetime column { { ITERATORVARIABLE.date_time.strftime("%m/%d/%Y, %H:%M:%S") } }  -->
-          <!-- ternary for error code { { value if True else None} } -->
+					{% for log in logs.items %}
 
+					<tr>
+				      <td>{{ log.id }}</td>
+				      <td>{{ log.description }}</td>
+					  <td>{{ log.date_time.strftime("%m/%d/%Y, %H:%M:%S") }}</td>
+				      <td>
+						{{ log.http_error }}
+						{{ endif }}
+					  </td>
+				    </tr>
+
+				    {% endfor %}
+
+				  </tbody>
+				</table>
+			</div>
+			<div class="d-flex justify-content-end">
+			    {% for page_num in logs.iter_pages() %}
+					{% if page_num %}
+						{% if logs.page == page_num %}
+							<a class="btn btn-secondary mb-4" href="{{ url_for('admin.logs', page=page_num) }}">{{ page_num }}</a>
+						{% else %}
+							<a class="btn btn-outline-secondary mb-4" href="{{ url_for('admin.logs', page=page_num) }}">{{ page_num }}</a>
+						{% endif %}
+			        {% else %}
+			          ...
+					{% endif %}
+					{% endfor %}
+			</div>
+		</div>
+	</div>
+</div>
 {% endblock %}
 
 

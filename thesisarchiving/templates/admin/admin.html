@@ -50,30 +50,35 @@
 	<div class="col mb-3 px-3" >
 		<div class="bg-white p-3 shadow-sm" id="sysLogs">
 			<h5>System Logs</h5>
-			<table class="table table-striped" id="logsTable">
-			  <thead>
-			    <tr>
-			      <th scope="col">ID</th>
-			      <th scope="col">Description</th>
-			      <th scope="col">Date/Time</th>
-			      <th scope="col">Error Code</th>
-			    </tr>
-			  </thead>
-			  <tbody>
-			  	<!-- also make the tables responsive ulit -->
+			<div class="table-responsive">
+				<table class="table table-striped" id="logsTable">
+				  <thead>
+				    <tr>
+				      <th scope="col">ID</th>
+				      <th scope="col">Description</th>
+				      <th scope="col">Date/Time</th>
+				      <th scope="col">Error Code</th>
+				    </tr>
+				  </thead>
+				  <tbody>
 
-			  	<!-- remove spaces sa curly. nageeror pag piangtatabi ko sa comment e -->
-			  	<!-- for datetime column { { ITERATORVARIABLE.date_time.strftime("%m/%d/%Y, %H:%M:%S") } }  -->
-			  	<!-- ternary for error code { { value if True else None} } -->
-			    <tr>
-			      <td></td>
-			      <td></td>
-			      <td></td>
-			      <td></td>
-			      <td></td>
-			    </tr>
-			  </tbody>
-			</table> 
+				  	{% for log in logs %}
+				    
+					<tr>
+				      <td>{{ log.id }}</td>
+				      <td>{{ log.description }}</td>
+					  <td>{{ log.date_time.strftime("%m/%d/%Y, %H:%M:%S") }}</td>
+				      <td>
+						{{ log.http_error }}
+						{{ endif }}
+					  </td>
+				    </tr>
+					
+					{% endfor %}
+
+				  </tbody>
+				</table>
+			</div>
 			<div class="row">
 				<div class="col d-flex justify-content-end">
 					<a href="{{url_for('admin.logs')}}" class="btn btn-primary btn-sm" role="button">View All</a>
