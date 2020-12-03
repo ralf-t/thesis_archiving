@@ -7,3 +7,4 @@ thesisarchiving/static/thesis attachments/thesis file
 !thesisarchiving/static/thesis attachments/thesis file/.gitkeep
 thesisarchiving/config.py
 thesisarchiving/__pycache__
+.idea
