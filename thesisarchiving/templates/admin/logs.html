@@ -15,8 +15,8 @@
 				  <thead>
 				    <tr>
 				      <th scope="col">ID</th>
-				      <th scope="col">Description</th>
-				      <th scope="col">Date/Time</th>
+				      <th scope="col" nowrap>Description</th>
+				      <th scope="col" nowrap>Date/Time</th>
 				      <th scope="col">Error Code</th>
 				    </tr>
 				  </thead>
@@ -26,8 +26,8 @@
 
 					<tr>
 				      <td>{{ log.id }}</td>
-				      <td>{{ log.description }}</td>
-					  <td>{{ log.date_time.strftime("%m/%d/%Y, %H:%M:%S") }}</td>
+				      <td nowrap>{{ log.description }}</td>
+					  <td nowrap>{{ log.date_time.strftime("%m/%d/%Y, %H:%M:%S") }}</td>
 				      <td>
 						{{ log.http_error }}
 						{{ endif }}

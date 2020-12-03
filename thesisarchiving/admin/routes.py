@@ -5,6 +5,7 @@ from thesisarchiving.admin.forms import RegisterUserForm, RegisterThesisForm, Ge
 from thesisarchiving.admin.utils import save_file, del_old_file
 from thesisarchiving.models import Role, User, Subject, Section, Area, Keyword, Thesis, Semester, Program, Category, Log #tinggal yung models idk why it worked lol
 from flask_login import login_user, current_user, logout_user, login_required
+from sqlalchemy import or_
 import random, string #, uuid
 # from psycopg2.extras import NumericRange
 
@@ -41,7 +42,12 @@ def logs():
 def users():
 
 	page = request.args.get("page", 1, type=int)
-	users = User.query.order_by(User.username.asc()).paginate(page=page, per_page=10)
+
+	if request.method == "POST":
+		username = "%"+ request.form['username'].strip() +"%"
+		users = User.query.filter(or_(User.username.like(username),User.last_name.like(username))).paginate(page=page, per_page=10)
+	else:
+		users = User.query.order_by(User.username.asc()).paginate(page=page, per_page=10)
 
 	return render_template('admin/users.html', users=users)
 
@@ -189,7 +195,13 @@ def delete_user(user_username):
 def theses():
 
 	page = request.args.get("page", 1, type=int)
-	theses = Thesis.query.order_by(Thesis.call_number.asc()).paginate(page=page, per_page=10)
+
+	if request.method == 'POST':
+		call_number = "%"+ request.form['call_number'].strip() +"%"
+		theses = Thesis.query.filter(Thesis.call_number.like(call_number)).paginate(page=page, per_page=10)
+		# if may query string, pass it para mag append nalang pages and iternary yun
+	else:
+		theses = Thesis.query.order_by(Thesis.call_number.asc()).paginate(page=page, per_page=10)
 
 	return render_template('admin/theses.html', theses=theses)
 
@@ -553,7 +565,12 @@ def register_general():
 def subjects():
 
 	page = request.args.get("page", 1, type=int)
-	subjects = Subject.query.order_by(Subject.name.asc()).paginate(page=page, per_page=10)
+
+	if request.method == "POST":
+		code = "%"+ request.form['code'].strip() +"%"
+		subjects = Subject.query.filter(Subject.code.like(code)).paginate(page=page, per_page=10)
+	else:
+		subjects = Subject.query.order_by(Subject.name.asc()).paginate(page=page, per_page=10)
 
 	return render_template('admin/subjects.html', subjects=subjects)
 
@@ -605,7 +622,12 @@ def delete_subject(subject_code):
 def sections():
 
 	page = request.args.get("page", 1, type=int)
-	sections = Section.query.order_by(Section.code.asc()).paginate(page=page, per_page=10)
+
+	if request.method == "POST":
+		code = "%"+ request.form['code'].strip() +"%"
+		sections = Section.query.filter(Section.code.like(code)).paginate(page=page, per_page=10)
+	else:
+		sections = Section.query.order_by(Section.code.asc()).paginate(page=page, per_page=10)
 
 	return render_template('admin/sections.html', sections=sections)
 

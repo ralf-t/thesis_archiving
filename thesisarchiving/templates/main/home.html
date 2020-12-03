@@ -3,7 +3,7 @@
 {% block content %}
 	<div class="row">
 		<div class="col mb-3">
-			<div class="px-3 py-1 shadow-sm rounded bg-white d-flex justify-content-around">
+			<div class="px-3 py-1 border shadow-sm rounded bg-white d-flex justify-content-around">
 					<a href="{{ url_for('main.home', college_name='All') + '?' + query_str }}" class="custom-nav-link">All</a>
 				{% for p in programs %}
 					<a href="{{ url_for('main.home', college_name=p.college) + '?' + query_str }}" class="custom-nav-link">{{p.college}}</a>

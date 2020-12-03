@@ -1,4 +1,4 @@
-from flask import render_template, redirect, url_for, request, Blueprint, flash, abort, send_file
+from flask import render_template, redirect, url_for, request, Blueprint, flash, abort, send_file, Markup
 from thesisarchiving import db, bcrypt
 from thesisarchiving.utils import advanced_search, fuzz_tags, send_reset_email, get_file
 from thesisarchiving.main.forms import LoginForm, BasicSearchForm, AdvancedSearchForm, ResetRequestForm, ResetPasswordForm
@@ -143,10 +143,9 @@ def thesis_profile(thesis_title):
 	student = Role.query.filter_by(name='Student').first().permitted
 
 	contributor = current_user in thesis.contributors
+	thesis_ov = Markup(thesis.overview).unescape()
 
-		# return redirect(url_for('home'))
-
-	return render_template('main/thesis_profile.html', thesis=thesis, adviser=adviser, student=student, contributor=contributor)
+	return render_template('main/thesis_profile.html', thesis=thesis, adviser=adviser, student=student, contributor=contributor,thesis_ov=thesis_ov)
 
 @main.route("/thesis_archiving/thesis/<string:thesis_title>/download/<string:file>/<string:file_name>", methods=['GET','POST'])
 @login_required
