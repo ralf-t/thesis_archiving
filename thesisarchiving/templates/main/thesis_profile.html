@@ -15,7 +15,7 @@
 				<h3 class="mt-2">{{thesis.title}}</h3>
 				<small class="text-muted"></small>
 				
-				<dl class="row pl-5 pt-3 mt-4 border-top">
+				<dl class="row pl-5 pr-3 pt-3 mt-4 border-top">
 					<dt class="col-4">Area</dt>
 					<dd class="col-8">
 						<span class="badge badge-pill badge-dark">{{thesis.area.name}}</span>
@@ -63,26 +63,44 @@
 							<p>{{thesis.date_deploy.strftime("%B %d, %Y") if thesis.date_deploy else 'N/A' }}</p>
 						</dd>
 
+						<dt class="col-4">Proposal File</dt>
+						<dd class="col-8">
+							{% if thesis.form_file %}
+					            <a href="{{ url_for('main.thesis_download_attachment',thesis_title=thesis.title, file='form_file',file_name=thesis.form_file) }}">{{thesis.form_file}}</a>
+					          {% else %}
+					            <a href="">No attached file</a>
+					          {% endif %}
+						</dd>
+
+						<dt class="col-4">Thesis File</dt>
+						<dd class="col-8">
+							{% if thesis.thesis_file %}
+					            <a href="{{ url_for('main.thesis_download_attachment',thesis_title=thesis.title, file='thesis_file',file_name=thesis.thesis_file) }}">{{thesis.thesis_file}}</a>
+					          {% else %}
+					            <a href="">No attached file</a>
+					          {% endif %}
+						</dd>
+						
 					{% endif %}
 					
 					<dt class="col-4">Year</dt>
 					<dd class="col-8">
-						<p>{{thesis.school_year.lower}}-{{thesis.school_year.upper}}</p>
+						<p>{{thesis.sy_start}}-{{thesis.sy_end}}</p>
 					</dd>
 
 					<dt class="col-4">Semester</dt>
 					<dd class="col-8">
 						<p>{{thesis.semester.code}}</p>
 					</dd>
+
+					<dt class="col-12 border-bottom">Overview</dt>
+					<div class="col-12 p-3 pb-5 bg-light">
+						{{thesis_ov|safe}}
+					</div>
 				</dl>
-<!-- prog cat
-title
-area area
-keywords keywords
-adviser adv
-authors auth
-sy sy sem sem -->
 			</div>
 		</div>
 	</div>
+
+	
 {% endblock %}

@@ -4,11 +4,15 @@
 	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='admin/custom css/register_thesis.css') }}"> 
 	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='plugins/bootstrap-datepicker/bootstrap-datepicker3.standalone.min.css') }}"> 
 	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='plugins/bootstrap-tokenfield/bootstrap-tokenfield.min.css') }}"> 
+	<link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.css" rel="stylesheet">
+	<!-- <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='plugins/summernote/summernote.min.css') }}"> -->
+
 {% endblock %}
 
 {% block content %} 
+{{test}}
 <div class="row">
-	<div class="col-md-6 col-lg-6 my-4 px-3">
+	<div class="col-md-7 col-lg-7 my-4 px-3">
   			<h4 class="p-3 mb-3 bg-white border rounded">THESIS REGISTRATION</h4>
   		<div class="p-3 bg-white border rounded">
   			
@@ -91,7 +95,19 @@
 					</fieldset>
 				{% endfor %}
 					<fieldset>
-						
+						<div class="form-group">
+							{{ form.overview.label }}
+							{% if form.overview.errors %}
+								{{ form.overview(class='form-control summernote is-invalid') }}
+		                	<div class="invalid-feedback order-last">
+				                {% for error in form.overview.errors %}
+			                  		{{ error }}
+				                {% endfor %}
+		              		</div>
+							{% else %}
+								{{ form.overview(class='form-control summernote') }}
+							{% endif %}
+						</div>
 						<div class="form-row">
 
 							<div class="form-group col-lg-4">
@@ -218,7 +234,7 @@
 			</form>
   		</div>
 	</div>
-	<div class="col-md-6 col-lg-6 my-4 px-0">
+	<div class="col-md-5 col-lg-5 my-4 px-0">
   		<div class="p-3 bg-white border rounded">
   			<div class="row" id="query">
   				<div class="col d-flex justify-content-center p-3">
@@ -229,14 +245,14 @@
   	</div>
 </div>
 
-
-
 {% endblock %}
 
 {% block js %}
-<script src="{{ url_for('static', filename='admin/custom js/register_thesis.js') }}"></script>
 <script src="{{ url_for('static', filename='plugins/bootstrap-datepicker/bootstrap-datepicker.min.js') }}"></script>
 <script src="{{ url_for('static', filename='plugins/bootstrap-tokenfield/bootstrap-tokenfield.min.js') }}"></script>
+<script src="{{ url_for('static', filename='plugins/summernote/summernote.min.js') }}"></script>
+<script src="{{ url_for('static', filename='admin/custom js/register_thesis.js') }}"></script>
+
 {% endblock %}
 
 

@@ -1,11 +1,11 @@
-from flask import render_template, redirect, url_for, request, Blueprint, flash, abort, send_file
+from flask import render_template, redirect, url_for, request, Blueprint, flash, abort, send_file, Markup
 from thesisarchiving import db, bcrypt
 from thesisarchiving.utils import advanced_search, fuzz_tags, send_reset_email, get_file
 from thesisarchiving.main.forms import LoginForm, BasicSearchForm, AdvancedSearchForm, ResetRequestForm, ResetPasswordForm
-from thesisarchiving.models import Role, User, Program, Thesis, Semester
+from thesisarchiving.models import Role, User, Program, Thesis, Semester, Log, Category
 from flask_login import login_user, current_user, logout_user, login_required
 from urllib import parse
-import random, uuid
+import random#, uuid
 from io import BytesIO
 
 main = Blueprint('main', __name__)
@@ -24,6 +24,16 @@ def login():
 		
 		if user and bcrypt.check_password_hash(user.password, form.password.data): #converts hash to string to compare to input string
 			login_user(user)
+
+			log = Log(description=f"{current_user.roles} {current_user.username} logged IN")
+			log.user = current_user
+
+			try:
+				db.session.add(log)
+				db.session.commit()
+			except:
+				flash("An error has occured while trying to log","danger")
+
 			next_page = request.args.get('next') # returns url/route if exists else none
 			return redirect(next_page) if next_page else redirect(url_for('main.home'))
 		else:
@@ -35,7 +45,16 @@ def login():
 @login_required
 def logout():
 
-	logout_user()
+	log = Log(description=f"{current_user.roles} {current_user.username} logged OUT")
+	log.user = current_user
+
+	try:
+		db.session.add(log)
+		db.session.commit()
+		logout_user()
+	except:
+		flash("An error has occured while trying to log","danger")
+
 	return redirect(url_for('main.login'))
 
 @main.route("/thesis_archiving/", methods=['GET','POST'])
@@ -55,6 +74,8 @@ def home(college_name=None):
 	query_str = parse.urlencode(request.args)
 
 	college = Program.query.filter_by(college=college_name).first() #gets from navbar filter
+
+
 	prog_id = str(college) if college else None #turns __repr__ to string
 
 	#set only value if argument is present and not str'None'
@@ -70,7 +91,12 @@ def home(college_name=None):
 		title = basic_search.title.data
 		return redirect(url_for('main.home', college_name=college_name, title=title))
 
-	query = advanced_search(title=title, area=area, keywords=keywords, program=prog_id if prog_id else program, semester=semester)
+	if college_name == 'Suggested':
+		sg = Category.query.filter_by(name=college_name).first()
+		th = Thesis.query.filter_by(category=sg).order_by(Thesis.title).all()
+		query = {'query':th, 'count':len(th)}
+	else:
+		query = advanced_search(title=title, area=area, keywords=keywords, program=prog_id if prog_id else program, semester=semester)
 
 	return render_template('main/home.html', basic_search=basic_search, query=query, query_str=query_str, programs=Program.query.all())
 
@@ -117,10 +143,9 @@ def thesis_profile(thesis_title):
 	student = Role.query.filter_by(name='Student').first().permitted
 
 	contributor = current_user in thesis.contributors
+	thesis_ov = Markup(thesis.overview).unescape()
 
-		# return redirect(url_for('home'))
-
-	return render_template('main/thesis_profile.html', thesis=thesis, adviser=adviser, student=student, contributor=contributor)
+	return render_template('main/thesis_profile.html', thesis=thesis, adviser=adviser, student=student, contributor=contributor,thesis_ov=thesis_ov)
 
 @main.route("/thesis_archiving/thesis/<string:thesis_title>/download/<string:file>/<string:file_name>", methods=['GET','POST'])
 @login_required

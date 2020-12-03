@@ -19,9 +19,9 @@
 			</div>
 		</div>
 
-		<form class="form-inline">
+		<form action="" class="form-inline" method="POST">
 			<div class="input-group input-group-sm my-2 col-4">
-				<input type="text" class="form-control" placeholder="Call number">
+				<input type="text" name="call_number" class="form-control" placeholder="Call number">
 	  			<div class="input-group-append">
 	  				<input type="submit" value="Search" class="btn btn-secondary">
 	  			</div>
@@ -52,7 +52,7 @@
 					    <td nowrap>{{ thesis.program.college }}</td>
 				      	<td nowrap>{{ thesis.category.name }}</td>
 			        	<td>{{ thesis.semester.code }}</td>
-						<td>{{ thesis.school_year.lower }} - {{ thesis.school_year.upper }}</td>
+						<td>{{ thesis.sy_start }} - {{ thesis.sy_end }}</td>
 						<td nowrap>{{ thesis.date_deploy.strftime('%m/%d/%Y') if thesis.date_deploy else thesis.date_deploy }}</td>
 						<td nowrap>{{ thesis.date_register.strftime('%m/%d/%Y')  }}</td>
 						<td class="col"><a href="{{ url_for('admin.update_thesis',thesis_title=thesis.title) }}" class="btn btn-secondary btn-sm">Edit</a></td>

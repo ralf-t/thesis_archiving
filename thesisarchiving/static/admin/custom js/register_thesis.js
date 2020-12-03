@@ -2,6 +2,18 @@ $( document ).ready(function() {
 
 	// instantiate token plugin
 	// wag gawing global variable dahil di lang iisa ang magiging tokenfield
+	
+	$('.summernote').summernote({
+	  toolbar: [
+	    // [groupName, [list of button]]
+	    ['style', ['style','bold', 'italic', 'underline', 'clear']],
+	    ['font', ['strikethrough', 'superscript', 'subscript']],
+	    ['fontsize', ['fontsize']],
+	    ['para', ['ul', 'ol', 'paragraph']],
+	    ['height', ['height']]
+	  ]
+	});
+
 	$('#form_file').change(function(e) {
 	  var file = e.target.files; 
 

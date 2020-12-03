@@ -1,12 +1,13 @@
-from flask import render_template, redirect, url_for, flash, jsonify, request, abort, Blueprint
+from flask import render_template, redirect, url_for, flash, jsonify, request, abort, Blueprint, Markup
 from thesisarchiving import db, bcrypt
 from thesisarchiving.utils import has_roles, advanced_search, send_reset_email
 from thesisarchiving.admin.forms import RegisterUserForm, RegisterThesisForm, GeneralCreateForm, UpdateSubjectForm, UpdateSectionForm, UpdateUserForm, UpdateThesisAuthorForm, UpdateThesisForm
 from thesisarchiving.admin.utils import save_file, del_old_file
-from thesisarchiving.models import Role, User, Subject, Section, Area, Keyword, Thesis, Semester, Program, Category #tinggal yung models idk why it worked lol
+from thesisarchiving.models import Role, User, Subject, Section, Area, Keyword, Thesis, Semester, Program, Category, Log #tinggal yung models idk why it worked lol
 from flask_login import login_user, current_user, logout_user, login_required
-import random, string, uuid
-from psycopg2.extras import NumericRange
+from sqlalchemy import or_
+import random, string #, uuid
+# from psycopg2.extras import NumericRange
 
 admin = Blueprint('admin', __name__)
 
@@ -21,8 +22,19 @@ def admin_view():
 	advisers = Role.query.filter_by(name='Adviser').first().permitted.count()
 	students = Role.query.filter_by(name='Student').first().permitted.count()
 	admins = Role.query.filter_by(name='Admin').first().permitted.count()
+	logs = Log.query.order_by(Log.date_time.desc()).limit(20).all()
 
-	return render_template('admin/admin.html', s_user=s_user, thesis=thesis, advisers=advisers, students=students, admins=admins)
+	return render_template('admin/admin.html', s_user=s_user, thesis=thesis, advisers=advisers, students=students, admins=admins, logs=logs)
+##################################################################################################################################################
+@admin.route("/thesis_archiving/admin/logs", methods=['GET','POST'])
+@login_required
+@has_roles('Admin')
+def logs():
+
+	page = request.args.get("page", 1, type=int)
+	logs = Log.query.order_by(Log.date_time.desc()).paginate(page=page, per_page=20)
+
+	return render_template('admin/logs.html', logs=logs)
 ##################################################################################################################################################
 @admin.route("/thesis_archiving/admin/users", methods=['GET','POST'])
 @login_required
@@ -30,7 +42,12 @@ def admin_view():
 def users():
 
 	page = request.args.get("page", 1, type=int)
-	users = User.query.order_by(User.username.asc()).paginate(page=page, per_page=10)
+
+	if request.method == "POST":
+		username = "%"+ request.form['username'].strip() +"%"
+		users = User.query.filter(or_(User.username.like(username),User.last_name.like(username))).paginate(page=page, per_page=10)
+	else:
+		users = User.query.order_by(User.username.asc()).paginate(page=page, per_page=10)
 
 	return render_template('admin/users.html', users=users)
 
@@ -59,8 +76,8 @@ def register_user():
 			middle_initial=form.middle_initial.data.strip() if form.middle_initial.data.strip() else None,
 			email=form.email.data.strip(),
 			password=hashed_pw,
-			subject_id=uuid.UUID(form.subject.data) if form.subject.data != 'None' else None,
-			section_id=uuid.UUID(form.section.data) if form.section.data != 'None' else None
+			subject_id=int(form.subject.data) if form.subject.data != 'None' else None,
+			section_id=int(form.section.data) if form.section.data != 'None' else None
 			)
 
 		if adminrole:
@@ -178,7 +195,13 @@ def delete_user(user_username):
 def theses():
 
 	page = request.args.get("page", 1, type=int)
-	theses = Thesis.query.order_by(Thesis.call_number.asc()).paginate(page=page, per_page=10)
+
+	if request.method == 'POST':
+		call_number = "%"+ request.form['call_number'].strip() +"%"
+		theses = Thesis.query.filter(Thesis.call_number.like(call_number)).paginate(page=page, per_page=10)
+		# if may query string, pass it para mag append nalang pages and iternary yun
+	else:
+		theses = Thesis.query.order_by(Thesis.call_number.asc()).paginate(page=page, per_page=10)
 
 	return render_template('admin/theses.html', theses=theses)
 
@@ -261,9 +284,10 @@ def register_thesis():
 		added = 0
 		try:
 			c_num_int = 1
-			program = Program.query.get(uuid.UUID(form.program.data))
+			overview = form.overview.data.strip()
+			program = Program.query.get(int(form.program.data))
 			school_year = form.school_year.data #int coerced
-			semester = Semester.query.get(uuid.UUID(form.semester.data))
+			semester = Semester.query.get(int(form.semester.data))
 			
 			for field in form.title_area_keywords.entries:
 				
@@ -289,9 +313,11 @@ def register_thesis():
 					thesis = Thesis(
 						call_number=thesis_c_num,
 						title=title,
+						overview=str(Markup.escape(overview)),
 						program_id=program.id,
 						category_id=category.id,
-						school_year=NumericRange(school_year, school_year + 1,'[]'),
+						sy_start=school_year,
+						sy_end= school_year + 1,
 						semester_id=semester.id,
 						form_file=save_file(form.form_file.data, 'form_file')
 						)
@@ -307,7 +333,7 @@ def register_thesis():
 						else:
 							thesis.research_keywords.append(Keyword(name=keyword))
 					
-					thesis.contributors.append(User.query.get(uuid.UUID(adviser)))
+					thesis.contributors.append(User.query.get(int(adviser)))
 					
 					for author_field in form.authors.entries:
 						if author_field.username.data.strip():
@@ -319,7 +345,8 @@ def register_thesis():
 					db.session.commit()
 					added += 1
 
-		except:
+		except Exception as e:
+			print(e)
 			del_old_file(file_name_error[added], 'form_file') #on call ng save_file(), nasasave agad
 			db.session.rollback()
 			flash(f'An error occured while registering entry-{added}','danger')
@@ -366,6 +393,7 @@ def update_thesis(thesis_title):
 		area = thesis_form.area.data.strip()
 		keywords = thesis_form.keywords.data.strip().split(',')
 		program = thesis_form.program.data.strip()
+		overview = thesis_form.overview.data.strip()
 		category = thesis_form.category.data.strip()
 		school_year = thesis_form.school_year.data
 		semester = thesis_form.semester.data.strip()
@@ -392,8 +420,10 @@ def update_thesis(thesis_title):
 				thesis.research_keywords.append(Keyword(name=k))
 		
 		thesis.program = Program.query.filter_by(college=program).first()
+		thesis.overview = str(Markup.escape(overview))
 		thesis.category = Category.query.filter_by(name=category).first()
-		thesis.school_year = NumericRange(school_year, school_year + 1,'[]')
+		thesis.sy_start = school_year
+		thesis.sy_end = school_year + 1
 		thesis.semester = Semester.query.filter_by(code=int(semester)).first()
 		thesis.date_deploy = date_deploy
 		
@@ -415,7 +445,7 @@ def update_thesis(thesis_title):
 			
 			#updating call num
 		thesis.call_number = '{}-{}-{}{}-{}'.format(
-										thesis.school_year.lower, 
+										thesis.sy_start, 
 										thesis.semester.code, 
 										thesis.category.code, 
 										thesis.program.code, 
@@ -436,16 +466,16 @@ def update_thesis(thesis_title):
 		return redirect(url_for('admin.update_thesis', thesis_title=thesis_form.title.data.strip()))
 
 	elif request.method == 'GET':
-		
+		test = Markup.escape(thesis.overview)
 		thesis_adviser = None
 
 		for contrib in thesis.contributors:
 			if Role.query.filter_by(name='Adviser').first() in contrib.roles:
 				thesis_adviser = contrib
 				break
-
+		thesis_form.overview.default = Markup(thesis.overview).unescape()
 		thesis_form.program.default = thesis.program.college #
-		thesis_form.school_year.default = thesis.school_year.lower #
+		thesis_form.school_year.default = thesis.sy_start #
 		thesis_form.semester.default = str(thesis.semester.code)
 		thesis_form.category.default = thesis.category.name 
 		thesis_form.adviser.default = thesis_adviser.username if thesis_adviser else 'None'#
@@ -535,7 +565,12 @@ def register_general():
 def subjects():
 
 	page = request.args.get("page", 1, type=int)
-	subjects = Subject.query.order_by(Subject.name.asc()).paginate(page=page, per_page=10)
+
+	if request.method == "POST":
+		code = "%"+ request.form['code'].strip() +"%"
+		subjects = Subject.query.filter(Subject.code.like(code)).paginate(page=page, per_page=10)
+	else:
+		subjects = Subject.query.order_by(Subject.name.asc()).paginate(page=page, per_page=10)
 
 	return render_template('admin/subjects.html', subjects=subjects)
 
@@ -587,7 +622,12 @@ def delete_subject(subject_code):
 def sections():
 
 	page = request.args.get("page", 1, type=int)
-	sections = Section.query.order_by(Section.code.asc()).paginate(page=page, per_page=10)
+
+	if request.method == "POST":
+		code = "%"+ request.form['code'].strip() +"%"
+		sections = Section.query.filter(Section.code.like(code)).paginate(page=page, per_page=10)
+	else:
+		sections = Section.query.order_by(Section.code.asc()).paginate(page=page, per_page=10)
 
 	return render_template('admin/sections.html', sections=sections)
 
