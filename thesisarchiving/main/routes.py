@@ -10,7 +10,7 @@ from io import BytesIO
 
 main = Blueprint('main', __name__)
 
-@main.route("/thesis_archiving/login", methods=['GET','POST'])
+@main.route("/login", methods=['GET','POST'])
 def login():
 
 	if current_user.is_authenticated:
@@ -41,7 +41,7 @@ def login():
 
 	return render_template('main/login.html', form=form)
 
-@main.route("/thesis_archiving/logout")
+@main.route("/logout")
 @login_required
 def logout():
 
@@ -57,9 +57,9 @@ def logout():
 
 	return redirect(url_for('main.login'))
 
-@main.route("/thesis_archiving/", methods=['GET','POST'])
-@main.route("/thesis_archiving/home", methods=['GET','POST'])
-@main.route("/thesis_archiving/home/<string:college_name>", methods=['GET','POST'])
+@main.route("/", methods=['GET','POST'])
+@main.route("/home", methods=['GET','POST'])
+@main.route("/home/<string:college_name>", methods=['GET','POST'])
 @login_required
 def home(college_name=None):
 	'''
@@ -100,7 +100,7 @@ def home(college_name=None):
 
 	return render_template('main/home.html', basic_search=basic_search, query=query, query_str=query_str, programs=Program.query.all())
 
-@main.route("/thesis_archiving/advanced_search", methods=['GET','POST'])
+@main.route("/advanced_search", methods=['GET','POST'])
 @login_required
 def advanced_searching():
 	
@@ -134,7 +134,7 @@ def advanced_searching():
 
 	return render_template('main/advanced_searching.html', form=form)
 
-@main.route("/thesis_archiving/thesis/<string:thesis_title>", methods=['GET','POST'])
+@main.route("/thesis/<string:thesis_title>", methods=['GET','POST'])
 @login_required
 def thesis_profile(thesis_title):
 
@@ -147,7 +147,7 @@ def thesis_profile(thesis_title):
 
 	return render_template('main/thesis_profile.html', thesis=thesis, adviser=adviser, student=student, contributor=contributor,thesis_ov=thesis_ov)
 
-@main.route("/thesis_archiving/thesis/<string:thesis_title>/download/<string:file>/<string:file_name>", methods=['GET','POST'])
+@main.route("/thesis/<string:thesis_title>/download/<string:file>/<string:file_name>", methods=['GET','POST'])
 @login_required
 def thesis_download_attachment(thesis_title,file,file_name):
 
@@ -164,7 +164,7 @@ def thesis_download_attachment(thesis_title,file,file_name):
 	else:
 		abort(406)
 
-@main.route("/thesis_archiving/reset_password/<token>", methods=['GET','POST'])
+@main.route("/reset_password/<token>", methods=['GET','POST'])
 def reset_password(token):
 	
 	if current_user.is_authenticated:
@@ -190,7 +190,7 @@ def reset_password(token):
 
 	return render_template('main/reset_password.html', title='Reset Password', form=form)
 
-@main.route("/thesis_archiving/reset_request", methods=['GET','POST'])
+@main.route("/reset_request", methods=['GET','POST'])
 def reset_request():
 	
 	if current_user.is_authenticated:
@@ -207,7 +207,7 @@ def reset_request():
 	return render_template('main/reset_request.html', title='Reset Request', form=form)
 ###################AJAX
 
-@main.route("/thesis_archiving/admin/register/thesis/fuzz_tags", methods=['POST'])
+@main.route("/admin/register/thesis/fuzz_tags", methods=['POST'])
 def tags():
 	tags = fuzz_tags(request.form['val'], request.form['name'])	
 
