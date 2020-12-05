@@ -49,7 +49,7 @@ $( document ).ready(function() {
 		
 		// ajax
 		req = $.ajax({
-			url:'/thesis_archiving/admin/register/thesis/fuzz_tags',
+			url:'/admin/register/thesis/fuzz_tags',
 			type: 'POST',
 			data: {val:val, name:name}
 		});
@@ -129,7 +129,7 @@ $( document ).ready(function() {
 		keywords_arr = keywords_val.trim() ? keywords_val.split(',') : null;
 
 		req = $.ajax({
-			url:'/thesis_archiving/admin/register/thesis/advanced_search',
+			url:'/admin/register/thesis/advanced_search',
 			type: 'POST',
 			data: JSON.stringify({title:title_val, area:area_val, keywords:keywords_arr})
 		});
@@ -168,7 +168,7 @@ $( document ).ready(function() {
 		const invalid_feedback = $("#"+field.attr("id") + "invalid");
 		
 		req = $.ajax({
-			url:'/thesis_archiving/validate_sn',
+			url:'/validate_sn',
 			type: 'POST',
 			data: {val:val}
 		});

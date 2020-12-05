@@ -12,7 +12,7 @@ import random, string #, uuid
 admin = Blueprint('admin', __name__)
 
 
-@admin.route("/thesis_archiving/admin")
+@admin.route("/admin")
 @login_required
 @has_roles('Admin')
 def admin_view():
@@ -26,7 +26,7 @@ def admin_view():
 
 	return render_template('admin/admin.html', s_user=s_user, thesis=thesis, advisers=advisers, students=students, admins=admins, logs=logs)
 ##################################################################################################################################################
-@admin.route("/thesis_archiving/admin/logs", methods=['GET','POST'])
+@admin.route("/admin/logs", methods=['GET','POST'])
 @login_required
 @has_roles('Admin')
 def logs():
@@ -36,7 +36,7 @@ def logs():
 
 	return render_template('admin/logs.html', logs=logs)
 ##################################################################################################################################################
-@admin.route("/thesis_archiving/admin/users", methods=['GET','POST'])
+@admin.route("/admin/users", methods=['GET','POST'])
 @login_required
 @has_roles('Admin')
 def users():
@@ -51,7 +51,7 @@ def users():
 
 	return render_template('admin/users.html', users=users)
 
-@admin.route("/thesis_archiving/admin/register/user", methods=['GET','POST'])
+@admin.route("/admin/register/user", methods=['GET','POST'])
 @login_required
 @has_roles('Admin')
 def register_user():
@@ -100,7 +100,7 @@ def register_user():
 
 	return render_template('admin/register_user.html', form=form, s_user=s_user)
 
-@admin.route("/thesis_archiving/admin/update/user/<string:user_username>", methods=['GET','POST'])
+@admin.route("/admin/update/user/<string:user_username>", methods=['GET','POST'])
 @login_required
 @has_roles('Admin')
 def update_user(user_username):
@@ -170,7 +170,7 @@ def update_user(user_username):
 
 	return render_template('admin/update_user.html', form=form, s_user=s_user, user=user)
 
-@admin.route("/thesis_archiving/admin/delete/user/<string:user_username>", methods=['POST'])
+@admin.route("/admin/delete/user/<string:user_username>", methods=['POST'])
 @login_required
 @has_roles('Admin')
 def delete_user(user_username):
@@ -189,7 +189,7 @@ def delete_user(user_username):
 		flash('User is a contributor of an existing thesis. Remove user from thesis contributors before deleting.','danger')
 		return redirect(url_for('admin.update_user',user_username=user.username))
 ##################################################################################################################################################
-@admin.route("/thesis_archiving/admin/theses", methods=['GET','POST'])
+@admin.route("/admin/theses", methods=['GET','POST'])
 @login_required
 @has_roles('Admin')
 def theses():
@@ -205,7 +205,7 @@ def theses():
 
 	return render_template('admin/theses.html', theses=theses)
 
-@admin.route("/thesis_archiving/admin/register/thesis", methods=['GET','POST'])
+@admin.route("/admin/register/thesis", methods=['GET','POST'])
 @login_required
 @has_roles('Admin')
 def register_thesis():
@@ -358,7 +358,7 @@ def register_thesis():
 
 	return render_template('admin/register_thesis.html', form=form)
 
-@admin.route("/thesis_archiving/admin/update/thesis/<string:thesis_title>", methods=['GET','POST'])
+@admin.route("/admin/update/thesis/<string:thesis_title>", methods=['GET','POST'])
 @login_required
 @has_roles('Admin')
 def update_thesis(thesis_title):
@@ -488,7 +488,7 @@ def update_thesis(thesis_title):
 
 	return render_template('admin/update_thesis.html', thesis=thesis, students=students, author_form=author_form, thesis_form=thesis_form)
 
-@admin.route("/thesis_archiving/admin/delete/thesis/<string:thesis_title>", methods=['POST'])
+@admin.route("/admin/delete/thesis/<string:thesis_title>", methods=['POST'])
 @login_required
 @has_roles('Admin')
 def delete_thesis(thesis_title):
@@ -504,7 +504,7 @@ def delete_thesis(thesis_title):
 
 	return redirect(url_for('admin.theses'))	
 
-@admin.route("/thesis_archiving/admin/delete/thesis/<string:thesis_title>/user/<string:username>", methods=['GET','POST'])
+@admin.route("/admin/delete/thesis/<string:thesis_title>/user/<string:username>", methods=['GET','POST'])
 @login_required
 @has_roles('Admin')
 def delete_thesis_contributor(thesis_title,username):
@@ -525,7 +525,7 @@ def delete_thesis_contributor(thesis_title,username):
 	return redirect(url_for('admin.update_thesis', thesis_title=thesis_title))	
 
 ##################################################################################################################################################
-@admin.route("/thesis_archiving/admin/register/general", methods=['GET','POST'])
+@admin.route("/admin/register/general", methods=['GET','POST'])
 @login_required
 @has_roles('Admin')
 def register_general():
@@ -559,7 +559,7 @@ def register_general():
 		
 	return render_template('admin/register_general.html', form=form)
 #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
-@admin.route("/thesis_archiving/admin/subjects", methods=['GET','POST'])
+@admin.route("/admin/subjects", methods=['GET','POST'])
 @login_required
 @has_roles('Admin')
 def subjects():
@@ -574,7 +574,7 @@ def subjects():
 
 	return render_template('admin/subjects.html', subjects=subjects)
 
-@admin.route("/thesis_archiving/admin/update/subject/<string:subject_code>", methods=['GET','POST'])
+@admin.route("/admin/update/subject/<string:subject_code>", methods=['GET','POST'])
 @login_required
 @has_roles('Admin')
 def update_subject(subject_code):
@@ -600,7 +600,7 @@ def update_subject(subject_code):
 
 	return render_template('admin/update_subject.html', form=form)
 
-@admin.route("/thesis_archiving/admin/delete/subject/<string:subject_code>", methods=['POST'])
+@admin.route("/admin/delete/subject/<string:subject_code>", methods=['POST'])
 @login_required
 @has_roles('Admin')
 def delete_subject(subject_code):
@@ -616,7 +616,7 @@ def delete_subject(subject_code):
 
 	return redirect(url_for('admin.subjects'))
 #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
-@admin.route("/thesis_archiving/admin/sections", methods=['GET','POST'])
+@admin.route("/admin/sections", methods=['GET','POST'])
 @login_required
 @has_roles('Admin')
 def sections():
@@ -631,7 +631,7 @@ def sections():
 
 	return render_template('admin/sections.html', sections=sections)
 
-@admin.route("/thesis_archiving/admin/update/section/<string:section_code>", methods=['GET','POST'])
+@admin.route("/admin/update/section/<string:section_code>", methods=['GET','POST'])
 @login_required
 @has_roles('Admin')
 def update_section(section_code):
@@ -656,7 +656,7 @@ def update_section(section_code):
 
 	return render_template('admin/update_section.html', form=form)
 
-@admin.route("/thesis_archiving/admin/delete/section/<string:section_code>", methods=['POST'])
+@admin.route("/admin/delete/section/<string:section_code>", methods=['POST'])
 @login_required
 @has_roles('Admin')
 def delete_section(section_code):
@@ -675,7 +675,7 @@ def delete_section(section_code):
 ##################################################################################################################################################
 
 ##################### AJAX #####################
-@admin.route('/thesis_archiving/validate_sn', methods=['POST'])
+@admin.route('/validate_sn', methods=['POST'])
 def validate_sn():
 	val = request.form['val']
 
@@ -687,7 +687,7 @@ def validate_sn():
 	else:
 		return jsonify(False)
 
-@admin.route("/thesis_archiving/admin/register/thesis/advanced_search", methods=['POST'])
+@admin.route("/admin/register/thesis/advanced_search", methods=['POST'])
 def similar_thesis():
 	data = request.get_json(force=True)
 	

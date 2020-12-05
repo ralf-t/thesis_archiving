@@ -8,7 +8,7 @@ import random, os
 
 user = Blueprint('user', __name__)
 
-@user.route("/thesis_archiving/user/<string:username>", methods=['GET','POST'])
+@user.route("/user/<string:username>", methods=['GET','POST'])
 @login_required
 def user_profile(username):
 
@@ -22,7 +22,7 @@ def user_profile(username):
 
 	return render_template('user/user_profile.html', query=query)
 
-@user.route("/thesis_archiving/user/account", methods=['GET','POST'])
+@user.route("/user/account", methods=['GET','POST'])
 @login_required
 def user_account():
 
@@ -52,7 +52,7 @@ def user_account():
 
 	return render_template('user/user_account.html', form=form)
 
-@user.route("/thesis_archiving/user/password", methods=['GET','POST'])
+@user.route("/user/password", methods=['GET','POST'])
 @login_required
 def user_password():
 
