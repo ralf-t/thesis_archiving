@@ -26,7 +26,7 @@ $( document ).ready(function() {
 		
 		// ajax
 		req = $.ajax({
-			url:'/admin/register/thesis/fuzz_tags',
+			url:$("#fuzz_tags").val(),
 			type: 'POST',
 			data: {val:val, name:name}
 		});

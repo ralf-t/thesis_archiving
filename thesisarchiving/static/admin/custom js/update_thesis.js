@@ -54,7 +54,7 @@ $( document ).ready(function() {
 		
 		// ajax
 		req = $.ajax({
-			url:'/admin/register/thesis/fuzz_tags',
+			url:$("#fuzz_tags").val(),
 			type: 'POST',
 			data: {val:val, name:name}
 		});
@@ -119,7 +119,7 @@ $( document ).ready(function() {
 		const invalid_feedback = $("#username-invalid");
 		
 		req = $.ajax({
-			url:'/validate_sn',
+			url:$("#validate_sn").val(),
 			type: 'POST',
 			data: {val:val}
 		});

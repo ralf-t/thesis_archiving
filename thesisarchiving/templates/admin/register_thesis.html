@@ -19,6 +19,14 @@
   			
 	  		<form method="POST" action="" autocomplete="off" enctype="multipart/form-data">
 				{{ form.hidden_tag() }}
+
+				<!-- fuzzy tags, wag gawing #tags dahil taken na -->
+				<input type="hidden" id="fuzz_tags" value="{{url_for('main.tags')}}">
+				<!-- adv search -->
+				<input type="hidden" id="similar_thesis" value="{{url_for('admin.similar_thesis')}}">
+				<!-- validate sn -->
+				<input type="hidden" id="validate_sn" value="{{url_for('admin.validate_sn')}}">
+
 				<h6>Basic Details</h6>
 					
 				{% for field in form.title_area_keywords %}

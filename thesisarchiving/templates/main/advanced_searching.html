@@ -9,6 +9,10 @@
 			<h2 class="d-flex justify-content-center"><strong>Advanced Search</strong></h2>
 			<form method="POST" action="" autocomplete="off" class="px-0 px-md-5"> 
 			{{ form.hidden_tag() }}
+				
+				<!-- fuzz tags -->
+				<input type="hidden" id="fuzz_tags" value="{{url_for('main.tags')}}">
+
 				<div class="form-group">
 					{{ form.title.label }}
 					{% if form.title.errors %}

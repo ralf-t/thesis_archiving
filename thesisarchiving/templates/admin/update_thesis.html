@@ -15,6 +15,11 @@
       <div class="bg-white p-4 shadow-sm">
         <form method="POST" action="" autocomplete="off" enctype="multipart/form-data">
           {{ thesis_form.hidden_tag() }}
+          
+          <!-- fuzzy tags -->
+          <input type="hidden" id="fuzz_tags" value="{{url_for('main.tags')}}">
+          <!-- validate sn -->
+          <input type="hidden" id="validate_sn" value="{{url_for('admin.validate_sn')}}">
 
           <div class="form-group">
               <!-- username -->

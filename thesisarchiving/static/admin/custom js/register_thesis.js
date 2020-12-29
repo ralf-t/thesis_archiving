@@ -49,7 +49,7 @@ $( document ).ready(function() {
 		
 		// ajax
 		req = $.ajax({
-			url:'/admin/register/thesis/fuzz_tags',
+			url:$("#fuzz_tags").val(),
 			type: 'POST',
 			data: {val:val, name:name}
 		});
@@ -129,7 +129,7 @@ $( document ).ready(function() {
 		keywords_arr = keywords_val.trim() ? keywords_val.split(',') : null;
 
 		req = $.ajax({
-			url:'/admin/register/thesis/advanced_search',
+			url:$("#similar_thesis").val(),
 			type: 'POST',
 			data: JSON.stringify({title:title_val, area:area_val, keywords:keywords_arr})
 		});
@@ -168,7 +168,7 @@ $( document ).ready(function() {
 		const invalid_feedback = $("#"+field.attr("id") + "invalid");
 		
 		req = $.ajax({
-			url:'/validate_sn',
+			url:$("#validate_sn").val(),
 			type: 'POST',
 			data: {val:val}
 		});
