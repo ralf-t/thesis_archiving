@@ -25,9 +25,13 @@ login_manager = LoginManager()
 login_manager.login_view = 'main.login'
 login_manager.login_message_category = 'light'
 
-def create_app(config_class=Config):
+def create_app(static_url_path=None,config_class=Config):
 	#init is initialize app
-	app = Flask(__name__)
+	if static_url_path:
+		app = Flask(__name__,static_url_path=static_url_path)
+	else:
+		app = Flask(__name__)
+
 	app.config.from_object(Config)
 	
 	db.init_app(app)
