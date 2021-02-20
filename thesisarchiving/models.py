@@ -54,7 +54,7 @@ class User(db.Model, UserMixin):
 	date_register = db.Column(db.DateTime, nullable=False, default=lambda:datetime.now(tz=pytz.timezone('Asia/Manila')))
 	logs = db.relationship('Log', backref='user', lazy='dynamic')
 
-	def get_reset_token(self, expires_sec=604800): #1 week expiration
+	def get_reset_token(self, expires_sec=86400): #1 week expiration
 		s = Serializer(current_app.config['SECRET_KEY'], expires_sec)
 		return s.dumps({'username': self.username}).decode('utf-8')
 
